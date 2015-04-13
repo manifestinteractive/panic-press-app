@@ -83,7 +83,7 @@ cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 cordova plugin add https://github.com/hazemhagrass/phonegap-base64.git
 
 echo " "
-read -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY
+read BILLING_KEY\?"Android In App Billing Key [REQUIRED]: "
 echo " "
 
 if [[ "$BILLING_KEY" ]]; then
@@ -95,8 +95,8 @@ else
 fi
 
 echo " "
-read -p "SendGrid Username [REQUIRED]: " API_USER
-read -s -p "SendGrid Password [REQUIRED]: " API_KEY
+read API_USER\?"SendGrid Username [REQUIRED]: "
+read -s API_KEY\?"SendGrid Password [REQUIRED]: "
 echo " "
 
 if [[ "$API_USER" && "$API_KEY" ]]; then
