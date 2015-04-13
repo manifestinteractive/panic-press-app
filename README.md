@@ -22,7 +22,7 @@ You can install the Panic Press App via the command line with either `curl` or `
 
 ```bash
 cd /your/development/folder
-curl -L https://raw.githubusercontent.com/manifestinteractive/panic-press-app/stable/build/scripts/install.sh | sh
+bash -c "$(curl -s https://raw.githubusercontent.com/manifestinteractive/panic-press-app/stable/build/scripts/install.sh)"
 ```
 
 ### via `wget`:

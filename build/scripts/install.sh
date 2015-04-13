@@ -51,15 +51,15 @@ echo " "
 
 cordova plugin add org.apache.cordova.battery-status
 cordova plugin add org.apache.cordova.contacts
-cordova plugin add org.apache.cordova.media-capture
 cordova plugin add org.apache.cordova.device
 cordova plugin add org.apache.cordova.device-motion
 cordova plugin add org.apache.cordova.device-orientation
+cordova plugin add org.apache.cordova.dialogs
 cordova plugin add org.apache.cordova.file
 cordova plugin add org.apache.cordova.file-transfer
-cordova plugin add org.apache.cordova.dialogs
 cordova plugin add org.apache.cordova.geolocation
 cordova plugin add org.apache.cordova.inappbrowser
+cordova plugin add org.apache.cordova.media-capture
 cordova plugin add org.apache.cordova.network-information
 cordova plugin add org.apache.cordova.splashscreen
 
@@ -67,23 +67,23 @@ echo " "
 echo "Installing Required Third-Party Plugins:"
 echo " "
 
+cordova plugin add https://github.com/anemitoff/PhoneGap-PhoneDialer.git
+cordova plugin add https://github.com/christocracy/cordova-plugin-background-geolocation.git
 cordova plugin add https://github.com/cordova-sms/cordova-sms-plugin.git
 cordova plugin add https://github.com/danwilson/google-analytics-plugin.git
-cordova plugin add https://github.com/EddyVerbruggen/LaunchMyApp-PhoneGap-Plugin.git --variable URL_SCHEME=panicpress
-cordova plugin add https://github.com/phonegap-build/StatusBarPlugin.git
-cordova plugin add https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git
-cordova plugin add https://github.com/katzer/cordova-plugin-local-notifications.git
-cordova plugin add https://github.com/katzer/cordova-plugin-background-mode.git
 cordova plugin add https://github.com/EddyVerbruggen/Flashlight-PhoneGap-Plugin.git
-cordova plugin add https://github.com/christocracy/cordova-plugin-background-geolocation.git
-cordova plugin add https://github.com/macdonst/TelephoneNumberPlugin.git
-cordova plugin add https://github.com/anemitoff/PhoneGap-PhoneDialer.git
-cordova plugin add https://github.com/Paldom/UniqueDeviceID.git
-cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
+cordova plugin add https://github.com/EddyVerbruggen/LaunchMyApp-PhoneGap-Plugin.git --variable URL_SCHEME=panicpress
+cordova plugin add https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git
 cordova plugin add https://github.com/hazemhagrass/phonegap-base64.git
+cordova plugin add https://github.com/katzer/cordova-plugin-background-mode.git
+cordova plugin add https://github.com/katzer/cordova-plugin-local-notifications.git
+cordova plugin add https://github.com/macdonst/TelephoneNumberPlugin.git
+cordova plugin add https://github.com/Paldom/UniqueDeviceID.git
+cordova plugin add https://github.com/phonegap-build/StatusBarPlugin.git
+cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 
 echo " "
-read BILLING_KEY\?"Android In App Billing Key [REQUIRED]: "
+read -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY
 echo " "
 
 if [[ "$BILLING_KEY" ]]; then
@@ -95,8 +95,8 @@ else
 fi
 
 echo " "
-read API_USER\?"SendGrid Username [REQUIRED]: "
-read -s API_KEY\?"SendGrid Password [REQUIRED]: "
+read -p "SendGrid Username [REQUIRED]: " API_USER
+read -s -p "SendGrid Password [REQUIRED]: " API_KEY
 echo " "
 
 if [[ "$API_USER" && "$API_KEY" ]]; then
