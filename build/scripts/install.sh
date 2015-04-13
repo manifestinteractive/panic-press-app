@@ -84,9 +84,9 @@ cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 
 echo " "
 read -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY
-echo " "
 
 if [[ "$BILLING_KEY" ]]; then
+	echo " "
 	cordova plugin add https://github.com/j3k0/cordova-plugin-purchase.git --variable BILLING_KEY="$BILLING_KEY"
 else
 	echo " "
@@ -97,9 +97,9 @@ fi
 echo " "
 read -p "SendGrid Username [REQUIRED]: " API_USER
 read -s -p "SendGrid Password [REQUIRED]: " API_KEY
-echo " "
 
 if [[ "$API_USER" && "$API_KEY" ]]; then
+	echo " "
 	cordova plugin add https://github.com/Telerik-Verified-Plugins/SendGrid.git --variable API_USER="$API_USER" --variable API_KEY="$API_KEY"
 else
 	echo " "
