@@ -1,6 +1,4 @@
-![blackdove logo](http://blackdove.com/images/logo_nav@2x.png "blackdove logo")
-
-Panic Press
+![Panic Press Logo](http://panic.press/logo.png "Panic Press Logo")
 
 Requirements:
 ---
@@ -10,12 +8,12 @@ Requirements:
 * [Android SDK](http://docs.phonegap.com/en/3.5.0/guide_platforms_android_index.md.html#Android%20Platform%20Guide)
 * [Node.js v10+](http://nodejs.org/) ( For Application Development )
 
-Panic Press App Installation
+Installation
 ===
 
 To use this repository you will first need to create a PhoneGap application.  You can do so by manually running the commands below in your terminal window, or run the shell script in ./build/scripts/install.sh which contains the same content.
 
-Automatic Installation ( do you trust me? ):
+Automatic Installation:
 ---
 
 You can install the Panic Press App via the command line with either `curl` or `wget` which will run this [Shell Script](https://raw.githubusercontent.com/manifestinteractive/panic-press-app/stable/build/scripts/install.sh).
@@ -40,14 +38,19 @@ You will need to modify `./src/js/settings.js` to your projects specifications. 
 
 
 
-Install:
+Manual Install:
 ---
 
-To install `panic-press-app` locally for development:
+If you would like to manually install this application, please follow the instructions in the [Installation Script](https://raw.githubusercontent.com/manifestinteractive/panic-press-app/stable/build/scripts/install.sh).
+
+
+Open Panic Press in Browser:
+---
+
+To work on `panic-press-app` locally for development:
 
 ```bash
 cd /path/to/panic-press-app
-git clone -b stable git@github.com:manifestinteractive/bd-mobileapp.git .
 npm install
 ```
 
@@ -58,7 +61,7 @@ cd /path/to/panic-press-app
 npm start
 ```
 
-The `blackdove` app will open in your default browser at [http://127.0.0.1:8080](http://127.0.0.1:8080)
+The `panic-press-app` app will open in your default browser at [http://127.0.0.1:8080](http://127.0.0.1:8080)
 
 Project Structure:
 ---
@@ -111,24 +114,6 @@ __Third Party Content__ ( not apart of the git repository ):
 * __`bower_components`__: Third Party Libraries installed via `bower.json` during `npm install`
 * __`node_modules`__: Third Party Libraries installed via `package.json` during `npm install`
 * __`www/src/vendor`__: Third Party files copied over for Application Use
-
-HTML Code Templates:
----
-
-A collection of UI Elements and Page types are accessible at
-[http://127.0.0.1:8080/#/dev/buttons](http://127.0.0.1:8080/#/dev/buttons)
-
-
-Perform Unit Tests:
----
-
-You can use the following command in terminal to perform unit tests:
-
-```bash
-npm test
-```
-
-A code coverage report will be saved in `./coverage/PhantomJS.../index.html`
 
 Grunt Terminal Commands:
 ---
@@ -203,7 +188,7 @@ grunt emulate:ipad_resizable
 
 #### Compile Sass files into CSS:
 
-This will compile all the files in `www/src/scss` and generate the `www/assets/css/app.css` file
+This will compile all the files in `src/scss` and generate the `assets/css/app.css` file
 
 ```bash
 grunt sass:app
