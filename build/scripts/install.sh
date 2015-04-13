@@ -21,18 +21,22 @@ rm -fr www
 git clone -b stable git@github.com:manifestinteractive/panic-press-app.git www
 
 echo " "
-echo "Setup Grunt:"
+echo "Updating Cordova Defaults:"
 echo " "
 
-cd www
-gem install sass
-npm install
+rm -fr hooks
+rm config.xml
+
+cp -r www/hooks ./
+cp www/config.xml ./
+
+chmod 755 hooks/after_prepare/010_remove_junk.js
 
 echo " "
 echo "Copy Config File:"
 echo " "
 
-cp src/js/settings.js.dist src/js/settings.js
+cp www/src/js/settings.js.dist www/src/js/settings.js
 
 echo " "
 echo "Adding Platforms:"
@@ -79,7 +83,7 @@ cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 cordova plugin add https://github.com/hazemhagrass/phonegap-base64.git
 
 read BILLING_KEY\?"Android In App Billing Key [ENTER]: "
-if [ -n $BILLING_KEY ]; then
+if [ -n "$BILLING_KEY" ]; then
 	cordova plugin add https://github.com/j3k0/cordova-plugin-purchase.git --variable BILLING_KEY="$BILLING_KEY"
 else
 	echo " "
@@ -91,7 +95,7 @@ fi
 read API_USER\?"SendGrid Username [ENTER]: "
 read -s API_KEY\?"SendGrid Password [ENTER]: "
 
-if [ -n $API_USER &&  -n $API_KEY ]; then
+if [ -n "$API_USER" ] && [ -n "$API_KEY" ]; then
 	cordova plugin add https://github.com/Telerik-Verified-Plugins/SendGrid.git --variable API_USER="$API_USER" --variable API_KEY="$API_KEY"
 else
 	echo " "
@@ -99,15 +103,11 @@ else
 	echo " "
 fi
 
-
-echo " "
-echo "Configure Build Hooks:"
-echo " "
-
-chmod 755 hooks/after_prepare/010_remove_junk.js
-
 echo " "
 echo "Starting Node Server"
 echo " "
 
+cd www
+gem install sass
+npm install
 npm start
