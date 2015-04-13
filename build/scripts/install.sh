@@ -83,7 +83,7 @@ cordova plugin add https://github.com/phonegap-build/StatusBarPlugin.git
 cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 
 echo " "
-read BILLING_KEY\?"Android In App Billing Key [REQUIRED]: "
+read -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY
 echo " "
 
 if [[ "$BILLING_KEY" ]]; then
@@ -95,8 +95,8 @@ else
 fi
 
 echo " "
-read API_USER\?"SendGrid Username [ENTER]: "
-read -s API_KEY\?"SendGrid Password [ENTER]: "
+read -p "SendGrid Username [REQUIRED]: " API_USER
+read -s -p "SendGrid Password [REQUIRED]: " API_KEY
 echo " "
 
 if [[ "$API_USER" && "$API_KEY" ]]; then
