@@ -27,7 +27,6 @@ echo " "
 cd www
 gem install sass
 npm install
-cd -
 
 echo " "
 echo "Copy Config File:"
@@ -78,12 +77,37 @@ cordova plugin add https://github.com/anemitoff/PhoneGap-PhoneDialer.git
 cordova plugin add https://github.com/Paldom/UniqueDeviceID.git
 cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 cordova plugin add https://github.com/hazemhagrass/phonegap-base64.git
-cordova plugin add https://github.com/j3k0/cordova-plugin-purchase.git
-#cordova plugin add https://github.com/poiuytrez/AndroidInAppBilling.git --variable BILLING_KEY=""
-#cordova plugin add https://github.com/Telerik-Verified-Plugins/SendGrid.git --variable API_USER="" --variable API_KEY=""
+
+read BILLING_KEY\?"Android In App Billing Key [ENTER]: "
+if [ -n $BILLING_KEY ]; then
+	cordova plugin add https://github.com/j3k0/cordova-plugin-purchase.git --variable BILLING_KEY="$BILLING_KEY"
+else
+	echo " "
+	echo "!!! Invalid Android In App Billing Details, you will need to install this plugin manually."
+	echo " "
+fi
+
+
+read API_USER\?"SendGrid Username [ENTER]: "
+read -s API_KEY\?"SendGrid Password [ENTER]: "
+
+if [ -n $API_USER &&  -n $API_KEY ]; then
+	cordova plugin add https://github.com/Telerik-Verified-Plugins/SendGrid.git --variable API_USER="$API_USER" --variable API_KEY="$API_KEY"
+else
+	echo " "
+	echo "!!! Invalid SendGrid Details, you will need to install this plugin manually."
+	echo " "
+fi
+
 
 echo " "
 echo "Configure Build Hooks:"
 echo " "
 
-chmod 755 hooks/*/*.js
+chmod 755 hooks/after_prepare/010_remove_junk.js
+
+echo " "
+echo "Starting Node Server"
+echo " "
+
+npm start
