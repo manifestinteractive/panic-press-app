@@ -1,0 +1,268 @@
+<section class="animated fadeIn">
+    <section class="section swatch-white-red has-top">
+
+        <!-- Get Contact Info -->
+        <div class="container" ng-show="currentStep == 1">
+            <header class="section-header text-center underline m-t-xl">
+                <h1 class="headline super hairline">My Details</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <p>
+                    During emergencies, these details will be provided to your Emergency Contacts.
+                </p>
+                <form class="contact-form m-t-xl" id="contactForm" novalidate="">
+                    <div class="form-group form-icon-group">
+                        <input class="form-control" id="name" placeholder="Full Name *" type="text">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="form-group form-icon-group">
+                        <input class="form-control" id="email" placeholder="Email Address *" type="email">
+                        <i class="fa fa-envelope"></i>
+                    </div>
+                    <div class="form-group form-icon-group">
+                        <input class="form-control" id="phone" placeholder="Phone Number *" type="phone">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    <div class="form-group text-center m-t-xl">
+                        <a ui-sref="app.home" class="btn btn-default btn-icon btn-icon-left">
+                            Home
+                            <span class="hex-alt">
+                                <i class="fa fa-home"></i>
+                            </span>
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                            Next
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                </form>
+                <p>
+                    Step 1 of 3<br />
+                    <span class="small text-muted">Next Up:&nbsp; Take Picture</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Get Physical Details -->
+        <div class="container" ng-show="currentStep == 2">
+            <header class="section-header text-center underline m-t-xl">
+                <h1 class="headline super hairline">My Details</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <p>
+                    During emergencies, these details will be provided to your Emergency Contacts.
+                </p>
+                <form class="contact-form m-t-xl" novalidate="">
+                    <div class="form-group text-center m-t-xl">
+                        <a class="btn btn-primary btn-icon btn-icon-right btn-lg">
+                            Take Picture
+                            <span class="hex-alt">
+                                <i class="fa fa-camera"></i>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="form-group text-center m-t-xl">
+                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                            Back
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-left"></i>
+                            </span>
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                            Next
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                </form>
+                <p>
+                    Step 1 of 3<br />
+                    <span class="small text-muted">Next Up:&nbsp; Security PIN</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Create Security PIN -->
+        <div class="container" ng-show="currentStep == 3">
+            <header class="section-header text-center underline m-t-xl">
+                <h1 class="headline super hairline">Security PIN</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <p>
+                    This PIN signifies that you have your device &amp; not an attacker.&nbsp; Use this to send an "I'm OK" notice to your Emergency Contacts.
+                </p>
+                <form class="contact-form m-t-xl">
+                    <div class="form-group form-icon-group">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin1" ng-model="safetyPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin2" ng-model="safetyPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin3" ng-model="safetyPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin4" ng-model="safetyPin4" required="required" numbers-only="numbers-only">
+                    </div>
+                    <div class="form-group text-center m-t-xl">
+                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                            Back
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-left"></i>
+                            </span>
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                            Next
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                </form>
+                <p>
+                    Step 2 of 3<br />
+                    <span class="small text-muted">Next Up:&nbsp; Verify Security PIN</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Verify Security PIN -->
+        <div class="container" ng-show="currentStep == 4">
+            <header class="section-header text-center underline m-t-xl">
+                <h1 class="headline super hairline">Verify Security PIN</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <p>
+                    This PIN signifies that you have your device &amp; not an attacker.&nbsp; Use this to send an "I'm OK" notice to your Emergency Contacts.
+                </p>
+                <form class="contact-form m-t-xl">
+                    <div class="form-group form-icon-group">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyVerifyPin1" ng-model="safetyVerifyPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyVerifyPin2" ng-model="safetyVerifyPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyVerifyPin3" ng-model="safetyVerifyPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyVerifyPin4" ng-model="safetyVerifyPin4" required="required" numbers-only="numbers-only">
+                    </div>
+                    <div class="form-group text-center m-t-xl">
+                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                            Back
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-left"></i>
+                            </span>
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                            Next
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                </form>
+                <p>
+                    Step 2 of 3<br />
+                    <span class="small text-muted">Next Up:&nbsp; Fake Security PIN</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Create Fake PIN -->
+        <div class="container" ng-show="currentStep == 5">
+            <header class="section-header text-center underline m-t-xl">
+                <h1 class="headline super hairline">Fake Security PIN</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <p>
+                    Use this if you are being forced to provide your PIN.&nbsp; We will notify your Emergency Contacts without your attacker knowing.
+                </p>
+                <form class="contact-form m-t-xl" novalidate="">
+                    <div class="form-group form-icon-group">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falsePin1" ng-model="falsePin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falsePin2" ng-model="falsePin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falsePin3" ng-model="falsePin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falsePin4" ng-model="falsePin4" required="required" numbers-only="numbers-only">
+                    </div>
+                    <div class="form-group text-center m-t-xl">
+                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                            Back
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-left"></i>
+                            </span>
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                            Next
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                </form>
+                <p>
+                    Step 3 of 3<br />
+                    <span class="small text-muted">Next Up:&nbsp; Verify Fake PIN</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Verify False PIN -->
+        <div class="container" ng-show="currentStep == 6">
+            <header class="section-header text-center underline m-t-xl">
+                <h1 class="headline super hairline">Verify Fake PIN</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <p>
+                    Use this if you are being forced to provide your PIN.&nbsp; We will notify your Emergency Contacts without your attacker knowing.
+                </p>
+                <form class="contact-form m-t-xl" novalidate="">
+                    <div class="form-group form-icon-group">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falseVerifyPin1" ng-model="falseVerifyPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falseVerifyPin2" ng-model="falseVerifyPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falseVerifyPin3" ng-model="falseVerifyPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falseVerifyPin4" ng-model="falseVerifyPin4" required="required" numbers-only="numbers-only">
+                    </div>
+                    <div class="form-group text-center m-t-xl">
+                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                            Back
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-left"></i>
+                            </span>
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                            Next
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                </form>
+                <p>
+                    Step 3 of 3<br />
+                    <span class="small text-muted">Next Up:&nbsp; All Done</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- All Done -->
+        <div class="container" ng-show="currentStep == 7">
+            <header class="section-header text-center underline m-t-xl">
+                <h1 class="headline super hairline">Thanks, All Done</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <p>
+                    Now, let's make sure your Emergency Contacts are up-to-date.
+                </p>
+                <p><img src="assets/img/svg/setup.svg" class="m-t"></p>
+                <div class="form-group text-center m-t-xl">
+                    <a ui-sref="app.contacts" class="btn btn-primary btn-icon btn-icon-right">
+                        Emergency Contacts
+                        <span class="hex-alt">
+                            <i class="fa fa-users"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</section>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" class="app">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Panic</title>
+        <meta name="description" content="With a single tap, Panic Press automatically notifies your Emergency Contacts when you're in danger. Access your Safety Net from your favorite Apple iOS or Android Device.">
+        <meta name="keywords" content="mobile, app, ios, android, panic press, safety, security, notification, tracking, emergency, location, alert, contacts">
+
+        <!-- Mobile Specific Meta Tags -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        
+        <!-- Icons -->
+        <link href="assets/img/favicon.ico" rel="shortcut icon">
+
+        <link rel="apple-touch-icon-precomposed" href="assets/img/apple/icon.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/img/apple/icon-72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/img/apple/icon@2x.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/img/apple/icon-72@2x.png" />
+
+        <link rel="apple-touch-startup-image" media="(device-width: 320px)" href="assets/img/apple/startup-image-320x460.png"><!-- iPhone -->
+        <link rel="apple-touch-startup-image" media="(device-width: 320px) and (-webkit-device-pixel-ratio: 2)" href="assets/img/apple/startup-image-640x920.png"><!-- iPhone (Retina) -->
+        <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="assets/img/apple/startup-image-640x1096.png"><!-- iPhone 5 -->
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (orientation: portrait)" href="assets/img/apple/startup-image-768x1004.png"><!-- iPad (portrait) -->
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (orientation: landscape)" href="assets/img/apple/startup-image-748x1024.png"><!-- iPad (landscape) -->
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="assets/img/apple/startup-image-1536x2008.png"><!-- iPad (Retina, portrait) -->
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="assets/img/apple/startup-image-1496x2048.png"><!-- iPad (Retina, landscape) -->
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <link href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
+
+        <script src="https://d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js" data-apikey="2cb16f0a0e13aa153ac2d6c3c60d71bc"></script>
+
+    </head>
+    <body ng-controller="AppCtrl" class="{{bodyClass}}">
+    
+        <div id="app" class="sticky-wrapper" style="height: 92px" ui-view></div>
+
+        <script src="cordova.js"></script>
+
+        <script src="assets/js/libs.js"></script>
+        <script src="assets/js/angular.js"></script>
+        <script src="assets/js/vendor.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script src="assets/js/controllers.js"></script>
+        <script src="assets/js/directives.js"></script>
+        <script src="assets/js/filters.js"></script>
+        <script src="assets/js/services.js"></script>
+    </body>
+</html>

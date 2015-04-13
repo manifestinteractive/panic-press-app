@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<widget id="com.manifestinteractive.panicpress" version="0.5.0" xmlns="http://www.w3.org/ns/widgets"
+        xmlns:gap="http://phonegap.com/ns/1.0" xmlns:cdv="http://cordova.apache.org/ns/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>Panic Press</name>
+
+    <description>
+        With a single tap, Panic Press automatically notifies your Emergency Contacts when you're in danger. Access your Safety Net from your favorite Apple iOS or Android Device.
+    </description>
+
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="AllowInlineMediaPlayback" value="true" />
+    <preference name="BackgroundColor" value="0xffe74c3c" />
+    <preference name="BackupWebStorage" value="cloud"/>
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="fullscreen" value="true" />
+    <preference name="orientation" value="portrait" />
+    <preference name="target-device" value="handset" />
+    <preference name="prerendered-icon" value="true" />
+    <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-targetSdkVersion" value="21" />
+    <preference name="android-installLocation" value="auto" />
+    <preference name="splash-screen-duration" value="3000" />
+    <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+    <preference name="SuppressesIncrementalRendering" value="true"/>
+    <preference name="UIWebViewDecelerationSpeed" value="fast" />
+
+    <preference name="StatusBarOverlaysWebView" value="false"/>
+    <preference name="StatusBarBackgroundColor" value="#e74c3c"/>
+    <preference name="StatusBarStyle" value="lightcontent" />
+    <preference name="Orientation" value="portrait" />
+
+    <author email="hello@manifestinteractive.com" href="http://manifestinteractive.com">
+        Manifest Interactive
+    </author>
+    <content src="index.html"/>
+    <access origin="*"/>
+</widget>

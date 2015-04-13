@@ -1,0 +1,58 @@
+{
+  "name": "PanicPress",
+  "version": "0.5.0",
+  "description": "Access your Safety Net from your favorite Apple iOS or Android Device.",
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start",
+    "start": "node node_modules/http-server/bin/http-server ./ -o -s -p8080 -c-1 --cors",
+    "postinstall": "bower install; grunt build:dist"
+  },
+  "keywords": [
+    "mobile",
+    "app",
+    "ios",
+    "android",
+    "panic press",
+    "safety",
+    "security",
+    "notification",
+    "tracking",
+    "emergency",
+    "location",
+    "alert",
+    "contacts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manifestinteractive/panic-press-app.git#stable"
+  },
+  "author": {
+    "name": "Manifest Interactive",
+    "email": "hello@manifestinteractive.com",
+    "url": "http://manifestinteractive.com"
+  },
+  "license": "Commercial Software",
+  "dependencies": {
+    "cordova": ">=3"
+  },
+  "devDependencies": {
+    "bower": "~1.3.12",
+    "cca": "^0.5.1",
+    "del": "^1.1.1",
+    "grunt": "^0.4.5",
+    "grunt-bump": "0.0.15",
+    "grunt-bump-cordova": "^0.1.3",
+    "grunt-changelog": "^0.2.2",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-sass": "*",
+    "grunt-cordovacli": "^0.7.0",
+    "grunt-gulp": "^0.1.0",
+    "grunt-shell": "^1.1.1",
+    "gruntfile-gtx": "^0.3.0",
+    "http-server": "^0.6.1",
+    "jshint-stylish": "^0.4.0",
+    "require-directory": "^2.0.0"
+  }
+}

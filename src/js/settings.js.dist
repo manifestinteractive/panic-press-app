@@ -1,0 +1,49 @@
+var panic_press = {
+
+	/* General Application Settings */
+	app:
+	{
+		/* App Support Information */
+		support: {
+			website: 'https://panicpress.zendesk.com',
+			email: 'support@panicpress.zendesk.com',
+			info: 'http://panicpress.press',
+			terms_of_use: 'http://panicpress.press/terms-of-use',
+			privacy_policy: 'http://panicpress.press/privacy-policy'
+		},
+
+		/* Settings for Development */
+		dev: {
+			sendgrid: {
+				api_user: '',
+				api_ley: '',
+				from_address: ''
+			},
+			aws: {
+				access_key: '',
+				secret_key: '',
+				bucket: ''
+			}
+		},
+		/* Settings for Production ( same descriptions as above ) */
+		prod: {
+			sendgrid: {
+				api_user: '',
+				api_ley: '',
+				from_address: ''
+			},
+            aws: {
+                access_key: '',
+                secret_key: '',
+                bucket: ''
+            }
+		}
+	},
+
+	/* Google Settings */
+	google: {
+
+		/* Analytics Code for Mobile App */
+		analytics: 'UA-XXXXXXXX-X'
+	}
+};

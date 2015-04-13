@@ -1,0 +1,78 @@
+<section class="animated fadeIn">
+    <section class="section swatch-red-white section-short">
+        <div class="container">
+            <div class="row text-center m-b-sm">
+                <div class="box-hex box-big flat-shadow flat-hex animated flipInX">
+                    <div class="box-dummy"></div>
+                    <span class="box-inner">
+                        <img src="assets/img/contacts.jpg">
+                    </span>
+
+                    <div class="hex-right"></div>
+                    <div class="hex-left"></div>
+                    <div class="hex-right"></div>
+                    <div class="hex-left"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section swatch-white-red has-top">
+        <div class="decor-top">
+            <svg class="decor" height="100%" preserveAspectRatio="none" version="1.1" viewBox="0 0 100 100" width="100%"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <header class="section-header text-center underline m-t-lg">
+                <h1 class="headline super hairline">Emergency Contacts</h1>
+            </header>
+            <div class="m-b-xl">
+                <ul class="list-fancy-icons color-inverse">
+                    <li ng-show="showJane">
+                        <div class="hex vcenter" ng-click="removeContact('jane')"><i class="fa fa-user-times" data-animation="shake"></i></div>
+                        <p>
+                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>Jane Doe</strong>
+                            <br />
+                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> jane.doe@email.com
+                            <br />
+                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> 555-123-4567
+                        </p>
+                    </li>
+                    <li ng-show="showJohn">
+                        <div class="hex vcenter" ng-click="removeContact('john')"><i class="fa fa-user-times" data-animation="shake"></i></div>
+                        <p>
+                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>John Doe</strong>
+                            <br />
+                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> john.doe@email.com
+                            <br />
+                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> 555-123-4567
+                        </p>
+                    </li>
+                    <li ng-show="showJack">
+                        <div class="hex vcenter" ng-click="removeContact('jack')"><i class="fa fa-user-times" data-animation="shake"></i></div>
+                        <p>
+                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>Jack Doe</strong>
+                            <br />
+                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> jack.doe@email.com
+                            <br />
+                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> 555-123-4567
+                        </p>
+                    </li>
+                </ul>
+
+                <div class="form-group text-center m-t-xl">
+                    <a class="btn btn-primary btn-icon btn-icon-right btn-lg m-b-xs">
+                        Add Contact
+                        <span class="hex-alt">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                    </a>
+                    <p class="text-muted m-t-sm">
+                        {{remainingContacts}} Contacts Remaining
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>

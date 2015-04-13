@@ -1,0 +1,19 @@
+<!-- header -->
+<header id="masthead" ng-class="{ transparent: isHomePage == true }" class="navbar navbar-sticky swatch-red-white" role="banner" data-ng-include=" 'templates/partials/header.html?v=' + app.version "></header>
+<!-- / header -->
+
+<!-- main content -->
+<div id="content" role="main" scroll-position="scrollPosition" ng-class="{ showOverflow: isHomePage == true }">
+
+	<div ui-view></div>
+
+	<footer id="footer" role="contentinfo" data-ng-include=" 'templates/partials/footer.html?v=' + app.version "></footer>
+
+</div>
+<!-- / main content -->
+
+<!-- go to top -->
+<a class="go-top hex-alt" href="javascript:void(0)">
+	<i class="fa fa-angle-up"></i>
+</a>
+<!-- / go to top -->

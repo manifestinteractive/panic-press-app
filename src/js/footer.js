@@ -1,0 +1,77 @@
+var user_dismissed_bugs = false;
+var app_version = app.version || '0.0.0';
+
+Bugsnag.releaseStage = "development";
+Bugsnag.appVersion = app_version;
+Bugsnag.beforeNotify = function(payload)
+{
+	if(payload.message && ( payload.message.indexOf('cordova') > -1 || payload.message.indexOf('\0') > -1 || payload.message.indexOf('ConnectSDK') > -1 || payload.message.indexOf('Unexpected token ILLEGAL') > -1 ) )
+	{
+		return false;
+	}
+	else if(payload.file.indexOf('angular.js') > -1)
+	{
+		return false;
+	}
+
+	var clone = JSON.parse(JSON.stringify(payload));
+	delete clone.apiKey;
+	delete clone.notifierVersion;
+
+	if(clone && typeof clone.name !== 'undefined' && typeof clone.message !== 'undefined')
+	{
+		phonegap.stats.event('Bugsnag Error', clone.name, clone.message);
+
+		if( !user_dismissed_bugs)
+		{
+			phonegap.notification.confirm(
+				"Sorry for the inconvenience, but it looks like you've stumbled upon a bug in our software.",
+				function(results){
+					if(results == 2)
+					{
+						var use_browser = false;
+						if(typeof cordova !== 'undefined' && typeof cordova.plugins.email !== 'undefined')
+						{
+							cordova.plugins.email.isServiceAvailable(
+								function (isAvailable) {
+									if( !isAvailable)
+									{
+										use_browser = true;
+									}
+									else
+									{
+										cordova.plugins.email.open({
+											to: [ 'support@manifestinteractive.com' ],
+											subject: 'JavaScript Error in Panic Press',
+											body: "Greetings,<br \/><br \/>I would like to submit an Error I detected in Panic Press.<br \/><br \/>The following information was generated for your support staff:<br \/><br \/><pre>" + JSON.stringify(clone) + "</pre>",
+											isHtml: true
+										});
+									}
+								}
+							);
+						}
+						else
+						{
+							use_browser = true;
+						}
+
+						if(use_browser)
+						{
+							var subject = 'JavaScript Error in Panic Press';
+							var body = "Greetings,\n\nI would like to submit an Error I detected in Panic Press.\n\n The following information was generated for your support staff:\n\n";
+							body += JSON.stringify(clone);
+							window.open('mailto:support@blackdove.co?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), "_self");
+						}
+					}
+					else
+					{
+						window.user_dismissed_bugs = true;
+					}
+				},
+				"We've Detected a Problem",
+				['Dismiss', 'Submit Bug']
+			);
+		}
+	}
+	return true;
+};
