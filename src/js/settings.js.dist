@@ -1,5 +1,10 @@
 var panic_press = {
 
+	/* Key to Encrypt Data ( must match on remote server ) */
+	security: {
+		encryption_key: ''
+	},
+
 	/* General Application Settings */
 	app:
 	{
@@ -14,9 +19,14 @@ var panic_press = {
 
 		/* Settings for Development */
 		dev: {
+			api: {
+				key: '',
+				url: ''
+			},
 			sendgrid: {
 				api_user: '',
-				api_ley: '',
+				api_key: '',
+				from_name: '',
 				from_address: ''
 			},
 			aws: {
@@ -27,11 +37,16 @@ var panic_press = {
 		},
 		/* Settings for Production ( same descriptions as above ) */
 		prod: {
+			api: {
+            	key: '',
+                url: ''
+            },
 			sendgrid: {
-				api_user: '',
-				api_ley: '',
-				from_address: ''
-			},
+                api_user: '',
+                api_key: '',
+                from_name: '',
+                from_address: ''
+            },
             aws: {
                 access_key: '',
                 secret_key: '',
