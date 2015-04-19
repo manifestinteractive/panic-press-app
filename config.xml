@@ -2,7 +2,7 @@
 <widget id="com.manifestinteractive.panicpress" version="0.5.0" xmlns="http://www.w3.org/ns/widgets"
         xmlns:gap="http://phonegap.com/ns/1.0" xmlns:cdv="http://cordova.apache.org/ns/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
-    <name>Panic Press</name>
+    <name>Panic</name>
 
     <description>
         With a single tap, Panic Press automatically notifies your Emergency Contacts when you're in danger. Access your Safety Net from your favorite Apple iOS or Android Device.

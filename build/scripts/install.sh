@@ -108,6 +108,21 @@ else
 fi
 
 echo " "
+echo "Replace iOS & Android Build Files ( modified from default ):"
+echo " "
+
+rm platforms/ios/Panic/Resources/icons/*.png
+rm platforms/ios/Panic/Resources/splash/*.png
+rm -fr platforms/android/res/drawable*
+
+cp www/build/ios/icon/*.png platforms/ios/Panic/Resources/icons/
+cp www/build/ios/screen/*.png platforms/ios/Panic/Resources/splash/
+cp -R www/build/android/* platforms/android/res/
+
+rm platforms/ios/Panic/Panic-Info.plist
+cp www/build/ios/Panic-Info.plist platforms/ios/Panic/Panic-Info.plist
+
+echo " "
 echo "Starting Node Server"
 echo " "
 
