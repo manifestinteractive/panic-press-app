@@ -1,10 +1,10 @@
 #!/bin/sh
 
 echo " "
-echo "PhoneGap Installation:"
+echo "Installing / Updating: phonegap, cordova, grunt-cli & bower"
 echo " "
 
-npm update -g phonegap cordova grunt-cli bower
+sudo npm update -g phonegap cordova grunt-cli bower
 
 echo " "
 echo "Creating PhoneGap Project:"
@@ -83,7 +83,7 @@ cordova plugin add https://github.com/phonegap-build/StatusBarPlugin.git
 cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 
 echo " "
-read -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY
+read -s -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY
 
 if [[ "$BILLING_KEY" ]]; then
 	echo " "
@@ -115,12 +115,9 @@ rm platforms/ios/Panic/Resources/icons/*.png
 rm platforms/ios/Panic/Resources/splash/*.png
 rm -fr platforms/android/res/drawable*
 
-cp www/build/ios/icon/*.png platforms/ios/Panic/Resources/icons/
-cp www/build/ios/screen/*.png platforms/ios/Panic/Resources/splash/
+cp www/build/ios/icons/*.png platforms/ios/Panic/Resources/icons/
+cp www/build/ios/splash/*.png platforms/ios/Panic/Resources/splash/
 cp -R www/build/android/* platforms/android/res/
-
-rm platforms/ios/Panic/Panic-Info.plist
-cp www/build/ios/Panic-Info.plist platforms/ios/Panic/Panic-Info.plist
 
 echo " "
 echo "Starting Node Server"
