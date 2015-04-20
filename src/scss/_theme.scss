@@ -17,6 +17,19 @@ blockquote p, .section-header p
 	font-weight: 300;
 }
 
+.no-overflow
+{
+	overflow: hidden !important;
+}
+.right-10
+{
+	right: 10px !important;
+}
+.left-10
+{
+	left: 10px !important;
+}
+
 .light
 {
 	font-weight: 300 !important;
@@ -6450,6 +6463,35 @@ pre
 .box-hex .box-dummy
 {
 	padding-top: 86.33333333%;
+}
+
+.hex-label
+{
+	position: absolute;
+	top: 60%;
+	color: #404B5B;
+	text-align: center;
+	width: 100%;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 18px;
+}
+
+
+.hex-label.text-muted
+{
+	color: #999;
+}
+
+.btn-white .text-red
+{
+	color: $panic-red !important;
+}
+
+.big-box .hex-label
+{
+	font-size: 22px;
+	line-height: 24px;
 }
 
 .box-inner
@@ -14964,6 +15006,10 @@ input.pin
 {
 	color: $panic-red !important;
 }
+.text-white
+{
+	color: #ffffff !important;
+}
 .text-light
 {
 	color: #cccccc !important;
@@ -14983,4 +15029,8 @@ input.pin
 .transparent
 {
 	background: transparent !important;
+}
+.shrink-header
+{
+	margin-top: -50px !important;
 }

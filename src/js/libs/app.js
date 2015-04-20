@@ -714,12 +714,7 @@ function load_jquery()
 		osElement.css('-moz-animation-delay', osAnimationDelay);
 		osElement.css('animation-delay', osAnimationDelay);
 
-		osElement.waypoint(function() {
-			$(this).addClass('animated').addClass(osAnimationClass);
-		},{
-			triggerOnce: true,
-			offset: '80%'
-		});
+		$(this).addClass('animated').addClass(osAnimationClass);
 	});
 
 

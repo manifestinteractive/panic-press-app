@@ -1,9 +1,9 @@
 <!-- header -->
-<header id="masthead" ng-class="{ transparent: isHomePage == true }" class="navbar navbar-sticky swatch-red-white" role="banner" data-ng-include=" 'templates/partials/header.html?v=' + app.version "></header>
+<header id="masthead" ng-class="{ transparent: hideNav == true }" class="navbar navbar-sticky swatch-red-white" role="banner" data-ng-include=" 'templates/partials/header.html?v=' + app.version "></header>
 <!-- / header -->
 
 <!-- main content -->
-<div id="content" role="main" scroll-position="scrollPosition" ng-class="{ showOverflow: isHomePage == true }">
+<div id="content" role="main" scroll-position="scrollPosition" ng-class="{ showOverflow: hideNav == true }">
 
 	<div ui-view></div>
 

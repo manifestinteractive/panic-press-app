@@ -1,0 +1,67 @@
+<section class="animated fadeIn shrink-header">
+    <section class="section swatch-red-white">
+        <div class="container">
+            <div class="row text-center m-b-sm">
+                <div class="box-hex flat-shadow flat-hex animated flipInX">
+                    <div class="box-dummy"></div>
+                    <span class="box-inner">
+					    <span class="hex-label" ng-bind-html="danger_html"></span>
+					    <img alt="" ng-src="assets/img/danger/{{ danger }}.svg" class="">
+				    </span>
+                    <div class="hex-right"></div>
+                    <div class="hex-left"></div>
+                    <div class="hex-right"></div>
+                    <div class="hex-left"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section swatch-white-red has-top">
+        <div class="decor-top">
+            <svg class="decor" height="100%" preserveAspectRatio="none" version="1.1" viewBox="0 0 100 100" width="100%"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
+            </svg>
+        </div>
+        <div class="container m-b-xl">
+            <div class="text-center m-b">
+                <div class="m-t-lg">
+                    <a href="tel:000" class="btn btn-primary btn-icon btn-icon-left" style="width: 125px">
+                        Call 911
+                        <span class="hex-alt">
+                            <i class="fa fa-phone"></i>
+                        </span>
+                    </a>&nbsp;
+                    <a ui-sref="app.home" style="width: 125px" class="btn btn-success btn-icon btn-icon-right">
+                        I'm Safe
+                        <span class="hex-alt">
+                            <i class="fa fa-check"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <header class="section-header text-center underline m-t-lg">
+                <h1 class="headline super hairline">{{ type_text }}</h1>
+                <p>Notifying Emergency Contacts:</p>
+            </header>
+
+            <div class="m-b-xl">
+                <div class="m-t-lg">
+                    <p class="contact-1">
+                        <i class="fa fa-fw fa-spin fa-circle-o-notch text-light"></i>
+                        <span class="label label-warning m-r-xs m-l-xs" style="width: 55px; display: inline-block;">sending</span> John Doe
+                    </p>
+                    <p class="contact-2">
+                        <i class="fa fa-fw fa-spin fa-circle-o-notch text-light"></i>
+                        <span class="label label-warning m-r-xs m-l-xs" style="width: 55px; display: inline-block;">sending</span> Jane Doe
+                    </p>
+                    <p class="contact-3">
+                        <i class="fa fa-fw fa-spin fa-circle-o-notch text-light"></i>
+                        <span class="label label-warning m-r-xs m-l-xs" style="width: 55px; display: inline-block;">sending</span> Jack Doe
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>

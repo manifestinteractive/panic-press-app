@@ -43,6 +43,12 @@ phonegap.events = {
 
 		phonegap.stats.event('App', 'Event', 'Device Ready');
 
+		// Initialize Database
+		if(sqlite)
+		{
+			sqlite.init();
+		}
+
 		if(cordova && cordova.InAppBrowser)
 		{
 			window.open = cordova.InAppBrowser.open;

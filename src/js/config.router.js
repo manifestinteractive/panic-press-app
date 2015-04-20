@@ -34,7 +34,7 @@ angular.module('app').run([
 		// Check for certain State Changes
 		$rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams){
 			$rootScope.currentPage = toState.name;
-			load_jquery();
+			$timeout(load_jquery, 10);
 		});
 		// Check for certain State Changes
 		$rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
@@ -47,7 +47,7 @@ angular.module('app').run([
 	'$stateProvider', '$urlRouterProvider',
 	function($stateProvider, $urlRouterProvider)
 	{
-		$urlRouterProvider.otherwise('/app/home');
+		$urlRouterProvider.otherwise('/app/welcome');
 		
 		// User Signin & Registration
 		$stateProvider
@@ -61,10 +61,25 @@ angular.module('app').run([
 			url: '/error',
 			templateUrl: 'templates/partials/error.html'
 		})
+		.state('app.welcome', {
+			url: '/welcome',
+			templateUrl: 'templates/partials/welcome.html',
+			controller: 'WelcomeController'
+		})
 		.state('app.home', {
 			url: '/home',
 			templateUrl: 'templates/partials/home.html',
 			controller: 'HomeController'
+		})
+		.state('app.other', {
+			url: '/other',
+			templateUrl: 'templates/partials/other-danger.html',
+			controller: 'OtherController'
+		})
+		.state('app.danger', {
+			url: '/danger/{type:(?:immediate|potential)}/{danger:(?:physical-attack|verbal-attack|car-accident|fire-danger|being-followed|high-risk-activity|feeling-unsafe|completely-lost)}',
+			templateUrl: 'templates/partials/danger.html',
+			controller: 'DangerController'
 		})
 		.state('app.info', {
 			url: '/info',
