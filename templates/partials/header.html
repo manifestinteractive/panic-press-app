@@ -1,21 +1,24 @@
-<div class="container" ng-class="{ hide: hideNav == true }">
+<div class="container" ng-if="!hideNav">
     <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".main-navbar" ng-class="{ hide: hideNav == true }">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".main-navbar" ng-if="!hideNav && !disableMenu">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a ui-sref="app.home" class="navbar-brand" ng-class="{ hide: hideNav == true }">
+        <a class="navbar-brand" ng-if="disableMenu">
+            <img src="assets/img/logo.png" alt="PanicPress">
+        </a>
+        <a ui-sref="app.home" class="navbar-brand" ng-if="!disableMenu">
             <img src="assets/img/logo.png" alt="PanicPress">
         </a>
     </div>
-    <nav class="collapse navbar-collapse main-navbar" role="navigation" ng-class="{ hide: hideNav == true }">
+    <nav class="collapse navbar-collapse main-navbar" role="navigation" ng-if="!hideNav && !disableMenu">
         <ul class="nav navbar-nav navbar-right">
             <li ui-sref-active="active">
                 <a ui-sref="app.home">Home</a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="app.info">My Details</a>
+                <a ui-sref="app.info({ section: 'details' })">My Details</a>
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="app.contacts">Contacts</a>

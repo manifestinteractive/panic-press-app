@@ -1,5 +1,5 @@
 <!-- header -->
-<header id="masthead" ng-class="{ transparent: hideNav == true }" class="navbar navbar-sticky swatch-red-white" role="banner" data-ng-include=" 'templates/partials/header.html?v=' + app.version "></header>
+<header id="masthead" ng-if="!hideNav && !disableMenu" class="navbar navbar-sticky swatch-red-white" role="banner" data-ng-include=" 'templates/partials/header.html?v=' + app.version "></header>
 <!-- / header -->
 
 <!-- main content -->

@@ -1,0 +1,65 @@
+<section class="animated fadeIn">
+    <section class="section swatch-red-white section-short m-t-xl">
+        <div class="container">
+            <div class="row text-center m-b-sm">
+                <div class="box-hex flat-shadow flat-hex animated flipInX">
+                    <div class="box-dummy"></div>
+                    <span class="box-inner">
+					    <span class="hex-label" ng-bind-html="danger_html"></span>
+					    <img alt="" ng-src="assets/img/danger/{{ danger }}.svg" class="">
+				    </span>
+                    <div class="hex-right"></div>
+                    <div class="hex-left"></div>
+                    <div class="hex-right"></div>
+                    <div class="hex-left"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section swatch-white-red has-top">
+
+        <div class="decor-top">
+            <svg class="decor" height="100%" preserveAspectRatio="none" version="1.1" viewBox="0 0 100 100" width="100%"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
+            </svg>
+        </div>
+
+        <!-- Create Security PIN -->
+        <div class="container min-height">
+            <header class="section-header text-center underline m-t-xl">
+                <h1 class="headline super hairline">Security PIN</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <form class="contact-form m-t-xl">
+                    <div class="form-group form-icon-group">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin1" ng-model="safetyPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin2" ng-model="safetyPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin3" ng-model="safetyPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin4" ng-model="safetyPin4" required="required" numbers-only="numbers-only">
+                    </div>
+                    <div class="form-group text-center m-t-xl">
+                        <a ui-sref="app.danger({ type: type, danger: danger, status: 'sent' })" class="btn btn-default btn-icon btn-icon-left previous">
+                            Back
+                            <span class="hex-alt">
+                                <i class="fa fa-arrow-left"></i>
+                            </span>
+                        </a>
+                        &nbsp;
+                        <a ui-sref="app.home" class="btn btn-success btn-icon btn-icon-right next">
+                            I'm Safe
+                            <span class="hex-alt">
+                                <i class="fa fa-check"></i>
+                            </span>
+                        </a>
+                    </div>
+                </form>
+                <p>
+                    Let's Verify it's You<br />
+                    <span class="small text-muted">and not someone who took your device</span>
+                </p>
+            </div>
+        </div>
+
+    </section>
+</section>

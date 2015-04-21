@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('ui.load', []).service('uiLoad', [
 	'$document', '$q', '$timeout', function($document, $q, $timeout)
 	{

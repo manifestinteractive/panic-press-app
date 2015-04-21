@@ -18,8 +18,8 @@
     <preference name="orientation" value="portrait" />
     <preference name="target-device" value="handset" />
     <preference name="prerendered-icon" value="true" />
-    <preference name="android-minSdkVersion" value="19" />
-    <preference name="android-targetSdkVersion" value="21" />
+    <preference name="android-minSdkVersion" value="21" />
+    <preference name="android-targetSdkVersion" value="22" />
     <preference name="android-installLocation" value="auto" />
     <preference name="splash-screen-duration" value="3000" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
@@ -30,6 +30,10 @@
     <preference name="StatusBarBackgroundColor" value="#e74c3c"/>
     <preference name="StatusBarStyle" value="lightcontent" />
     <preference name="Orientation" value="portrait" />
+
+    <gap:config-file platform="android" parent="/manifest">
+        <supports-screens android:xlargeScreens="false" android:largeScreens="false" android:smallScreens="false" />
+    </gap:config-file>
 
     <author email="hello@manifestinteractive.com" href="http://manifestinteractive.com">
         Manifest Interactive

@@ -15021,6 +15021,7 @@ input.pin
 .homeLogo
 {
 	z-index: 1500 !important;
+	margin-top: 33%;
 }
 .showOverflow
 {
@@ -15033,4 +15034,12 @@ input.pin
 .shrink-header
 {
 	margin-top: -50px !important;
+}
+.min-height
+{
+	min-height: 500px;
+}
+.previous, .next
+{
+	width: 125px;
 }
