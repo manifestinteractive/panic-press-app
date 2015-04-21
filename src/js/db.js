@@ -102,7 +102,7 @@ var sqlite = {
 		},
 		error: function(err, callback)
 		{
-			phonegap.util.debug('error', err);
+			console.error('SQLite Error: ', err);
 
 			if(typeof callback == 'function')
 			{

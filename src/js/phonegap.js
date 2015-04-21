@@ -54,54 +54,6 @@ phonegap.events = {
 			window.open = cordova.InAppBrowser.open;
 		}
 
-		if(cordova && cordova.plugins.backgroundMode)
-		{
-			cordova.plugins.backgroundMode.setDefaults({ text: 'Running Panic Press in Background'});
-			cordova.plugins.backgroundMode.enable();
-
-			// Called when background mode has been activated
-			cordova.plugins.backgroundMode.onactivate = function(){
-
-				cordova.plugins.backgroundMode.configure({
-					text: 'Enabling Background Mode'
-				});
-
-				phonegap.stats.event('App', 'Event', 'Enabling Background Mode');
-			};
-
-			// Called when background mode has been deactivated
-			cordova.plugins.backgroundMode.ondeactivate = function(){
-
-				cordova.plugins.backgroundMode.configure({
-					text: 'Disabling Background Mode'
-				});
-
-				phonegap.stats.event('App', 'Event', 'Disabling Background Mode');
-			};
-
-			// Called when background mode has been deactivated
-			cordova.plugins.backgroundMode.onfailure = function(errorCode){
-
-				cordova.plugins.backgroundMode.configure({
-					text: 'Problem with Background Mode'
-				});
-
-				console.error('Background Mode Error: ', errorCode);
-
-				phonegap.stats.event('App', 'Event', 'Disabling Background Mode');
-			};
-		}
-
-		setTimeout(function(){
-
-			if(typeof StatusBar !== 'undefined')
-			{
-				phonegap.util.debug('log', 'Hiding Status Bar');
-				StatusBar.hide();
-			}
-
-		}, 500);
-
 		setTimeout(function(){
 
 			if(typeof navigator.splashscreen !== 'undefined')
@@ -120,11 +72,13 @@ phonegap.events = {
 	},
 	pause: function()
 	{
+		$('.background-mode').show();
 		phonegap.reload = true;
 		phonegap.stats.event('App', 'Event', 'Application Paused');
 	},
 	resume: function()
 	{
+		$('.background-mode').hide();
 		phonegap.reload = true;
 		phonegap.stats.event('App', 'Event', 'Application Resumed');
 	},

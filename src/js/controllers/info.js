@@ -231,7 +231,11 @@ app.controller('InfoController', [
 
 				navigator.camera.getPicture(function(){
 
-
+					var s3URI = encodeURI("https://panic-press-us.s3.amazonaws.com/"),
+						policyBase64 = "MY_BASE64_ENCODED_POLICY_FILE",
+						signature = "MY_BASE64_ENCODED_SIGNATURE",
+						awsKey = 'my AWSAccessKeyId',
+						acl = "public-read";
 
 				}, function(){
 

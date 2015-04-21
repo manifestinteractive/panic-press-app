@@ -5,7 +5,13 @@ Bugsnag.releaseStage = "development";
 Bugsnag.appVersion = app_version;
 Bugsnag.beforeNotify = function(payload)
 {
-	if(payload.message && ( payload.message.indexOf('cordova') > -1 || payload.message.indexOf('\0') > -1 || payload.message.indexOf('ConnectSDK') > -1 || payload.message.indexOf('Unexpected token ILLEGAL') > -1 ) )
+	var ignored_errors = [
+		'cordova',
+		'StatusBar',
+		'SQL'
+	];
+
+	if(payload.message && new RegExp(ignored_errors.join("|")).test(payload.message) )
 	{
 		return false;
 	}
@@ -41,7 +47,7 @@ Bugsnag.beforeNotify = function(payload)
 									else
 									{
 										cordova.plugins.email.open({
-											to: [ 'support@manifestinteractive.com' ],
+											to: [ 'support@panicpress.zendesk.com' ],
 											subject: 'JavaScript Error in Panic Press',
 											body: "Greetings,<br \/><br \/>I would like to submit an Error I detected in Panic Press.<br \/><br \/>The following information was generated for your support staff:<br \/><br \/><pre>" + JSON.stringify(clone) + "</pre>",
 											isHtml: true
@@ -60,7 +66,7 @@ Bugsnag.beforeNotify = function(payload)
 							var subject = 'JavaScript Error in Panic Press';
 							var body = "Greetings,\n\nI would like to submit an Error I detected in Panic Press.\n\n The following information was generated for your support staff:\n\n";
 							body += JSON.stringify(clone);
-							window.open('mailto:support@blackdove.co?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), "_self");
+							window.open('mailto:support@panicpress.zendesk.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), "_self");
 						}
 					}
 					else
