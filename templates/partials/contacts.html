@@ -2,7 +2,7 @@
     <section class="section swatch-red-white section-short">
         <div class="container">
             <div class="row text-center m-b-sm">
-                <div class="box-hex box-big flat-shadow flat-hex animated flipInX">
+                <div class="box-hex flat-shadow flat-hex animated flipInX">
                     <div class="box-dummy"></div>
                     <span class="box-inner">
                         <img src="assets/img/contacts.jpg">
@@ -24,14 +24,14 @@
         </div>
         <div class="container">
             <header class="section-header text-center underline m-t-lg">
-                <h1 class="headline super hairline">Emergency Contacts</h1>
+                <h1 class="headline super hairline">My Emergency Contacts</h1>
             </header>
             <div class="m-b-xl">
                 <ul class="list-fancy-icons color-inverse">
 
                     <li ng-repeat="contact in contacts">
                         <div class="hex vcenter" ng-click="removeContact(contact.id)">
-                            <i class="fa fa-user-times" data-animation="shake"></i>
+                            <i class="fa fa-fw fa-times remove-contact"></i>
                         </div>
                         <p>
                             <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>{{ contact.full_name }}</strong>
@@ -43,15 +43,35 @@
                     </li>
                 </ul>
 
-                <div class="form-group text-center m-t-xl">
-                    <a ng-click="pickContact();" class="btn btn-primary btn-icon btn-icon-right btn-lg m-b-xs">
+                <div class="form-group text-center m-t-xl" ng-if="appMode == 'setup'">
+                    <a ng-click="pickContact();" class="btn btn-icon btn-icon-right btn-lg m-b-xs" ng-class="{ 'btn-default': remainingContacts <= 0, 'btn-primary': remainingContacts > 0 }" ng-disabled="remainingContacts <= 0">
                         Add Contact
                         <span class="hex-alt">
                             <i class="fa fa-plus"></i>
                         </span>
                     </a>
                     <p class="text-muted m-t-sm">
-                        {{ remainingContacts }} Contacts Remaining
+                        {{ remainingContacts }} {{ remainingMessage }}
+                    </p>
+                </div>
+
+                <div class="form-group text-center m-t-xl" ng-if="appMode == 'ready'">
+
+                    <a ui-sref="app.home" class="btn btn-icon btn-icon-left btn-default m-b-xs previous">
+                        Home
+                        <span class="hex-alt">
+                            <i class="fa fa-home"></i>
+                        </span>
+                    </a>
+                    &nbsp;
+                    <a ng-click="pickContact();" class="btn btn-icon btn-icon-right m-b-xs next" ng-class="{ 'btn-default': remainingContacts <= 0, 'btn-primary': remainingContacts > 0 }" ng-disabled="remainingContacts <= 0">
+                        Add
+                        <span class="hex-alt">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                    </a>
+                    <p class="text-muted m-t-sm">
+                        {{ remainingContacts }} {{ remainingMessage }}
                     </p>
                 </div>
             </div>

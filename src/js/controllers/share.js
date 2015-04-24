@@ -6,5 +6,7 @@ app.controller('ShareController', [
 			$state.go('app.welcome');
 			return false;
 		}
+
+		$scope.rateApp(true);
 	}
 ]);

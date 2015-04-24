@@ -7,7 +7,6 @@ angular.module('app').run([
 		var disable_menu_pages = ['app.pin'];
 		var hide_decor_pages = ['app.home', 'app.other'];
 
-
 		$rootScope.$state = $state;
 		$rootScope.$stateParams = $stateParams;
 		$rootScope.isMobile = false;
@@ -67,9 +66,8 @@ angular.module('app').run([
 	'$stateProvider', '$urlRouterProvider',
 	function($stateProvider, $urlRouterProvider)
 	{
-		$urlRouterProvider.otherwise('/app/welcome');
+		$urlRouterProvider.otherwise('/app/home');
 		
-		// User Signin & Registration
 		$stateProvider
 		.state('app', {
 			abstract: true,

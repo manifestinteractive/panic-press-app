@@ -17,6 +17,17 @@ blockquote p, .section-header p
 	font-weight: 300;
 }
 
+.full-screen
+{
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
 .no-overflow
 {
 	overflow: hidden !important;
@@ -14975,6 +14986,13 @@ footer .decor-top
 	background-color: #FFF;
 }
 
+.remove-contact
+{
+	font-size: 22px;
+	font-weight: 300;
+	margin-top: -4px;
+}
+
 input.pin
 {
 	width: 60px;
@@ -15000,6 +15018,14 @@ input.pin
 	&.bad
 	{
 		background-color: #FFE6E6;
+	}
+
+	&.error
+	{
+		border-top: 1px solid transparent;
+		border-right: 1px solid transparent;
+		border-bottom: 1px solid $panic-red;
+		border-left: 1px solid transparent;
 	}
 }
 .text-red

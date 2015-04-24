@@ -7,11 +7,8 @@ app.controller('ContactsController', [
 			return false;
 		}
 
-		$scope.maxContacts = 5;
-		$scope.remainingContacts = 5;
-		$scope.contacts = null;
 		$scope.selectedContact = null;
-
+		$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
 		$scope.modal = {
 			email: null,
 			phone: null
@@ -27,10 +24,15 @@ app.controller('ContactsController', [
 					contacts = [contacts];
 				}
 
+				$localStorage.contacts = contacts;
+
 				$scope.$apply(function(){
 					$scope.selectedContact = null;
 					$scope.contacts = contacts;
 					$scope.remainingContacts = ( $scope.maxContacts - contacts.length );
+					$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
+
+					$scope.updateMode();
 				});
 			});
 		};
@@ -101,8 +103,8 @@ app.controller('ContactsController', [
 						);
 					}
 				},
-				"Remove Emergency Contact ?",
-				['Cancel', 'Remove Emergency Contact']
+				"Emergency Contact",
+				['Cancel', 'Remove']
 			);
 		};
 	}

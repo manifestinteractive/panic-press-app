@@ -102,8 +102,6 @@ var sqlite = {
 		},
 		error: function(err, callback)
 		{
-			console.error('SQLite Error: ', err);
-
 			if(typeof callback == 'function')
 			{
 				callback({ error: err.message });

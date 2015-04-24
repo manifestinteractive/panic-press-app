@@ -13,8 +13,6 @@ angular.module('app').controller('AppCtrl', [
 		$scope.app = {
 			name: 'Panic Press',
 			version: '0.5.0',
-			color: {},
-			settings: {},
 			date: {
 				today: date.toISOString(),
 				time: date.getTime(),
@@ -23,20 +21,6 @@ angular.module('app').controller('AppCtrl', [
 				day: date.getDate()
 			}
 		};
-
-		$scope.$watch('app.settings', function(){
-			$localStorage.settings = $scope.app.settings;
-		}, true);
-
-		// save settings to local storage
-		if(angular.isDefined($localStorage.settings))
-		{
-			$scope.app.settings = $localStorage.settings;
-		}
-		else
-		{
-			$localStorage.settings = $scope.app.settings;
-		}
 
 		function isSmartDevice($window)
 		{

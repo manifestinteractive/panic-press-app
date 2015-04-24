@@ -49,7 +49,7 @@ phonegap.events = {
 			sqlite.init();
 		}
 
-		if(cordova && cordova.InAppBrowser)
+		if(typeof cordova !== 'undefined' && cordova.InAppBrowser)
 		{
 			window.open = cordova.InAppBrowser.open;
 		}
@@ -72,23 +72,35 @@ phonegap.events = {
 	},
 	pause: function()
 	{
-		$('.background-mode').show();
+		if(navigator.splashscreen)
+		{
+			navigator.splashscreen.show();
+		}
+
 		phonegap.reload = true;
 		phonegap.stats.event('App', 'Event', 'Application Paused');
 	},
 	resume: function()
 	{
-		$('.background-mode').hide();
+		if(navigator.splashscreen)
+		{
+			navigator.splashscreen.hide();
+		}
+
 		phonegap.reload = true;
 		phonegap.stats.event('App', 'Event', 'Application Resumed');
 	},
 	networkOnline: function()
 	{
+		$('.no-internet').hide();
+
 		phonegap.online = true;
 		phonegap.stats.event('App', 'Event', 'Device Online');
 	},
 	networkOffline: function()
 	{
+		$('.no-internet').show();
+
 		phonegap.online = false;
 		phonegap.stats.event('App', 'Event', 'Device Offline');
 	}

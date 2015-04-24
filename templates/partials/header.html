@@ -1,18 +1,18 @@
 <div class="container" ng-if="!hideNav">
     <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".main-navbar" ng-if="!hideNav && !disableMenu">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".main-navbar" ng-if="!hideNav && !disableMenu && appMode !== 'setup'">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" ng-if="disableMenu">
+        <a class="navbar-brand" ng-if="disableMenu || appMode == 'setup'">
             <img src="assets/img/logo.png" alt="PanicPress">
         </a>
-        <a ui-sref="app.home" class="navbar-brand" ng-if="!disableMenu">
+        <a ui-sref="app.home" class="navbar-brand" ng-if="!disableMenu && appMode !== 'setup'">
             <img src="assets/img/logo.png" alt="PanicPress">
         </a>
     </div>
-    <nav class="collapse navbar-collapse main-navbar" role="navigation" ng-if="!hideNav && !disableMenu">
+    <nav class="collapse navbar-collapse main-navbar" role="navigation" ng-if="!hideNav && !disableMenu && appMode !== 'setup'">
         <ul class="nav navbar-nav navbar-right">
             <li ui-sref-active="active">
                 <a ui-sref="app.home">Home</a>
@@ -21,10 +21,10 @@
                 <a ui-sref="app.info({ section: 'details' })">My Details</a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="app.contacts">Contacts</a>
+                <a ui-sref="app.contacts">My Emergency Contacts</a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="app.history">History</a>
+                <a ui-sref="app.history">My History</a>
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="app.support">App Support</a>

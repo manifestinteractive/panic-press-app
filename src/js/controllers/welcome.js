@@ -1,11 +1,18 @@
 app.controller('WelcomeController', [
 	'$scope', '$localStorage', '$state', '$timeout', function($scope, $localStorage, $state, $timeout)
 	{
-		if(angular.isDefined($localStorage.user))
-		{
-			$state.go('app.home');
-			return false;
-		}
+		$scope.updateMode(function(){
+			if($scope.appMode == 'ready')
+			{
+				$state.go('app.home');
+				return false;
+			}
+			else if($scope.appMode == 'setup' && angular.isDefined($localStorage.user) && !angular.isDefined($localStorage.contacts))
+			{
+				$state.go('app.contacts');
+				return false;
+			}
+		});
 
 		$scope.animate = function(){
 			$('.start-button').addClass('animated fadeOutRightBig');

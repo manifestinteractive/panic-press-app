@@ -1,0 +1,51 @@
+{
+  "security": {
+    "encryption_key": ""
+  },
+  "app": {
+    "support": {
+      "website": "https://panicpress.zendesk.com",
+      "email": "support@panicpress.zendesk.com",
+      "info": "http://panicpress.press",
+      "terms_of_use": "http://panicpress.press/terms-of-use",
+      "privacy_policy": "http://panicpress.press/privacy-policy"
+    },
+    "dev": {
+      "api": {
+        "key": "",
+        "url": ""
+      },
+      "sendgrid": {
+        "api_user": "",
+        "api_key": "",
+        "from_name": "",
+        "from_address": ""
+      },
+      "aws": {
+        "access_key": "",
+        "secret_key": "",
+        "bucket": ""
+      }
+    },
+    "prod": {
+      "api": {
+        "key": "",
+        "url": ""
+      },
+      "sendgrid": {
+        "api_user": "",
+        "api_key": "",
+        "from_name": "",
+        "from_address": ""
+      },
+      "aws": {
+        "access_key": "",
+        "secret_key": "",
+        "bucket": ""
+      }
+    }
+  },
+  "google": {
+    "analytics": "UA-XXXXXXXX-X"
+  }
+}

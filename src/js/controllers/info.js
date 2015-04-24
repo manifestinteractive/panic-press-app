@@ -1,6 +1,13 @@
 app.controller('InfoController', [
 	'$scope', '$localStorage', '$state', '$stateParams', function($scope, $localStorage, $state, $stateParams)
 	{
+		/**
+		 * @todo: Make sure real & fake pin are not the same
+		 * @todo: Try to make backspace work for pins
+		 * @todo: Remove menu if the user has not completed setup
+		 * @todo: Trim user Info
+		 */
+
 		$scope.section = $stateParams.section;
 
 		$scope.securityPin = $localStorage.securityPin || null;
@@ -30,7 +37,6 @@ app.controller('InfoController', [
 			fakeVerifyPin4: null
 		};
 
-
 		$scope.user = {
 			email_address: null,
 			fake_security_pin: null,
@@ -39,7 +45,6 @@ app.controller('InfoController', [
 			profile_picture_url: null,
 			security_pin: null
 		};
-
 
 		$scope.$watch('pin.securityPin1', function(value){ if(value){ $('#securityPin2').focus(); } });
 		$scope.$watch('pin.securityPin2', function(value){ if(value){ $('#securityPin3').focus(); } });
@@ -250,11 +255,31 @@ app.controller('InfoController', [
 
 		$scope.addPin = function()
 		{
+			$localStorage.pin = $scope.pin;
 			$localStorage.securityPin = $scope.pin.securityPin1 + '' + $scope.pin.securityPin2 + '' + $scope.pin.securityPin3 + '' + $scope.pin.securityPin4;
+
+			$('input.pin').removeClass('error');
 
 			if($localStorage.securityPin.length == 4)
 			{
 				$state.go('app.info', { section: 'verify-pin' });
+			}
+
+			if($scope.pin.securityPin1 == null)
+			{
+				$('#securityPin1').addClass('error');
+			}
+			if($scope.pin.securityPin2 == null)
+			{
+				$('#securityPin2').addClass('error');
+			}
+			if($scope.pin.securityPin3 == null)
+			{
+				$('#securityPin3').addClass('error');
+			}
+			if($scope.pin.securityPin4 == null)
+			{
+				$('#securityPin4').addClass('error');
 			}
 		};
 
@@ -262,7 +287,7 @@ app.controller('InfoController', [
 		{
 			$scope.securityVerifyPin = $scope.pin.securityVerifyPin1 + '' + $scope.pin.securityVerifyPin2 + '' + $scope.pin.securityVerifyPin3 + '' + $scope.pin.securityVerifyPin4;
 
-			console.log($scope.securityPin, $scope.securityVerifyPin);
+			$('input.pin').removeClass('error');
 
 			if($localStorage.securityPin == $scope.securityVerifyPin)
 			{
@@ -277,27 +302,67 @@ app.controller('InfoController', [
 					{
 						$localStorage.user.security_pin = $localStorage.securityPin;
 
+						delete $localStorage.pin;
 						delete $localStorage.securityPin;
 
 						$state.go('app.info', { section: 'enter-fake-pin' });
 					}
 				);
 			}
+
+			if($localStorage.pin.securityPin1 != $scope.pin.securityVerifyPin1)
+			{
+				$('#securityVerifyPin1').addClass('error');
+			}
+			if($localStorage.pin.securityPin2 != $scope.pin.securityVerifyPin2)
+			{
+				$('#securityVerifyPin2').addClass('error');
+			}
+			if($localStorage.pin.securityPin3 != $scope.pin.securityVerifyPin3)
+			{
+				$('#securityVerifyPin3').addClass('error');
+			}
+			if($localStorage.pin.securityPin4 != $scope.pin.securityVerifyPin4)
+			{
+				$('#securityVerifyPin4').addClass('error');
+			}
 		};
 
 		$scope.addFakePin = function()
 		{
+			$localStorage.pin = $scope.pin;
 			$localStorage.fakePin = $scope.pin.fakePin1 + '' + $scope.pin.fakePin2 + '' + $scope.pin.fakePin3 + '' + $scope.pin.fakePin4;
+
+			$('input.pin').removeClass('error');
 
 			if($localStorage.fakePin.length == 4)
 			{
 				$state.go('app.info', { section: 'verify-fake-pin' });
+			}
+
+			if($scope.pin.fakePin1 == null)
+			{
+				$('#fakePin1').addClass('error');
+			}
+			if($scope.pin.fakePin2 == null)
+			{
+				$('#fakePin2').addClass('error');
+			}
+			if($scope.pin.fakePin3 == null)
+			{
+				$('#fakePin3').addClass('error');
+			}
+			if($scope.pin.fakePin4 == null)
+			{
+				$('#fakePin4').addClass('error');
 			}
 		};
 
 		$scope.verifyFakePin = function()
 		{
 			$scope.fakeVerifyPin = $scope.pin.fakeVerifyPin1 + '' + $scope.pin.fakeVerifyPin2 + '' + $scope.pin.fakeVerifyPin3 + '' + $scope.pin.fakeVerifyPin4;
+
+			$('input.pin').removeClass('error');
 
 			if($localStorage.fakePin === $scope.fakeVerifyPin)
 			{
@@ -317,6 +382,23 @@ app.controller('InfoController', [
 						$state.go('app.info', { section: 'complete' });
 					}
 				);
+			}
+
+			if($localStorage.pin.fakePin1 != $scope.pin.fakeVerifyPin1)
+			{
+				$('#fakeVerifyPin1').addClass('error');
+			}
+			if($localStorage.pin.fakePin2 != $scope.pin.fakeVerifyPin2)
+			{
+				$('#fakeVerifyPin2').addClass('error');
+			}
+			if($localStorage.pin.fakePin3 != $scope.pin.fakeVerifyPin3)
+			{
+				$('#fakeVerifyPin3').addClass('error');
+			}
+			if($localStorage.pin.fakePin4 != $scope.pin.fakeVerifyPin4)
+			{
+				$('#fakeVerifyPin4').addClass('error');
 			}
 		};
 	}

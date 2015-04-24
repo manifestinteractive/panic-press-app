@@ -36,7 +36,7 @@ echo " "
 echo "Copy Config File:"
 echo " "
 
-cp www/src/js/settings.js.dist www/src/js/settings.js
+cp www/settings.json.dist www/settings.json
 
 echo " "
 echo "Adding Platforms:"
@@ -57,10 +57,10 @@ cordova plugin add org.apache.cordova.device-motion
 cordova plugin add org.apache.cordova.dialogs
 cordova plugin add org.apache.cordova.file
 cordova plugin add org.apache.cordova.file-transfer
-cordova plugin add org.apache.cordova.inappbrowser
 cordova plugin add org.apache.cordova.media-capture
 cordova plugin add org.apache.cordova.network-information
 cordova plugin add org.apache.cordova.splashscreen
+cordova plugin add cordova-plugin-inappbrowser
 
 echo " "
 echo "Installing Required Third-Party Plugins:"

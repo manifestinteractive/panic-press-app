@@ -1,6 +1,13 @@
 app.controller('PinController', [
 	'$scope', '$localStorage', '$state', '$stateParams', '$timeout', function($scope, $localStorage, $state, $stateParams, $timeout)
 	{
+		/**
+		 * @todo: Auto advance PIN input
+		 * @todo: Check for Security PIN Accuracy
+		 * @todo: Check if user entered Fake PIN
+		 * @todo: Build out logic to handle either real or fake PIN
+		 */
+
 		if( !angular.isDefined($localStorage.user))
 		{
 			$state.go('app.welcome');
@@ -41,5 +48,10 @@ app.controller('PinController', [
 		$scope.type_text = types[$stateParams.type];
 		$scope.danger_text = dangers_text[$stateParams.danger];
 		$scope.danger_html = dangers_html[$stateParams.danger];
+
+		$scope.$watch('pin.securityPin1', function(value){ if(value){ $('#securityPin2').focus(); } });
+		$scope.$watch('pin.securityPin2', function(value){ if(value){ $('#securityPin3').focus(); } });
+		$scope.$watch('pin.securityPin3', function(value){ if(value){ $('#securityPin4').focus(); } });
+		$scope.$watch('pin.securityPin4', function(value){ if(value){ } });
 	}
 ]);
