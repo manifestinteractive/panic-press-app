@@ -181,9 +181,10 @@ app.controller('DangerController', [
 					{
 						var email = {
 							to: user.email_address,
-							toName: user.full_name,
+							toname: user.full_name,
 							from: "noreply@panic.press",
-							fromName: 'Panic Press',
+							replyto: "noreply@panic.press",
+							fromname: 'Panic Press',
 							subject: message_subject,
 							html: message_html,
 							text: message_text
