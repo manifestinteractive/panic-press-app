@@ -80,8 +80,6 @@ app.controller('AppController', [
 			}
 		};
 
-		$scope.rateApp(false);
-
 		$scope.openBrowser = function(url, target, loadstart, loadstop, loaderror, exit)
 		{
 			if( !target)

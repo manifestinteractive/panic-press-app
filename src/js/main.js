@@ -6,7 +6,7 @@ angular.module('app').controller('AppCtrl', [
 		var isIE = !!navigator.userAgent.match(/MSIE/i);
 		isIE && angular.element($window.document.body).addClass('ie');
 		isSmartDevice($window) && angular.element($window.document.body).addClass('smart');
-		
+
 		var date = new Date();
 
 		// config
@@ -18,7 +18,8 @@ angular.module('app').controller('AppCtrl', [
 				time: date.getTime(),
 				year: date.getFullYear(),
 				month: date.getMonth(),
-				day: date.getDate()
+				day: date.getDate(),
+				zone: date.toString().match(/\(([A-Za-z\s].*)\)/)[1]
 			}
 		};
 

@@ -214,13 +214,15 @@ app.controller('InfoController', [
 							phone_number: $scope.user.phone_number
 						};
 
-						$state.go('app.info', { section: 'picture' });
+						// $state.go('app.info', { section: 'picture' });
+						$state.go('app.info', { section: 'enter-pin' });
 					}
 				);
 			}
 		};
 
 		$scope.takePicture = function(){
+
 			if(typeof navigator.camera !== 'undefined')
 			{
 				var camera_options = {
@@ -245,6 +247,15 @@ app.controller('InfoController', [
 				}, function(){
 
 				}, camera_options);
+			}
+			else
+			{
+				phonegap.notification.alert(
+					'This feature is not available on your device.',
+					function(){},
+					'Feature Unavailable',
+					'OK'
+				);
 			}
 		};
 

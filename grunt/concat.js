@@ -26,7 +26,8 @@ module.exports = {
 			],
 			'assets/js/libs.js': [
 				"src/js/libs/app.plugin.js",
-				"src/js/libs/app.js"
+				"src/js/libs/app.js",
+				"src/js/libs/security.js"
 			],
 			'assets/js/controllers.js': [
 				"src/js/controllers/*.js"

@@ -48,17 +48,15 @@
 
             <div class="m-b-xl">
                 <div class="m-t-lg">
-                    <p class="contact-1">
-                        <i class="fa fa-fw fa-spin fa-circle-o-notch text-light"></i>
-                        <span class="label label-warning m-r-xs m-l-xs" style="width: 55px; display: inline-block;">sending</span> John Doe
-                    </p>
-                    <p class="contact-2">
-                        <i class="fa fa-fw fa-spin fa-circle-o-notch text-light"></i>
-                        <span class="label label-warning m-r-xs m-l-xs" style="width: 55px; display: inline-block;">sending</span> Jane Doe
-                    </p>
-                    <p class="contact-3">
-                        <i class="fa fa-fw fa-spin fa-circle-o-notch text-light"></i>
-                        <span class="label label-warning m-r-xs m-l-xs" style="width: 55px; display: inline-block;">sending</span> Jack Doe
+
+                    <div class="alert alert-info" role="alert" ng-if="showLoading">
+                        <i class="fa fa-fw fa-spin fa-circle-o-notch text-light message-status"></i>
+                        Fetching Your Location
+                    </div>
+
+                    <p ng-repeat="contact in contacts" class="contact-{{contact.id}}" >
+                        <i class="fa fa-fw fa-spin fa-circle-o-notch text-light message-status"></i>
+                        <span class="label label-warning m-r-xs m-l-xs message-status" style="width: 55px; display: inline-block;">sending</span> {{contact.full_name}}
                     </p>
                 </div>
             </div>

@@ -13,5 +13,7 @@ app.controller('HomeController', [
 				return false;
 			}
 		});
+
+		$scope.rateApp(false);
 	}
 ]);

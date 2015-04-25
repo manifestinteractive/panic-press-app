@@ -30,26 +30,10 @@ function load_jquery()
 		scroll_to_top();
 	});
 
-	scroll_to_top();
-
-	// Parallax Scrolling - on desktops only - Full height sections fix for ios
-	// ======================
-	if(!(/Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i).test(navigator.userAgent || navigator.vendor || window.opera)){
-		initScrollr = true;
-	} else {
-		// Assign the 'oxy-agent' class when not assigned by PHP - for the html Version
-		// ======================
-		$('body:not([class*="oxy-agent-"])').addClass('oxy-agent-');
-		if((/iPhone/i).test(navigator.userAgent || navigator.vendor || window.opera)){
-			$('body').not('.oxy-agent-iphone').addClass('oxy-agent-iphone');
-		}
-		if((/iPad/i).test(navigator.userAgent || navigator.vendor || window.opera)){
-			$('body').not('.oxy-agent-ipad').addClass('oxy-agent-ipad');
-		}
-	}
-
 	// Function to init bootstrap's tooltip
 	$('[data-toggle="tooltip"]').tooltip();
+
+	scroll_to_top();
 
 	// Icon Animations
 	// ======================
@@ -67,9 +51,6 @@ function load_jquery()
 		});
 
 	});
-
-	// Adjust full height sections on IOS
-	$('[class*="oxy-agent-"] .section-fullheight').removeClass('section-fullheight').css('min-height', $(window).height()).find('.container, .container-fullwidth').css('min-height', $(window).height()).find('.row, [class*="col-md"]').css('position', 'static');
 
 	// fix placeholders for IE 8 & 9
 	$('html.ie8, html.ie9').find('input, textarea').placeholder();

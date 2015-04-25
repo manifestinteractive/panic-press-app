@@ -210,7 +210,7 @@ function hexToString (h)
 
 function encrypt(key, message)
 {
-	return stringToHex(des(key, message, 1));
+	return stringToHex(des(key, message, 1)).substring(2);
 }
 
 function decrypt(key, message)

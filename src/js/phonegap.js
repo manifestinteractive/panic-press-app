@@ -1,5 +1,10 @@
 var phonegap = {
 	initialized: false,
+	connection: 'Unknown Connection',
+	battery: {
+		level: null,
+		isPlugged: false,
+	},
 	online: true,
 	reload: false,
 	bindEvents: function()
@@ -39,14 +44,37 @@ phonegap.events = {
 	{
 		phonegap.receivedEvent('deviceready');
 
+		// Get Batter Status
+		window.addEventListener('batterystatus', phonegap.events.batteryStatus, false);
+		window.addEventListener('batterycritical', phonegap.events.batteryStatus, false);
+		window.addEventListener('batterylow', phonegap.events.batteryStatus, false);
+
 		setTimeout(init_jquery, 100);
 
 		phonegap.stats.event('App', 'Event', 'Device Ready');
 
 		// Initialize Database
-		if(sqlite)
+		if(typeof sqlite !== 'undefined')
 		{
 			sqlite.init();
+		}
+
+		// Get Network Info
+		if(typeof navigator.connection !== 'undefined')
+		{
+			var networkState = navigator.connection.type;
+
+			var states = {};
+				states[Connection.UNKNOWN]  = 'Unknown Connection';
+				states[Connection.ETHERNET] = 'Ethernet Connection';
+				states[Connection.WIFI]     = 'WiFi Connection';
+				states[Connection.CELL_2G]  = 'Cell 2G Connection';
+				states[Connection.CELL_3G]  = 'Cell 3G Connection';
+				states[Connection.CELL_4G]  = 'Cell 4G Connection';
+				states[Connection.CELL]     = 'Cell Connection';
+				states[Connection.NONE]     = 'No Network connection';
+
+			phonegap.connection = states[networkState];
 		}
 
 		if(typeof cordova !== 'undefined' && cordova.InAppBrowser)
@@ -69,6 +97,11 @@ phonegap.events = {
 			phonegap.initialized = true;
 
 		}, 1000);
+	},
+	batteryStatus: function(info)
+	{
+		phonegap.battery = info;
+		phonegap.stats.event('App', 'Event', 'Battery Status ' + info.level);
 	},
 	pause: function()
 	{
