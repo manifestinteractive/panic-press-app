@@ -1,13 +1,12 @@
-<section class="animated fadeIn">
+<section ng-init="updateContacts();">
     <section class="section swatch-red-white section-short">
         <div class="container">
             <div class="row text-center m-b-sm">
-                <div class="box-hex box-big flat-shadow flat-hex animated flipInX">
+                <div class="box-hex flat-shadow flat-hex animated flipInX">
                     <div class="box-dummy"></div>
                     <span class="box-inner">
                         <img src="assets/img/contacts.jpg">
                     </span>
-
                     <div class="hex-right"></div>
                     <div class="hex-left"></div>
                     <div class="hex-right"></div>
@@ -23,56 +22,146 @@
                 <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
             </svg>
         </div>
-        <div class="container">
+        <div class="container m-b-xl">
             <header class="section-header text-center underline m-t-lg">
-                <h1 class="headline super hairline">Emergency Contacts</h1>
+                <h1 class="headline super hairline">My Emergency Contacts</h1>
             </header>
             <div class="m-b-xl">
                 <ul class="list-fancy-icons color-inverse">
-                    <li ng-show="showJane">
-                        <div class="hex vcenter" ng-click="removeContact('jane')"><i class="fa fa-user-times" data-animation="shake"></i></div>
+
+                    <li ng-repeat="contact in contacts">
+                        <div class="hex vcenter" ng-click="removeContact(contact.id)">
+                            <i class="fa fa-fw fa-times remove-contact"></i>
+                        </div>
                         <p>
-                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>Jane Doe</strong>
+                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>{{ contact.full_name }}</strong>
                             <br />
-                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> jane.doe@email.com
+                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> {{ contact.email_address }}
                             <br />
-                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> 555-123-4567
-                        </p>
-                    </li>
-                    <li ng-show="showJohn">
-                        <div class="hex vcenter" ng-click="removeContact('john')"><i class="fa fa-user-times" data-animation="shake"></i></div>
-                        <p>
-                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>John Doe</strong>
-                            <br />
-                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> john.doe@email.com
-                            <br />
-                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> 555-123-4567
-                        </p>
-                    </li>
-                    <li ng-show="showJack">
-                        <div class="hex vcenter" ng-click="removeContact('jack')"><i class="fa fa-user-times" data-animation="shake"></i></div>
-                        <p>
-                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>Jack Doe</strong>
-                            <br />
-                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> jack.doe@email.com
-                            <br />
-                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> 555-123-4567
+                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> {{ contact.phone_number }}
                         </p>
                     </li>
                 </ul>
 
-                <div class="form-group text-center m-t-xl">
-                    <a class="btn btn-primary btn-icon btn-icon-right btn-lg m-b-xs">
+                <div class="form-group text-center m-t-xl" ng-if="appMode == 'setup'">
+                    <a ng-click="pickContact();" class="btn btn-icon btn-icon-right btn-lg m-b-xs" ng-class="{ 'btn-default': remainingContacts <= 0, 'btn-primary': remainingContacts > 0 }" ng-disabled="remainingContacts <= 0">
                         Add Contact
                         <span class="hex-alt">
                             <i class="fa fa-plus"></i>
                         </span>
                     </a>
                     <p class="text-muted m-t-sm">
-                        {{remainingContacts}} Contacts Remaining
+                        {{ remainingContacts }} {{ remainingMessage }}
+                    </p>
+                </div>
+
+                <div class="form-group text-center m-t-xl" ng-if="appMode == 'ready'">
+
+                    <a ui-sref="app.home" class="btn btn-icon btn-icon-left btn-default m-b-xs previous">
+                        Home
+                        <span class="hex-alt">
+                            <i class="fa fa-home"></i>
+                        </span>
+                    </a>
+                    &nbsp;
+                    <a ng-click="pickContact();" class="btn btn-icon btn-icon-right m-b-xs next" ng-class="{ 'btn-default': remainingContacts <= 0, 'btn-primary': remainingContacts > 0 }" ng-disabled="remainingContacts <= 0">
+                        Add
+                        <span class="hex-alt">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                    </a>
+                    <p class="text-muted m-t-sm">
+                        {{ remainingContacts }} {{ remainingMessage }}
                     </p>
                 </div>
             </div>
         </div>
     </section>
 </section>
+
+<!-- Contact Details Modal -->
+<div class="modal fade contact-details" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Add Contact: <span>{{ selectedContact.name.formatted }}</span></h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="alert alert-danger details-alert" ng-if="contactAlert">
+                    <button class="close" data-dismiss="alert" type="button">×</button>
+                    <strong><i class="fa fa-fw fa-exclamation-triangle text-red"></i></strong>&nbsp;
+                    <span>{{contactAlert}}</span>
+                </div>
+
+                <h4>Send Email to:</h4>
+
+                <div class="radio radio-danger" ng-repeat="(key, email) in selectedContact.emails">
+                    <input type="radio" ng-model="modal.email" name="email" id="email_{{key}}" value="{{ email.value }}">
+                    <label for="email_{{key}}">
+                        {{ email.value }}
+                    </label>
+                </div>
+
+                <h4 class="m-t-md">Send Text Message to:</h4>
+
+                <div class="radio radio-danger" ng-repeat="(key, phone) in selectedContact.phoneNumbers">
+                    <input type="radio" ng-model="modal.phone" name="phone" id="phone_{{key}}" value="{{ phone.value }}">
+                    <label for="phone_{{key}}">
+                        {{ phone.value }}
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="addContact();">Add Contact</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Details Modal -->
+<div class="modal fade add-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="addContact">Add Emergency Contact</span></h4>
+            </div>
+
+            <div class="modal-body swatch-white-red">
+
+                <div class="alert alert-danger details-alert" ng-if="detailsAlert">
+                    <button class="close" data-dismiss="alert" type="button">×</button>
+                    <strong><i class="fa fa-fw fa-exclamation-triangle text-red"></i></strong>&nbsp;
+                    <span>{{detailsAlert}}</span>
+                </div>
+
+                <form class="contact-form" id="contactForm" novalidate="">
+                    <div class="form-group form-icon-group">
+                        <input class="form-control" person-name ng-model="manual.full_name" id="name" placeholder="Full Name *" type="text" required>
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="form-group form-icon-group">
+                        <input class="form-control" email-address ng-model="manual.email_address" id="email" placeholder="Email Address *" type="email" required>
+                        <i class="fa fa-envelope"></i>
+                    </div>
+                    <div class="form-group form-icon-group">
+                        <input class="form-control" phone-number ng-model="manual.phone_number" id="phone" placeholder="Phone Number *" type="tel" pattern="[0-9]+" required>
+                        <i class="fa fa-phone"></i>
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="addManualContact();">Add Contact</button>
+            </div>
+        </div>
+    </div>
+</div>

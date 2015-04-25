@@ -1,8 +1,8 @@
-<section class="animated fadeIn">
+<section>
     <section class="section swatch-red-white section-short">
         <div class="container">
             <div class="row text-center m-b-sm">
-                <div class="box-hex box-big flat-shadow flat-hex animated flipInX">
+                <div class="box-hex flat-shadow flat-hex animated flipInX">
                     <div class="box-dummy"></div>
                     <span class="box-inner">
 					    <img src="assets/img/support.jpg">
@@ -23,46 +23,25 @@
                 <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
             </svg>
         </div>
-        <div class="container">
+        <div class="container m-b-xl"">
             <header class="section-header text-center underline m-t-lg">
                 <h1 class="headline super hairline">App Support</h1>
             </header>
             <div class="text-center m-b-xl">
                 <p>
-                    Need help with Panic Press?&nbsp;
-                    Feel free to contact us via email or twitter.
+                    Need help with Panic Press?
                 </p>
                 <p>
-                    <a href="mailto:hello@panic.press" class="btn btn-primary btn-icon btn-icon-left" style="width: 110px">
-                        Email
+                    <a ng-click="openBrowser('https://panicpress.zendesk.com');" class="btn btn-primary btn-icon btn-icon-left previous">
+                        Support
                         <span class="hex-alt">
-                            <i class="fa fa-envelope"></i>
+                            <i class="fa fa-external-link-square"></i>
                         </span>
                     </a>&nbsp;
-                    <a href="https://twitter.com/panicpressapp" target="_system" style="width: 110px" class="btn btn-primary btn-icon btn-icon-right">
+                    <a ng-click="openBrowser('https://twitter.com/panicpressapp');" class="btn btn-primary btn-icon btn-icon-right next in-app-browser">
                         Twitter
                         <span class="hex-alt">
                             <i class="fa fa-twitter"></i>
-                        </span>
-                    </a>
-                </p>
-            </div>
-            <div class="text-center m-b-xl">
-                <p>
-                    Do you think others might find Panic Press helpful?&nbsp;
-                    If so, we'd love it if you could help spread the word.
-                </p>
-                <p>
-                    <a ui-sref="app.share" style="width: 110px" class="btn btn-default btn-icon btn-icon-left">
-                        Share
-                        <span class="hex-alt">
-                            <i class="fa fa-share-alt"></i>
-                        </span>
-                    </a>&nbsp;
-                    <a href="https://itunes.apple.com/us/app/sprintsee/id937159809?ls=1&mt=8" target="_system" style="width: 110px" class="btn btn-default btn-icon btn-icon-right">
-                        Rate
-                        <span class="hex-alt">
-                            <i class="fa fa-star"></i>
                         </span>
                     </a>
                 </p>

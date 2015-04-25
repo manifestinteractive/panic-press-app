@@ -1,9 +1,9 @@
 <!-- header -->
-<header id="masthead" ng-class="{ transparent: isHomePage == true }" class="navbar navbar-sticky swatch-red-white" role="banner" data-ng-include=" 'templates/partials/header.html?v=' + app.version "></header>
+<header id="masthead" ng-if="!hideNav && !disableMenu" class="navbar navbar-sticky swatch-red-white" role="banner" data-ng-include=" 'templates/partials/header.html?v=' + app.version "></header>
 <!-- / header -->
 
 <!-- main content -->
-<div id="content" role="main" scroll-position="scrollPosition" ng-class="{ showOverflow: isHomePage == true }">
+<div id="content" role="main" scroll-position="scrollPosition" ng-class="{ showOverflow: hideNav == true }">
 
 	<div ui-view></div>
 
@@ -17,3 +17,27 @@
 	<i class="fa fa-angle-up"></i>
 </a>
 <!-- / go to top -->
+
+
+<section class="background-mode no-internet">
+	<section class="section swatch-red-white">
+		<div class="container m-b-xl text-center">
+			<img src="assets/img/svg/icon.svg" class="homeLogo">
+			<header class="section-header underline m-t">
+				<h1 class="headline hyper hairline">Panic Press</h1>
+				<p class="big">
+					<i class="fa fa-fw fa-exclamation-triangle m-r-xs"></i>
+					No Internet Connection
+				</p>
+			</header>
+		</div>
+	</section>
+	<section class="section swatch-red-white">
+		<div class="container">
+			<div class="row text-center m-b-lg">
+				<i class="fa fa-fw fa-spinner fa-spin m-r-xs"></i>
+				Waiting for WiFi or Cell Signal ...
+			</div>
+		</div>
+	</section>
+</section>

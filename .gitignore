@@ -25,4 +25,4 @@ assets/js/*.js
 assets/js/*.map
 *.log
 
-src/js/settings.js
+settings.json

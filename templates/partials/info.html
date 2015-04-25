@@ -1,37 +1,42 @@
-<section class="animated fadeIn">
+<section>
     <section class="section swatch-white-red has-top">
 
         <!-- Get Contact Info -->
-        <div class="container" ng-show="currentStep == 1">
+        <div class="container min-height m-b-xl" ng-if="section == 'details'">
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">My Details</h1>
             </header>
-            <div class="text-center m-b-xl">
-                <p>
+            <div class="m-b-xl">
+                <p class="text-center">
                     During emergencies, these details will be provided to your Emergency Contacts.
                 </p>
+                <div class="alert alert-danger details-alert" ng-if="detailsAlert">
+                    <button class="close" data-dismiss="alert" type="button">×</button>
+                    <strong><i class="fa fa-fw fa-exclamation-triangle text-red"></i></strong>&nbsp;
+                    <span>{{detailsAlert}}</span>
+                </div>
                 <form class="contact-form m-t-xl" id="contactForm" novalidate="">
                     <div class="form-group form-icon-group">
-                        <input class="form-control" id="name" placeholder="Full Name *" type="text">
+                        <input class="form-control" person-name ng-model="user.full_name" id="name" placeholder="Full Name *" type="text" required>
                         <i class="fa fa-user"></i>
                     </div>
                     <div class="form-group form-icon-group">
-                        <input class="form-control" id="email" placeholder="Email Address *" type="email">
+                        <input class="form-control" email-address ng-model="user.email_address" id="email" placeholder="Email Address *" type="email" required>
                         <i class="fa fa-envelope"></i>
                     </div>
                     <div class="form-group form-icon-group">
-                        <input class="form-control" id="phone" placeholder="Phone Number *" type="phone">
+                        <input class="form-control" phone-number ng-model="user.phone_number" id="phone" placeholder="Phone Number *" type="tel" pattern="[0-9]+" required>
                         <i class="fa fa-phone"></i>
                     </div>
                     <div class="form-group text-center m-t-xl">
-                        <a ui-sref="app.home" class="btn btn-default btn-icon btn-icon-left">
+                        <a ui-sref="app.welcome" class="btn btn-default btn-icon btn-icon-left previous">
                             Home
                             <span class="hex-alt">
                                 <i class="fa fa-home"></i>
                             </span>
                         </a>
                         &nbsp;
-                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                        <a ng-click="addUser();" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
@@ -39,15 +44,15 @@
                         </a>
                     </div>
                 </form>
-                <p>
+                <p class="text-center">
                     Step 1 of 3<br />
                     <span class="small text-muted">Next Up:&nbsp; Take Picture</span>
                 </p>
             </div>
         </div>
 
-        <!-- Get Physical Details -->
-        <div class="container" ng-show="currentStep == 2">
+        <!-- Get Picture -->
+        <div class="container min-height m-b-xl" ng-if="section == 'picture'">
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">My Details</h1>
             </header>
@@ -57,7 +62,7 @@
                 </p>
                 <form class="contact-form m-t-xl" novalidate="">
                     <div class="form-group text-center m-t-xl">
-                        <a class="btn btn-primary btn-icon btn-icon-right btn-lg">
+                        <a ng-click="takePicture();" class="btn btn-primary btn-icon btn-icon-right btn-lg">
                             Take Picture
                             <span class="hex-alt">
                                 <i class="fa fa-camera"></i>
@@ -65,14 +70,14 @@
                         </a>
                     </div>
                     <div class="form-group text-center m-t-xl">
-                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                        <a ui-sref="app.info({ section: 'details' })" class="btn btn-default btn-icon btn-icon-left previous">
                             Back
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-left"></i>
                             </span>
                         </a>
                         &nbsp;
-                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                        <a ng-click="addPicture();" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
@@ -88,7 +93,7 @@
         </div>
 
         <!-- Create Security PIN -->
-        <div class="container" ng-show="currentStep == 3">
+        <div class="container min-height m-b-xl" ng-if="section == 'enter-pin'">
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">Security PIN</h1>
             </header>
@@ -98,20 +103,20 @@
                 </p>
                 <form class="contact-form m-t-xl">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin1" ng-model="safetyPin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin2" ng-model="safetyPin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin3" ng-model="safetyPin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyPin4" ng-model="safetyPin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin1" ng-model="pin.securityPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin2" ng-model="pin.securityPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin3" ng-model="pin.securityPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin4" ng-model="pin.securityPin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
-                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                        <a ui-sref="app.info({ section: 'picture' })" class="btn btn-default btn-icon btn-icon-left previous">
                             Back
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-left"></i>
                             </span>
                         </a>
                         &nbsp;
-                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                        <a ng-click="addPin();" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
@@ -127,7 +132,7 @@
         </div>
 
         <!-- Verify Security PIN -->
-        <div class="container" ng-show="currentStep == 4">
+        <div class="container min-height m-b-xl" ng-if="section == 'verify-pin'">
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">Verify Security PIN</h1>
             </header>
@@ -137,20 +142,20 @@
                 </p>
                 <form class="contact-form m-t-xl">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyVerifyPin1" ng-model="safetyVerifyPin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyVerifyPin2" ng-model="safetyVerifyPin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyVerifyPin3" ng-model="safetyVerifyPin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="safetyVerifyPin4" ng-model="safetyVerifyPin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityVerifyPin1" ng-model="pin.securityVerifyPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityVerifyPin2" ng-model="pin.securityVerifyPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityVerifyPin3" ng-model="pin.securityVerifyPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityVerifyPin4" ng-model="pin.securityVerifyPin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
-                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                        <a ui-sref="app.info({ section: 'enter-pin' })" class="btn btn-default btn-icon btn-icon-left previous">
                             Back
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-left"></i>
                             </span>
                         </a>
                         &nbsp;
-                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                        <a ng-click="verifyPin();" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
@@ -166,7 +171,7 @@
         </div>
 
         <!-- Create Fake PIN -->
-        <div class="container" ng-show="currentStep == 5">
+        <div class="container min-height m-b-xl" ng-if="section == 'enter-fake-pin'">
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">Fake Security PIN</h1>
             </header>
@@ -176,20 +181,20 @@
                 </p>
                 <form class="contact-form m-t-xl" novalidate="">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falsePin1" ng-model="falsePin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falsePin2" ng-model="falsePin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falsePin3" ng-model="falsePin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falsePin4" ng-model="falsePin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakePin1" ng-model="pin.fakePin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakePin2" ng-model="pin.fakePin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakePin3" ng-model="pin.fakePin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakePin4" ng-model="pin.fakePin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
-                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                        <a ui-sref="app.info({ section: 'verify-pin' })" class="btn btn-default btn-icon btn-icon-left previous">
                             Back
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-left"></i>
                             </span>
                         </a>
                         &nbsp;
-                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                        <a ng-click="addFakePin();" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
@@ -205,7 +210,7 @@
         </div>
 
         <!-- Verify False PIN -->
-        <div class="container" ng-show="currentStep == 6">
+        <div class="container min-height m-b-xl" ng-if="section == 'verify-fake-pin'">
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">Verify Fake PIN</h1>
             </header>
@@ -215,20 +220,20 @@
                 </p>
                 <form class="contact-form m-t-xl" novalidate="">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falseVerifyPin1" ng-model="falseVerifyPin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falseVerifyPin2" ng-model="falseVerifyPin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falseVerifyPin3" ng-model="falseVerifyPin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="falseVerifyPin4" ng-model="falseVerifyPin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakeVerifyPin1" ng-model="pin.fakeVerifyPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakeVerifyPin2" ng-model="pin.fakeVerifyPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakeVerifyPin3" ng-model="pin.fakeVerifyPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakeVerifyPin4" ng-model="pin.fakeVerifyPin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
-                        <a class="btn btn-default btn-icon btn-icon-left" ng-click="currentStep = currentStep - 1">
+                        <a ui-sref="app.info({ section: 'enter-fake-pin' })" class="btn btn-default btn-icon btn-icon-left previous">
                             Back
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-left"></i>
                             </span>
                         </a>
                         &nbsp;
-                        <a class="btn btn-primary btn-icon btn-icon-right" ng-click="currentStep = currentStep + 1">
+                        <a ng-click="verifyFakePin();" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
@@ -244,7 +249,7 @@
         </div>
 
         <!-- All Done -->
-        <div class="container" ng-show="currentStep == 7">
+        <div class="container min-height m-b-xl" ng-if="section == 'complete'">
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">Thanks, All Done</h1>
             </header>

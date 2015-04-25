@@ -1,17 +1,19 @@
-'use strict';
-/* Controllers */
-
-// Form controller
 app.controller('HomeController', [
 	'$scope', '$localStorage', '$state', '$timeout', function($scope, $localStorage, $state, $timeout)
 	{
-		$scope.animate = function(){
-			$('.start-button').addClass('animated fadeOutRightBig');
-			$('.fadeOut').addClass('animated fadeOutUp');
+		$scope.updateMode(function(){
+			if($scope.appMode == 'setup' &&  !angular.isDefined($localStorage.user))
+			{
+				$state.go('app.welcome');
+				return false;
+			}
+			else if($scope.appMode == 'setup' &&  !angular.isDefined($localStorage.contacts))
+			{
+				$state.go('app.contacts');
+				return false;
+			}
+		});
 
-			$timeout(function(){
-				$state.go('app.info');
-			}, 650);
-		};
+		$scope.rateApp(false);
 	}
 ]);

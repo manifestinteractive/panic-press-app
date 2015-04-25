@@ -1,42 +1,205 @@
-'use strict';
-/* Controllers */
-
-// Form controller
 app.controller('ContactsController', [
 	'$scope', '$localStorage', '$state', '$timeout', function($scope, $localStorage, $state, $timeout)
 	{
-		$scope.showJane = true;
-		$scope.showJohn = true;
-		$scope.showJack = true;
-		$scope.timer = null;
-
-		$scope.remainingContacts = 2;
-
-		$scope.removeContact = function(name)
+		if( !angular.isDefined($localStorage.user))
 		{
-			$timeout.cancel($scope.timer);
+			$state.go('app.welcome');
+			return false;
+		}
 
-			if(name == 'jane')
+		$scope.selectedContact = null;
+		$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
+		$scope.modal = {
+			email: null,
+			phone: null
+		};
+
+		$scope.updateContacts = function()
+		{
+			sqlite.query('SELECT * FROM panic_emergency_contacts', [], function(contacts){
+
+				// make contacts an array if its not already
+				if(typeof contacts.id !== 'undefined')
+				{
+					contacts = [contacts];
+				}
+
+				$localStorage.contacts = contacts;
+
+				$scope.$apply(function(){
+					$scope.selectedContact = null;
+					$scope.contacts = contacts;
+					$scope.remainingContacts = ( $scope.maxContacts - contacts.length );
+					$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
+
+					$scope.updateMode();
+				});
+			});
+		};
+
+		$scope.pickContact = function()
+		{
+			if(typeof navigator.contacts !== 'undefined')
 			{
-				$scope.timer = $timeout(function(){
-					$scope.showJane = false;
-					$scope.remainingContacts += 1;
-				}, 500);
+				navigator.contacts.pickContact(function(contact){
+
+					$scope.$apply(function(){
+						$scope.selectedContact = contact;
+					});
+
+					$('.contact-details').modal('show');
+
+				}, function(err){
+					console.log('Error: ' + err);
+				});
 			}
-			else if(name == 'john')
+			else
 			{
-				$scope.timer = $timeout(function(){
-					$scope.showJohn = false;
-					$scope.remainingContacts += 1;
-				}, 500);
+				$('.add-contact').modal('show');
 			}
-			else if(name == 'jack')
+		};
+
+		$scope.addContact = function()
+		{
+			if($scope.modal.email || $scope.modal.phone)
 			{
-				$scope.timer = $timeout(function(){
-					$scope.showJack = false;
-					$scope.remainingContacts += 1;
-				}, 500);
+				var unique_id = $scope.selectedContact.rawId || Date.now();
+				var email_address = $scope.modal.email || '';
+				var phone_number = $scope.modal.phone || '';
+				var image_data = ( $scope.selectedContact.photos ) ? $scope.selectedContact.photos[0].value : '';
+
+				sqlite.query(
+					'INSERT OR REPLACE INTO panic_emergency_contacts (unique_id, full_name, first_name, last_name, email_address, phone_number, image_data) VALUES (?, ?, ?, ?, ?, ?, ?)',
+					[
+						unique_id,
+						$scope.selectedContact.name.formatted,
+						$scope.selectedContact.name.givenName,
+						$scope.selectedContact.name.familyName,
+						email_address,
+						phone_number,
+						image_data
+					],
+					function()
+					{
+						$('.contact-details').modal('hide');
+						$scope.updateContacts();
+					}
+				);
 			}
+		};
+
+		$scope.addManualContact = function()
+		{
+			var $name = $('#name');
+			var $email = $('#email');
+			var $phone = $('#phone');
+
+			var name = $name.val();
+			var email = $email.val();
+			var phone = $phone.val();
+
+			$scope.detailsAlert = null;
+
+			$('.has-error').removeClass('has-error');
+
+			var valid_full_name = /^[a-zA-Z-'. ]+ [a-zA-Z-'. ]+$/;
+			var valid_email = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+			var valid_phone = /^\d{10}$/g;
+
+			if(name.length == 0)
+			{
+				$scope.detailsAlert = 'Enter your Full Name';
+				$name.parent().addClass('has-error');
+				$name.focus();
+				return false;
+			}
+			if( !valid_full_name.test(name))
+			{
+				$scope.detailsAlert = 'Enter an Valid Full Name';
+				$name.parent().addClass('has-error');
+				$name.focus();
+				return false;
+			}
+			if(email.length == 0)
+			{
+				$scope.detailsAlert = 'Enter an Email Address';
+				$email.parent().addClass('has-error');
+				$email.focus();
+				return false;
+			}
+			if( !valid_email.test(email))
+			{
+				$scope.detailsAlert = 'Enter a Valid Email Address';
+				$email.parent().addClass('has-error');
+				$email.focus();
+				return false;
+			}
+			if(phone.length == 0)
+			{
+				$scope.detailsAlert = 'Enter an Phone Number';
+				$phone.parent().addClass('has-error');
+				$phone.focus();
+				return false;
+			}
+			if( !valid_phone.test(phone))
+			{
+				$scope.detailsAlert = 'Enter an Valid Phone Number';
+				$phone.parent().addClass('has-error');
+				$phone.focus();
+				return false;
+			}
+
+			var unique_id = Date.now();
+			var full_name = $scope.manual.full_name;
+			var email_address = $scope.manual.email_address;
+			var phone_number = $scope.manual.phone_number;
+			var image_data = '';
+
+			var name_parts = full_name.split(' ');
+			var first_name = name_parts[0];
+			var last_name = name_parts[name_parts.length];
+
+			sqlite.query(
+				'INSERT OR REPLACE INTO panic_emergency_contacts (unique_id, full_name, first_name, last_name, email_address, phone_number, image_data) VALUES (?, ?, ?, ?, ?, ?, ?)',
+				[
+					unique_id,
+					full_name,
+					first_name,
+					last_name,
+					email_address,
+					phone_number,
+					image_data
+				],
+				function()
+				{
+					$('.add-contact').modal('hide');
+					$scope.updateContacts();
+				}
+			);
+		};
+
+		$scope.removeContact = function(contact_id)
+		{
+			phonegap.notification.confirm(
+				"Are you sure you want to remove this Emergency Contact? This cannot be undone.",
+				function(results){
+					if(results == 2 && contact_id)
+					{
+						sqlite.query(
+							'DELETE FROM panic_emergency_contacts WHERE id = ?',
+							[
+								contact_id
+							],
+							function()
+							{
+								$scope.updateContacts();
+							}
+						);
+					}
+				},
+				"Emergency Contact",
+				['Cancel', 'Remove']
+			);
 		};
 	}
 ]);

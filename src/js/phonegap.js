@@ -1,5 +1,10 @@
 var phonegap = {
 	initialized: false,
+	connection: 'Unknown Connection',
+	battery: {
+		level: null,
+		isPlugged: false,
+	},
 	online: true,
 	reload: false,
 	bindEvents: function()
@@ -39,62 +44,43 @@ phonegap.events = {
 	{
 		phonegap.receivedEvent('deviceready');
 
+		// Get Batter Status
+		window.addEventListener('batterystatus', phonegap.events.batteryStatus, false);
+		window.addEventListener('batterycritical', phonegap.events.batteryStatus, false);
+		window.addEventListener('batterylow', phonegap.events.batteryStatus, false);
+
 		setTimeout(init_jquery, 100);
 
 		phonegap.stats.event('App', 'Event', 'Device Ready');
 
-		if(cordova && cordova.InAppBrowser)
+		// Initialize Database
+		if(typeof sqlite !== 'undefined')
+		{
+			sqlite.init();
+		}
+
+		// Get Network Info
+		if(typeof navigator.connection !== 'undefined')
+		{
+			var networkState = navigator.connection.type;
+
+			var states = {};
+				states[Connection.UNKNOWN]  = 'Unknown Connection';
+				states[Connection.ETHERNET] = 'Ethernet Connection';
+				states[Connection.WIFI]     = 'WiFi Connection';
+				states[Connection.CELL_2G]  = 'Cell 2G Connection';
+				states[Connection.CELL_3G]  = 'Cell 3G Connection';
+				states[Connection.CELL_4G]  = 'Cell 4G Connection';
+				states[Connection.CELL]     = 'Cell Connection';
+				states[Connection.NONE]     = 'No Network connection';
+
+			phonegap.connection = states[networkState];
+		}
+
+		if(typeof cordova !== 'undefined' && cordova.InAppBrowser)
 		{
 			window.open = cordova.InAppBrowser.open;
 		}
-
-		if(cordova && cordova.plugins.backgroundMode)
-		{
-			cordova.plugins.backgroundMode.setDefaults({ text: 'Running Panic Press in Background'});
-			cordova.plugins.backgroundMode.enable();
-
-			// Called when background mode has been activated
-			cordova.plugins.backgroundMode.onactivate = function(){
-
-				cordova.plugins.backgroundMode.configure({
-					text: 'Enabling Background Mode'
-				});
-
-				phonegap.stats.event('App', 'Event', 'Enabling Background Mode');
-			};
-
-			// Called when background mode has been deactivated
-			cordova.plugins.backgroundMode.ondeactivate = function(){
-
-				cordova.plugins.backgroundMode.configure({
-					text: 'Disabling Background Mode'
-				});
-
-				phonegap.stats.event('App', 'Event', 'Disabling Background Mode');
-			};
-
-			// Called when background mode has been deactivated
-			cordova.plugins.backgroundMode.onfailure = function(errorCode){
-
-				cordova.plugins.backgroundMode.configure({
-					text: 'Problem with Background Mode'
-				});
-
-				console.error('Background Mode Error: ', errorCode);
-
-				phonegap.stats.event('App', 'Event', 'Disabling Background Mode');
-			};
-		}
-
-		setTimeout(function(){
-
-			if(typeof StatusBar !== 'undefined')
-			{
-				phonegap.util.debug('log', 'Hiding Status Bar');
-				StatusBar.hide();
-			}
-
-		}, 500);
 
 		setTimeout(function(){
 
@@ -112,23 +98,42 @@ phonegap.events = {
 
 		}, 1000);
 	},
+	batteryStatus: function(info)
+	{
+		phonegap.battery = info;
+		phonegap.stats.event('App', 'Event', 'Battery Status ' + info.level);
+	},
 	pause: function()
 	{
+		if(navigator.splashscreen)
+		{
+			navigator.splashscreen.show();
+		}
+
 		phonegap.reload = true;
 		phonegap.stats.event('App', 'Event', 'Application Paused');
 	},
 	resume: function()
 	{
+		if(navigator.splashscreen)
+		{
+			navigator.splashscreen.hide();
+		}
+
 		phonegap.reload = true;
 		phonegap.stats.event('App', 'Event', 'Application Resumed');
 	},
 	networkOnline: function()
 	{
+		$('.no-internet').hide();
+
 		phonegap.online = true;
 		phonegap.stats.event('App', 'Event', 'Device Online');
 	},
 	networkOffline: function()
 	{
+		$('.no-internet').show();
+
 		phonegap.online = false;
 		phonegap.stats.event('App', 'Event', 'Device Offline');
 	}

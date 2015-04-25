@@ -96,7 +96,7 @@
 
 .swatch-red-white .section-header:after, .swatch-red-white .bordered-header:after, [class*="swatch-"] .swatch-red-white .section-header:after, [class*="swatch-"] .swatch-red-white .bordered-header:after
 {
-	background: #fff;
+	background: rgba(255,255,255,0.25);
 }
 
 .swatch-red-white .active, [class*="swatch-"] .swatch-red-white .active

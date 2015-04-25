@@ -1,8 +1,8 @@
-<section class="animated fadeIn">
+<section>
     <section class="section swatch-red-white section-short">
         <div class="container">
             <div class="row text-center m-b-sm">
-                <div class="box-hex box-big flat-shadow flat-hex animated flipInX">
+                <div class="box-hex flat-shadow flat-hex animated flipInX">
                     <div class="box-dummy"></div>
                     <span class="box-inner">
 					    <img src="assets/img/share.jpg">
@@ -21,22 +21,19 @@
                 <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
             </svg>
         </div>
-        <div class="container">
+        <div class="container m-b-xl"">
             <header class="section-header text-center underline m-t-lg">
-                <h1 class="headline super hairline">Share</h1>
+                <h1 class="headline super hairline">Share Panic Press</h1>
             </header>
             <div class="text-center m-b-xl">
                 <p>
-                    Let your Friends and Family know about Panic Press.
-                </p>
-                <p>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpanic.press" target="_system" style="width: 125px" class="btn btn-primary btn-icon btn-icon-left">
+                    <a ng-click="openBrowser('https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpanic.press');" class="btn btn-primary btn-icon btn-icon-left previous in-app-browser">
                         Facebook
                             <span class="hex-alt">
                                 <i class="fa fa-facebook"></i>
                             </span>
                     </a>&nbsp;
-                    <a href="https://twitter.com/intent/tweet/?text=Access%20your%20Safety%20Net%20from%20your%20favorite%20Apple%20iOS%20or%20Android%20Device.&url=http%3A%2F%2Fpanic.press&via=PanicPressApp&hashtags=panicpress,safety,emergency" target="_system" style="width: 125px" class="btn btn-primary btn-icon btn-icon-right">
+                    <a ng-click="openBrowser('https://twitter.com/intent/tweet/?text=Access%20your%20Safety%20Net%20from%20your%20favorite%20Apple%20iOS%20or%20Android%20Device.&url=http%3A%2F%2Fpanic.press&via=PanicPressApp&hashtags=panicpress,safety,emergency');" class="btn btn-primary btn-icon btn-icon-right next in-app-browser">
                         Twitter
                             <span class="hex-alt">
                                 <i class="fa fa-twitter"></i>
@@ -44,13 +41,13 @@
                     </a>
                 </p>
                 <p>
-                    <a href="https://plus.google.com/share?url=http%3A%2F%2Fpanic.press" target="_system" style="width: 125px" class="btn btn-primary btn-icon btn-icon-left">
+                    <a ng-click="openBrowser('https://plus.google.com/share?url=http%3A%2F%2Fpanic.press');" class="btn btn-primary btn-icon btn-icon-left previous in-app-browser">
                         Google+
                             <span class="hex-alt">
                                 <i class="fa fa-google-plus"></i>
                             </span>
                     </a>&nbsp;
-                    <a href="https://www.pinterest.com/pin/create/button/?url=http%3A%2F%2Fpanic.press&media=http%3A%2F%2Fpanic.press%2Ficon.png&description=With%20a%20single%20tap%2C%20Panic%20Press%20automatically%20notifies%20your%20Emergency%20Contacts%20when%20you%27re%20in%20danger.%20Access%20your%20Safety%20Net%20from%20your%20favorite%20Apple%20iOS%20or%20Android%20Device.&hashtags=mobile,app,ios,android,panic%20press,safety,security,notification,tracking,emergency,location,alert,contacts" target="_system" style="width: 125px" class="btn btn-primary btn-icon btn-icon-right">
+                    <a ng-click="openBrowser('https://www.pinterest.com/pin/create/button/?url=http%3A%2F%2Fpanic.press&media=http%3A%2F%2Fpanic.press%2Ficon.png&description=With%20a%20single%20tap%2C%20Panic%20Press%20automatically%20notifies%20your%20Emergency%20Contacts%20when%20you%27re%20in%20danger.%20Access%20your%20Safety%20Net%20from%20your%20favorite%20Apple%20iOS%20or%20Android%20Device.&hashtags=mobile,app,ios,android,panic%20press,safety,security,notification,tracking,emergency,location,alert,contacts');" class="btn btn-primary btn-icon btn-icon-right next in-app-browser">
                         Pinterest
                             <span class="hex-alt">
                                 <i class="fa fa-pinterest-p"></i>
@@ -58,13 +55,13 @@
                     </a>
                 </p>
                 <p>
-                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fpanic.press&title=PanicPress%20-%20Access%20your%20Safety%20Net&source=http%3A%2F%2Fpanic.press&summary=With%20a%20single%20tap%2C%20Panic%20Press%20automatically%20notifies%20your%20Emergency%20Contacts%20when%20you%27re%20in%20danger.%20Access%20your%20Safety%20Net%20from%20your%20favorite%20Apple%20iOS%20or%20Android%20Device." target="_system" style="width: 125px" class="btn btn-primary btn-icon btn-icon-left">
+                    <a ng-click="openBrowser('https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fpanic.press&title=PanicPress%20-%20Access%20your%20Safety%20Net&source=http%3A%2F%2Fpanic.press&summary=With%20a%20single%20tap%2C%20Panic%20Press%20automatically%20notifies%20your%20Emergency%20Contacts%20when%20you%27re%20in%20danger.%20Access%20your%20Safety%20Net%20from%20your%20favorite%20Apple%20iOS%20or%20Android%20Device.');" class="btn btn-primary btn-icon btn-icon-left previous in-app-browser">
                         LinkedIn
                             <span class="hex-alt">
                                 <i class="fa fa-linkedin"></i>
                             </span>
                     </a>&nbsp;
-                    <a href="http://www.reddit.com/submit/?url=http%3A%2F%2Fpanic.press" target="_system" style="width: 125px" class="btn btn-primary btn-icon btn-icon-right">
+                    <a ng-click="openBrowser('http://www.reddit.com/submit/?url=http%3A%2F%2Fpanic.press');" class="btn btn-primary btn-icon btn-icon-right next in-app-browser">
                         Reddit
                             <span class="hex-alt">
                                 <i class="fa fa-reddit"></i>

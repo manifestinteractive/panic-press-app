@@ -1,10 +1,10 @@
 #!/bin/sh
 
 echo " "
-echo "PhoneGap Installation:"
+echo "Installing / Updating: phonegap, cordova, grunt-cli & bower"
 echo " "
 
-npm update -g phonegap cordova grunt-cli bower
+sudo npm update -g phonegap cordova grunt-cli bower
 
 echo " "
 echo "Creating PhoneGap Project:"
@@ -36,7 +36,7 @@ echo " "
 echo "Copy Config File:"
 echo " "
 
-cp www/src/js/settings.js.dist www/src/js/settings.js
+cp www/settings.json.dist www/settings.json
 
 echo " "
 echo "Adding Platforms:"
@@ -50,40 +50,30 @@ echo "Installing Required Native Plugins:"
 echo " "
 
 cordova plugin add org.apache.cordova.battery-status
+cordova plugin add org.apache.cordova.camera
 cordova plugin add org.apache.cordova.contacts
 cordova plugin add org.apache.cordova.device
 cordova plugin add org.apache.cordova.device-motion
-cordova plugin add org.apache.cordova.device-orientation
 cordova plugin add org.apache.cordova.dialogs
 cordova plugin add org.apache.cordova.file
 cordova plugin add org.apache.cordova.file-transfer
-cordova plugin add org.apache.cordova.geolocation
-cordova plugin add org.apache.cordova.inappbrowser
 cordova plugin add org.apache.cordova.media-capture
 cordova plugin add org.apache.cordova.network-information
 cordova plugin add org.apache.cordova.splashscreen
+cordova plugin add cordova-plugin-inappbrowser
 
 echo " "
 echo "Installing Required Third-Party Plugins:"
 echo " "
 
-cordova plugin add https://github.com/anemitoff/PhoneGap-PhoneDialer.git
 cordova plugin add https://github.com/christocracy/cordova-plugin-background-geolocation.git
 cordova plugin add https://github.com/cordova-sms/cordova-sms-plugin.git
 cordova plugin add https://github.com/danwilson/google-analytics-plugin.git
-cordova plugin add https://github.com/EddyVerbruggen/Flashlight-PhoneGap-Plugin.git
-cordova plugin add https://github.com/EddyVerbruggen/LaunchMyApp-PhoneGap-Plugin.git --variable URL_SCHEME=panicpress
-cordova plugin add https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git
-cordova plugin add https://github.com/hazemhagrass/phonegap-base64.git
-cordova plugin add https://github.com/katzer/cordova-plugin-background-mode.git
-cordova plugin add https://github.com/katzer/cordova-plugin-local-notifications.git
-cordova plugin add https://github.com/macdonst/TelephoneNumberPlugin.git
-cordova plugin add https://github.com/Paldom/UniqueDeviceID.git
 cordova plugin add https://github.com/phonegap-build/StatusBarPlugin.git
 cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 
 echo " "
-read -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY
+read -s -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY
 
 if [[ "$BILLING_KEY" ]]; then
 	echo " "
@@ -106,6 +96,18 @@ else
 	echo "!!! Invalid SendGrid Details, you will need to install this plugin manually."
 	echo " "
 fi
+
+echo " "
+echo "Replace iOS & Android Build Files ( modified from default ):"
+echo " "
+
+rm platforms/ios/Panic/Resources/icons/*.png
+rm platforms/ios/Panic/Resources/splash/*.png
+rm -fr platforms/android/res/drawable*
+
+cp www/build/ios/icons/*.png platforms/ios/Panic/Resources/icons/
+cp www/build/ios/splash/*.png platforms/ios/Panic/Resources/splash/
+cp -R www/build/android/* platforms/android/res/
 
 echo " "
 echo "Starting Node Server"
