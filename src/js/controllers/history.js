@@ -5,7 +5,7 @@ app.controller('HistoryController', [
 			? $localStorage.history
 			: {};
 
-		sqlite.query('SELECT * FROM panic_history', [], function(contacts){
+		sqlite.query("SELECT id, short_url, status, datetime(last_modified, 'localtime') AS last_modified, datetime((strftime('%s', last_modified) / 60) * 60, 'unixepoch') interval FROM panic_history GROUP BY interval ORDER BY interval", [], function(history){
 
 			// make contacts an array if its not already
 			if(typeof history.id !== 'undefined')

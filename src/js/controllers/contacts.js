@@ -94,9 +94,9 @@ app.controller('ContactsController', [
 			var $email = $('#email');
 			var $phone = $('#phone');
 
-			var name = $name.val();
-			var email = $email.val();
-			var phone = $phone.val();
+			var name = title_case($name.val());
+			var email = $email.val().trim();
+			var phone = $phone.val().trim();
 
 			$scope.detailsAlert = null;
 

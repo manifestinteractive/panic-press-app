@@ -227,3 +227,15 @@ function init_jquery()
 {
 	setTimeout(load_jquery, 250);
 }
+
+function title_case(str)
+{
+	return clean_string(str.replace(/\w\S*/g, function(txt){
+		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+	}));
+}
+
+function clean_string(str)
+{
+	return str.replace(/[|&;$%@"<>()+,]/g, "").trim();
+}

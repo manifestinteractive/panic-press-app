@@ -1,6 +1,14 @@
 app.controller('DangerController', [
 	'$scope', '$localStorage', '$state', '$stateParams', '$timeout', '$http', function($scope, $localStorage, $state, $stateParams, $timeout, $http)
 	{
+		$scope.updateMode(function(){
+			if($scope.appMode != 'ready')
+			{
+				$state.go('app.welcome');
+				return false;
+			}
+		});
+
 		var date_time = moment();
 		var date = new Date();
 
@@ -30,7 +38,7 @@ app.controller('DangerController', [
 			},
 			device: {
 				battery: phonegap.battery.level,
-				network: phonegap.connectionType
+				network: phonegap.connection
 			}
 		};
 
@@ -39,7 +47,7 @@ app.controller('DangerController', [
 			'verbal-attack': 'Verbal Attack',
 			'car-accident': 'Car Accident',
 			'fire-danger': 'Fire Danger',
-			'being-followed': 'I\'m Being Followed',
+			'being-followed': 'Being Followed',
 			'high-risk-activity': 'High-Risk Activity',
 			'feeling-unsafe': 'Feeling Unsafe',
 			'completely-lost': 'Completely Lost'
@@ -61,7 +69,7 @@ app.controller('DangerController', [
 			'verbal-attack': 'Verbal<br/>Attack',
 			'car-accident': 'Car<br/>Accident',
 			'fire-danger': 'Fire<br/>Danger',
-			'being-followed': 'I\'m Being<br/>Followed',
+			'being-followed': 'Being<br/>Followed',
 			'high-risk-activity': 'High-Risk<br/>Activity',
 			'feeling-unsafe': 'Feeling<br/>Unsafe',
 			'completely-lost': 'Completely<br/>Lost'
@@ -157,7 +165,7 @@ app.controller('DangerController', [
 			var status = (response.error == 0) ? 'sending' : 'error';
 
 			sqlite.query(
-				'INSERT OR REPLACE INTO panic_history (short_url, status) VALUES (?, ?)',
+				'INSERT OR REPLACE INTO panic_history (short_url, status, last_modified) VALUES (?, ?, DateTime("now"))',
 				[
 					response.short,
 					status
@@ -165,8 +173,8 @@ app.controller('DangerController', [
 				function()
 				{
 					var message_subject = "[ Panic Press ] " + transmit_json.sender.name + " Needs Help";
-					var message_text = user.first_name + ",\n\n" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". Please, Immediately Visit: " + response.short + "\n\n- Panic Press";
-					var message_html = user.first_name + ",<br/><br/>" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". Please, Immediately Visit: " + response.short + "<br/><br/>- Panic Press";
+					var message_text = user.first_name + ",\n\n" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". " + response.short + "\n\n- Panic Press";
+					var message_html = user.first_name + ",<br/><br/>" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". " + response.short + "<br/><br/>- Panic Press";
 
 					// Send contact an email
 					if(user.email_address && typeof sendgrid !== 'undefined')
@@ -179,16 +187,31 @@ app.controller('DangerController', [
 							text: message_text
 						};
 
-						sendgrid.send(email, function(result){
+						sendgrid.send(email, function(sendgrid){
 
-							console.log('sendgrid', result);
+							console.log('sendgrid', sendgrid);
 
-							if(result.message == 'success')
+							if(sendgrid.message == 'success')
 							{
 								sqlite.query(
-									'UPDATE panic_history SET status = ? WHERE short_url = ?',
+									'UPDATE panic_history SET status = ?, last_modified = DateTime("now") WHERE short_url = ?',
 									[
 										'sent',
+										response.short
+									],
+									function()
+									{
+										$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+										$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+									}
+								);
+							}
+							else
+							{
+								sqlite.query(
+									'UPDATE panic_history SET status = ?, last_modified = DateTime("now") WHERE short_url = ?',
+									[
+										'error',
 										response.short
 									],
 									function()
@@ -206,6 +229,19 @@ app.controller('DangerController', [
 							$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-times text-red');
 							$('.contact-'+ user.id +' span').text('error').removeClass('label-warning').addClass('label-danger');
 
+							sqlite.query(
+								'UPDATE panic_history SET status = ?, last_modified = DateTime("now") WHERE short_url = ?',
+								[
+									'error',
+									response.short
+								],
+								function()
+								{
+									$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+									$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+								}
+							);
+
 						});
 					}
 
@@ -213,27 +249,51 @@ app.controller('DangerController', [
 					if(user.phone_number)
 					{
 						var twilio_json = {
-							message: user.first_name + ", " + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". Please, Immediately Visit: " + response.short,
+							message: " [ Panic Press ] " + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". " + response.short,
 							number: user.phone_number
 						};
 
 						var twilio_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(twilio_json));
 
-						$http.jsonp('https://i.panic.press/twilio/?callback=JSON_CALLBACK&hash=' + twilio_hash).success(function(response){
+						$http.jsonp('https://i.panic.press/twilio/?callback=JSON_CALLBACK&hash=' + twilio_hash).success(function(twilio){
 
-							if(response.success)
+							console.log('twilio', twilio);
+
+							if(twilio.success)
 							{
-								console.log('SMS', 'Message Sent');
-
 								$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
 								$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
 
+								sqlite.query(
+									'UPDATE panic_history SET status = ?, last_modified = DateTime("now") WHERE short_url = ?',
+									[
+										'sent',
+										response.short
+									],
+									function()
+									{
+										$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+										$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+									}
+								);
 							}
-							else {
-								console.log(response.message);
-
+							else
+							{
 								$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-times text-red');
 								$('.contact-'+ user.id +' span').text('error').removeClass('label-warning').addClass('label-danger');
+
+								sqlite.query(
+									'UPDATE panic_history SET status = ?, last_modified = DateTime("now") WHERE short_url = ?',
+									[
+										'error',
+										response.short
+									],
+									function()
+									{
+										$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+										$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+									}
+								);
 							}
 						});
 					}
@@ -241,7 +301,14 @@ app.controller('DangerController', [
 			);
 		};
 
-		getLocation();
+		if ($scope.status == 'send')
+		{
+			getLocation();
+		}
+		else if ($scope.status == 'sent')
+		{
+
+		}
 
 		/*
 		if ($scope.status == 'send')
