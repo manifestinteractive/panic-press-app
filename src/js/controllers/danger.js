@@ -173,15 +173,17 @@ app.controller('DangerController', [
 				function()
 				{
 					var message_subject = "[ Panic Press ] " + transmit_json.sender.name + " Needs Help";
-					var message_text = user.first_name + ",\n\n" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". " + response.short + "\n\n- Panic Press";
-					var message_html = user.first_name + ",<br/><br/>" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". " + response.short + "<br/><br/>- Panic Press";
+					var message_text = user.first_name + ",\n\n" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ".\n\n" + response.short + "\n\n- Panic Press";
+					var message_html = user.first_name + ",<br/><br/>" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ".<br/><br/>" + response.short + "<br/><br/>- Panic Press";
 
 					// Send contact an email
 					if(user.email_address && typeof sendgrid !== 'undefined')
 					{
 						var email = {
 							to: user.email_address,
+							toName: user.full_name,
 							from: "noreply@panic.press",
+							fromName: 'Panic Press',
 							subject: message_subject,
 							html: message_html,
 							text: message_text
@@ -250,7 +252,7 @@ app.controller('DangerController', [
 					{
 						var twilio_json = {
 							message: " [ Panic Press ] " + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". " + response.short,
-							number: user.phone_number
+							number: user.phone_number.replace(/\D/g, '')
 						};
 
 						var twilio_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(twilio_json));

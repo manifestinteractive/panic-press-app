@@ -76,7 +76,7 @@ app.controller('ContactsController', [
 						$scope.selectedContact.name.givenName,
 						$scope.selectedContact.name.familyName,
 						email_address,
-						phone_number,
+						phone_number.replace(/\D/g, ''),
 						image_data
 					],
 					function()
