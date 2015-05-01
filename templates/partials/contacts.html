@@ -29,16 +29,19 @@
             <div class="m-b-xl">
                 <ul class="list-fancy-icons color-inverse">
 
-                    <li ng-repeat="contact in contacts">
-                        <div class="hex vcenter" ng-click="removeContact(contact.id)">
+                    <li ng-repeat="contact in contacts" ng-model="showMe" ng-class="{ 'no-pad': !showMe }">
+                        <div class="hex vcenter" ng-click="removeContact(contact.id)" ng-class="{ hide: !showMe }">
                             <i class="fa fa-fw fa-times remove-contact"></i>
                         </div>
-                        <p>
-                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>{{ contact.full_name }}</strong>
+                        <p class="contact-info" ng-swipe-right="showMe = true" ng-swipe-left="showMe = false">
+                            <i class="fa fa-fw fa-user text-light m-r-xs"></i>
+                            <strong>{{ contact.full_name }}</strong>
                             <br />
-                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> {{ contact.email_address }}
+                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i>
+                            {{ contact.email_address }}
                             <br />
-                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> {{ contact.phone_number }}
+                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i>
+                            {{ contact.phone_number }}
                         </p>
                     </li>
                 </ul>

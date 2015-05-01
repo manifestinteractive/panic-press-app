@@ -1,6 +1,15 @@
 app.controller('DangerController', [
 	'$scope', '$localStorage', '$state', '$stateParams', '$timeout', '$http', function($scope, $localStorage, $state, $stateParams, $timeout, $http)
 	{
+		/**
+		 * @todo: Make sure once the messages are all sent to redirect to sent ( not send ) to prevent app resending alerts
+		 * @todo: If status is sent, need to check whether each was received
+		 * @todo: Make sure the SQLite is recording the correct sent / received updates
+		 * @todo: Update UI to do realtime checks for contacts receiving notifications
+		 */
+
+		phonegap.stats.event('App', 'Page', 'Danger');
+
 		$scope.updateMode(function(){
 			if($scope.appMode != 'ready')
 			{
@@ -42,48 +51,15 @@ app.controller('DangerController', [
 			}
 		};
 
-		var dangers_text = {
-			'physical-attack': 'Physical Attack',
-			'verbal-attack': 'Verbal Attack',
-			'car-accident': 'Car Accident',
-			'fire-danger': 'Fire Danger',
-			'being-followed': 'Being Followed',
-			'high-risk-activity': 'High-Risk Activity',
-			'feeling-unsafe': 'Feeling Unsafe',
-			'completely-lost': 'Completely Lost'
-		};
-
-		var dangers_prefix = {
-			'physical-attack': 'a ',
-			'verbal-attack': 'a ',
-			'car-accident': 'a ',
-			'fire-danger': 'a ',
-			'being-followed': '',
-			'high-risk-activity': 'a ',
-			'feeling-unsafe': '',
-			'completely-lost': 'being '
-		};
-
-		var dangers_html = {
-			'physical-attack': 'Physical<br/>Attack',
-			'verbal-attack': 'Verbal<br/>Attack',
-			'car-accident': 'Car<br/>Accident',
-			'fire-danger': 'Fire<br/>Danger',
-			'being-followed': 'Being<br/>Followed',
-			'high-risk-activity': 'High-Risk<br/>Activity',
-			'feeling-unsafe': 'Feeling<br/>Unsafe',
-			'completely-lost': 'Completely<br/>Lost'
-		};
-
-		var types = {
-			'immediate': 'Immediate Danger',
-			'potential': 'Potential Danger'
-		};
-
 		$scope.type = $stateParams.type;
 		$scope.danger = $stateParams.danger;
 		$scope.status = $stateParams.status;
 		$scope.showLoading = true;
+
+		$localStorage.danger = {
+			type: $stateParams.type,
+			danger: $stateParams.danger
+		};
 
 		$scope.type_text = types[$stateParams.type];
 		$scope.danger_text = dangers_text[$stateParams.danger];
@@ -153,7 +129,7 @@ app.controller('DangerController', [
 		var getToken = function(user)
 		{
 			var url_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(transmit_json));
-			var api = $localStorage.settings.app.prod.api.url + '?api=' + $localStorage.settings.app.prod.api.key;
+			var api = $localStorage.settings.app.production.api.url + '?api=' + $localStorage.settings.app.production.api.key;
 
 			$http.jsonp(api + '&callback=JSON_CALLBACK&url=https://i.panic.press/help?hash='+url_hash).success(function(response){
 				handleToken(user, response);

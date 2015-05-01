@@ -25,7 +25,7 @@
                         <i class="fa fa-envelope"></i>
                     </div>
                     <div class="form-group form-icon-group">
-                        <input class="form-control" phone-number ng-model="user.phone_number" id="phone" placeholder="Phone Number *" type="tel" pattern="[0-9]+" required>
+                        <input class="form-control" maxlength="10" phone-number ng-model="user.phone_number" id="phone" placeholder="Phone Number *" type="tel" pattern="[0-9]+" required>
                         <i class="fa fa-phone"></i>
                     </div>
                     <div class="form-group text-center m-t-xl">
@@ -46,7 +46,7 @@
                 </form>
                 <p class="text-center">
                     Step 1 of 3<br />
-                    <span class="small text-muted">Next Up:&nbsp; Take Picture</span>
+                    <span class="small text-muted">Next Up:&nbsp; Create Security PIN</span>
                 </p>
             </div>
         </div>
@@ -175,6 +175,11 @@
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">Fake Security PIN</h1>
             </header>
+            <div class="alert alert-danger details-alert" ng-if="pinAlert">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                <strong><i class="fa fa-fw fa-exclamation-triangle text-red"></i></strong>&nbsp;
+                <span>{{pinAlert}}</span>
+            </div>
             <div class="text-center m-b-xl">
                 <p>
                     Use this if you are being forced to provide your PIN.&nbsp; We will notify your Emergency Contacts without your attacker knowing.

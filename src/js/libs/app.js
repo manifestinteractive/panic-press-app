@@ -11,13 +11,51 @@ var scriptData = scriptData || {
 	}
 };
 
+var dangers_text = {
+	'physical-attack': 'Physical Attack',
+	'verbal-attack': 'Verbal Attack',
+	'car-accident': 'Car Accident',
+	'fire-danger': 'Fire',
+	'being-followed': 'Being Followed',
+	'high-risk-activity': 'High-Risk Activity',
+	'feeling-unsafe': 'Feeling Unsafe',
+	'completely-lost': 'Completely Lost'
+};
+
+var dangers_prefix = {
+	'physical-attack': 'a ',
+	'verbal-attack': 'a ',
+	'car-accident': 'a ',
+	'fire-danger': 'a ',
+	'being-followed': '',
+	'high-risk-activity': 'a ',
+	'feeling-unsafe': '',
+	'completely-lost': 'being '
+};
+
+var dangers_html = {
+	'physical-attack': 'Physical<br/>Attack',
+	'verbal-attack': 'Verbal<br/>Attack',
+	'car-accident': 'Car<br/>Accident',
+	'fire-danger': 'Fire<br/>Danger',
+	'being-followed': 'Being<br/>Followed',
+	'high-risk-activity': 'High-Risk<br/>Activity',
+	'feeling-unsafe': 'Feeling<br/>Unsafe',
+	'completely-lost': 'Completely<br/>Lost'
+};
+
+var types = {
+	'immediate': 'Immediate Danger',
+	'potential': 'Potential Danger'
+};
+
 var initScrollr = false;
+
+var initialized = false;
 
 function scroll_to_top()
 {
-	$("html, body").animate({
-		scrollTop: 0
-	}, 250);
+	window.scrollTo(0, 0);
 }
 
 function load_jquery()
@@ -225,6 +263,13 @@ function load_jquery()
 
 function init_jquery()
 {
+	if(initialized)
+	{
+		return false;
+	}
+
+	initialized = true;
+
 	setTimeout(load_jquery, 250);
 }
 
@@ -238,4 +283,55 @@ function title_case(str)
 function clean_string(str)
 {
 	return str.replace(/[|&;$%@"<>()+,]/g, "").trim();
+}
+
+/**
+ * Compare Current Version Number against latest_app_info.current_version
+ * @param installed_version Current Version Number to Check Against
+ * @param include_beta Whether we should check for possible beta builds too
+ * @returns {number} How many versions behind the user is
+ */
+function compare_app_versions(installed_version, latest_app_info, include_beta)
+{
+	var start = null;
+	var behind = 0;
+
+	if(installed_version !== latest_app_info.current_version)
+	{
+		for(var i=0; i<latest_app_info.release.length; i++)
+		{
+			if(include_beta)
+			{
+				if(start === null && latest_app_info.release[i].version === latest_app_info.current_version)
+				{
+					start = i;
+				}
+				if(start !== null && installed_version !== latest_app_info.release[i].version)
+				{
+					behind++;
+				}
+				if(start !== null && installed_version === latest_app_info.release[i].version)
+				{
+					break;
+				}
+			}
+			else
+			{
+				if(start === null && latest_app_info.release[i].production_release === true  && latest_app_info.release[i].production_ios_release_date !== null && latest_app_info.release[i].production_android_release_date !== null && latest_app_info.release[i].version === latest_app_info.current_version)
+				{
+					start = i;
+				}
+				if(start !== null && latest_app_info.release[i].production_release === true  && latest_app_info.release[i].production_ios_release_date !== null && latest_app_info.release[i].production_android_release_date !== null && installed_version !== latest_app_info.release[i].version)
+				{
+					behind++;
+				}
+				if(start !== null && latest_app_info.release[i].production_release === true  && latest_app_info.release[i].production_ios_release_date !== null && latest_app_info.release[i].production_android_release_date !== null && installed_version === latest_app_info.release[i].version)
+				{
+					break;
+				}
+			}
+		}
+	}
+
+	return behind;
 }

@@ -19,7 +19,7 @@ angular.module('app').run([
 		$rootScope.hideDecor =  true;
 		$rootScope.disableMenu = true;
 
-		$localStorage.device = window.device || {
+		$window.device = $window.device || {
 			model: 'x86_64',
 			cordova: '3.8.0',
 			platform: 'iOS',
@@ -27,6 +27,8 @@ angular.module('app').run([
 			version: '8.1',
 			name: 'Developer Phone'
 		};
+
+		$localStorage.device = $window.device;
 
 		$rootScope.getWidth = function() {
 			return $(window).width();
@@ -41,7 +43,7 @@ angular.module('app').run([
 			$rootScope.isMobile = ( newValue < 768 );
 		});
 
-		window.onresize = function(){
+		$window.onresize = function(){
 			$rootScope.$apply();
 		};
 

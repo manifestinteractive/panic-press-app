@@ -1,14 +1,9 @@
 app.controller('InfoController', [
 	'$scope', '$localStorage', '$state', '$stateParams', function($scope, $localStorage, $state, $stateParams)
 	{
-		/**
-		 * @todo: Make sure real & fake pin are not the same
-		 * @todo: Try to make backspace work for pins
-		 * @todo: Remove menu if the user has not completed setup
-		 * @todo: Trim user Info
-		 */
-
 		$scope.section = $stateParams.section;
+
+		phonegap.stats.event('App', 'Page', 'My Info: ' + title_case($stateParams.section));
 
 		$scope.securityPin = $localStorage.securityPin || null;
 		$scope.securityVerifyPin = null;
@@ -46,27 +41,72 @@ app.controller('InfoController', [
 			security_pin: null
 		};
 
-		$scope.$watch('pin.securityPin1', function(value){ if(value){ $('#securityPin2').focus(); } });
-		$scope.$watch('pin.securityPin2', function(value){ if(value){ $('#securityPin3').focus(); } });
-		$scope.$watch('pin.securityPin3', function(value){ if(value){ $('#securityPin4').focus(); } });
-		$scope.$watch('pin.securityPin4', function(value){ if(value){ } });
+		$scope.$watch('pin.securityPin1', function(value){
+			if(value){ $('#securityPin2').focus(); }
+		});
+		$scope.$watch('pin.securityPin2', function(value){
+			if(value){ $('#securityPin3').focus(); }
+			else if($('#securityPin1').val() !== '') { $('#securityPin1').focus(); }
+		});
+		$scope.$watch('pin.securityPin3', function(value){
+			if(value){ $('#securityPin4').focus(); }
+			else if($('#securityPin1').val() !== '') { $('#securityPin2').focus(); }
+		});
+		$scope.$watch('pin.securityPin4', function(value){
+			if(value){ }
+			else if($('#securityPin1').val() !== '') { $('#securityPin3').focus(); }
+		});
 
-		$scope.$watch('pin.securityVerifyPin1', function(value){ if(value){ $('#securityVerifyPin2').focus(); } });
-		$scope.$watch('pin.securityVerifyPin2', function(value){ if(value){ $('#securityVerifyPin3').focus(); } });
-		$scope.$watch('pin.securityVerifyPin3', function(value){ if(value){ $('#securityVerifyPin4').focus(); } });
-		$scope.$watch('pin.securityVerifyPin4', function(value){ if(value){ } });
+		$scope.$watch('pin.securityVerifyPin1', function(value){
+			if(value){ $('#securityVerifyPin2').focus(); }
+		});
+		$scope.$watch('pin.securityVerifyPin2', function(value){
+			if(value){ $('#securityVerifyPin3').focus(); }
+			else if($('#securityVerifyPin1').val() !== '') { $('#securityVerifyPin1').focus(); }
+		});
+		$scope.$watch('pin.securityVerifyPin3', function(value){
+			if(value){ $('#securityVerifyPin4').focus(); }
+			else if($('#securityVerifyPin2').val() !== '') { $('#securityVerifyPin2').focus(); }
+		});
+		$scope.$watch('pin.securityVerifyPin4', function(value){
+			if(value){ }
+			else if($('#securityVerifyPin3').val() !== '') { $('#securityVerifyPin3').focus(); }
+		});
 
-		$scope.$watch('pin.fakePin1', function(value){ if(value){ $('#fakePin2').focus(); } });
-		$scope.$watch('pin.fakePin2', function(value){ if(value){ $('#fakePin3').focus(); } });
-		$scope.$watch('pin.fakePin3', function(value){ if(value){ $('#fakePin4').focus(); } });
-		$scope.$watch('pin.fakePin4', function(value){ if(value){ } });
+		$scope.$watch('pin.fakePin1', function(value){
+			if(value){ $('#fakePin2').focus(); }
+		});
+		$scope.$watch('pin.fakePin2', function(value){
+			if(value){ $('#fakePin3').focus(); }
+			else if($('#fakePin1').val() !== '') { $('#fakePin1').focus(); }
+		});
+		$scope.$watch('pin.fakePin3', function(value){
+			if(value){ $('#fakePin4').focus(); }
+			else if($('#fakePin2').val() !== '') { $('#fakePin2').focus(); }
+		});
+		$scope.$watch('pin.fakePin4', function(value){
+			if(value){ }
+			else if($('#fakePin3').val() !== '') { $('#fakePin3').focus(); }
+		});
 
-		$scope.$watch('pin.fakeVerifyPin1', function(value){ if(value){ $('#fakeVerifyPin2').focus(); } });
-		$scope.$watch('pin.fakeVerifyPin2', function(value){ if(value){ $('#fakeVerifyPin3').focus(); } });
-		$scope.$watch('pin.fakeVerifyPin3', function(value){ if(value){ $('#fakeVerifyPin4').focus(); } });
-		$scope.$watch('pin.fakeVerifyPin4', function(value){ if(value){ } });
+		$scope.$watch('pin.fakeVerifyPin1', function(value){
+			if(value){ $('#fakeVerifyPin2').focus(); }
+		});
+		$scope.$watch('pin.fakeVerifyPin2', function(value){
+			if(value){ $('#fakeVerifyPin3').focus(); }
+			else if($('#fakeVerifyPin1').val() !== '') { $('#fakeVerifyPin1').focus(); }
+		});
+		$scope.$watch('pin.fakeVerifyPin3', function(value){
+			if(value){ $('#fakeVerifyPin4').focus(); }
+			else if($('#fakeVerifyPin2').val() !== '') { $('#fakeVerifyPin2').focus(); }
+		});
+		$scope.$watch('pin.fakeVerifyPin4', function(value){
+			if(value){ }
+			else if($('#fakeVerifyPin3').val() !== '') { $('#fakeVerifyPin3').focus(); }
+		});
 
 		sqlite.query('SELECT * FROM panic_user_details WHERE device_id = ?', [$localStorage.device.uuid], function(user){
+
 			$scope.$apply(function(){
 				$scope.user = {
 					email_address: user.email_address,
@@ -112,6 +152,8 @@ app.controller('InfoController', [
 
 		$scope.addUser = function()
 		{
+			phonegap.stats.event('My Info', 'Add Details', 'Adding Users Info');
+
 			var $name = $('#name');
 			var $email = $('#email');
 			var $phone = $('#phone');
@@ -130,6 +172,8 @@ app.controller('InfoController', [
 
 			if(name.length == 0)
 			{
+				phonegap.stats.event('My Info', 'Add Details Error', 'Empty Name');
+
 				$scope.detailsAlert = 'Enter your Full Name';
 				$name.parent().addClass('has-error');
 				$name.focus();
@@ -137,13 +181,17 @@ app.controller('InfoController', [
 			}
 			if( !valid_full_name.test(name))
 			{
-				$scope.detailsAlert = 'Enter an Valid Full Name';
+				phonegap.stats.event('My Info', 'Add Details Error', 'Invalid Name');
+
+				$scope.detailsAlert = 'Enter a First & Last Name';
 				$name.parent().addClass('has-error');
 				$name.focus();
 				return false;
 			}
 			if(email.length == 0)
 			{
+				phonegap.stats.event('My Info', 'Add Details Error', 'Empty Email');
+
 				$scope.detailsAlert = 'Enter an Email Address';
 				$email.parent().addClass('has-error');
 				$email.focus();
@@ -151,6 +199,8 @@ app.controller('InfoController', [
 			}
 			if( !valid_email.test(email))
 			{
+				phonegap.stats.event('My Info', 'Add Details Error', 'Invalid Email');
+
 				$scope.detailsAlert = 'Enter a Valid Email Address';
 				$email.parent().addClass('has-error');
 				$email.focus();
@@ -158,6 +208,8 @@ app.controller('InfoController', [
 			}
 			if(phone.length == 0)
 			{
+				phonegap.stats.event('My Info', 'Add Details Error', 'Empty Phone Number');
+
 				$scope.detailsAlert = 'Enter an Phone Number';
 				$phone.parent().addClass('has-error');
 				$phone.focus();
@@ -165,6 +217,8 @@ app.controller('InfoController', [
 			}
 			if( !valid_phone.test(phone))
 			{
+				phonegap.stats.event('My Info', 'Add Details Error', 'Invalid Phone Number');
+
 				$scope.detailsAlert = 'Enter an Valid Phone Number';
 				$phone.parent().addClass('has-error');
 				$phone.focus();
@@ -173,7 +227,7 @@ app.controller('InfoController', [
 
 			if(angular.isDefined($localStorage.user))
 			{
-				console.log('$scope.user', $scope.user);
+				phonegap.stats.event('My Info', 'Update Details', 'Updating existing User Details');
 
 				sqlite.query(
 					'UPDATE `panic_user_details` SET `full_name` = ?, `email_address` = ?, `phone_number` = ?, `last_modified` = ? WHERE `device_id` = ?',
@@ -186,16 +240,20 @@ app.controller('InfoController', [
 					],
 					function()
 					{
+						phonegap.stats.event('My Info', 'Update Details Success', 'User Updated their Info');
+
 						$localStorage.user.full_name = $scope.user.full_name;
 						$localStorage.user.email_address = $scope.user.email_address;
 						$localStorage.user.phone_number = $scope.user.phone_number;
 
-						$state.go('app.info', { section: 'picture' });
+						$state.go('app.info', { section: 'enter-pin' });
 					}
 				);
 			}
 			else
 			{
+				phonegap.stats.event('My Info', 'New Details', 'Adding User Details');
+
 				sqlite.query(
 					'INSERT OR REPLACE INTO panic_user_details (device_id, full_name, email_address, phone_number, last_modified) VALUES (?, ?, ?, ?, ?)',
 					[
@@ -207,6 +265,8 @@ app.controller('InfoController', [
 					],
 					function()
 					{
+						phonegap.stats.event('My Info', 'New Details Success', 'Added User Details');
+
 						$localStorage.user = {
 							device_id: $localStorage.device.uuid,
 							full_name: $scope.user.full_name,
@@ -222,6 +282,8 @@ app.controller('InfoController', [
 		};
 
 		$scope.takePicture = function(){
+
+			phonegap.stats.event('My Info', 'Take Picture', 'Taking Picture');
 
 			if(typeof navigator.camera !== 'undefined')
 			{
@@ -261,11 +323,15 @@ app.controller('InfoController', [
 
 		$scope.addPicture = function()
 		{
+			phonegap.stats.event('My Info', 'Add Picture', 'Added Users Picture');
+
 			$state.go('app.info', { section: 'enter-pin' });
 		};
 
 		$scope.addPin = function()
 		{
+			phonegap.stats.event('My Info', 'Security PIN', 'Updating Security PIN');
+
 			$localStorage.pin = $scope.pin;
 			$localStorage.securityPin = $scope.pin.securityPin1 + '' + $scope.pin.securityPin2 + '' + $scope.pin.securityPin3 + '' + $scope.pin.securityPin4;
 
@@ -274,6 +340,10 @@ app.controller('InfoController', [
 			if($localStorage.securityPin.length == 4)
 			{
 				$state.go('app.info', { section: 'verify-pin' });
+			}
+			else
+			{
+				phonegap.stats.event('My Info', 'Security PIN Error', 'Invalid Security PIN');
 			}
 
 			if($scope.pin.securityPin1 == null)
@@ -296,12 +366,16 @@ app.controller('InfoController', [
 
 		$scope.verifyPin = function()
 		{
+			phonegap.stats.event('My Info', 'Verify Security PIN', 'Verifying Security PIN');
+
 			$scope.securityVerifyPin = $scope.pin.securityVerifyPin1 + '' + $scope.pin.securityVerifyPin2 + '' + $scope.pin.securityVerifyPin3 + '' + $scope.pin.securityVerifyPin4;
 
 			$('input.pin').removeClass('error');
 
 			if($localStorage.securityPin == $scope.securityVerifyPin)
 			{
+				phonegap.stats.event('My Info', 'Security PIN Verified', 'User typed same Security PIN');
+
 				sqlite.query(
 					'UPDATE panic_user_details SET security_pin = ?, last_modified = ? WHERE device_id = ?',
 					[
@@ -311,6 +385,8 @@ app.controller('InfoController', [
 					],
 					function()
 					{
+						phonegap.stats.event('My Info', 'Saving Security PIN', 'Updating Users Security PIN');
+
 						$localStorage.user.security_pin = $localStorage.securityPin;
 
 						delete $localStorage.pin;
@@ -319,6 +395,10 @@ app.controller('InfoController', [
 						$state.go('app.info', { section: 'enter-fake-pin' });
 					}
 				);
+			}
+			else
+			{
+				phonegap.stats.event('My Info', 'Verify Security PIN Error', 'Failed to Verify Security PIN');
 			}
 
 			if($localStorage.pin.securityPin1 != $scope.pin.securityVerifyPin1)
@@ -341,14 +421,29 @@ app.controller('InfoController', [
 
 		$scope.addFakePin = function()
 		{
+			phonegap.stats.event('My Info', 'Fake PIN', 'Updating Fake Security PIN');
+
+			$scope.pinAlert = null;
+
 			$localStorage.pin = $scope.pin;
 			$localStorage.fakePin = $scope.pin.fakePin1 + '' + $scope.pin.fakePin2 + '' + $scope.pin.fakePin3 + '' + $scope.pin.fakePin4;
 
 			$('input.pin').removeClass('error');
 
-			if($localStorage.fakePin.length == 4)
+			if($localStorage.fakePin.length == 4 && $localStorage.fakePin !== $localStorage.user.security_pin)
 			{
 				$state.go('app.info', { section: 'verify-fake-pin' });
+			}
+			else if($localStorage.fakePin === $localStorage.user.security_pin)
+			{
+				phonegap.stats.event('My Info', 'Fake PIN Error', 'User typed same Real & Fake Security PINs');
+
+				$scope.pinAlert = 'Real & Fake PINs are Identical.';
+				$('#fakePin1, #fakePin2, #fakePin3, #fakePin4').addClass('error');
+			}
+			else
+			{
+				phonegap.stats.event('My Info', 'Fake PIN Error', 'Invalid Fake Security PIN');
 			}
 
 			if($scope.pin.fakePin1 == null)
@@ -377,6 +472,8 @@ app.controller('InfoController', [
 
 			if($localStorage.fakePin === $scope.fakeVerifyPin)
 			{
+				phonegap.stats.event('My Info', 'Fake PIN Verified', 'User typed same Fake Security PIN');
+
 				sqlite.query(
 					'UPDATE panic_user_details SET fake_security_pin = ?, last_modified = ? WHERE device_id = ?',
 					[
@@ -386,6 +483,8 @@ app.controller('InfoController', [
 					],
 					function()
 					{
+						phonegap.stats.event('My Info', 'Saving Fake Security PIN', 'Updating Users Fake Security PIN');
+
 						$localStorage.user.fake_security_pin = $localStorage.fakePin;
 
 						delete $localStorage.fakePin;

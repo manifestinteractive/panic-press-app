@@ -1,6 +1,12 @@
 app.controller('HistoryController', [
 	'$scope', '$localStorage', '$state', function($scope, $localStorage, $state)
 	{
+		/**
+		 * @todo: Update SQLite to record type, danger & status
+		 */
+
+		phonegap.stats.event('App', 'Page', 'History');
+
 		$scope.history = (angular.isDefined($localStorage.history))
 			? $localStorage.history
 			: {};

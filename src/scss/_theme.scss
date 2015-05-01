@@ -15083,3 +15083,24 @@ input.pin
 	background-color: $panic-red;
 	display: none;
 }
+.contact-info
+{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+li.no-pad
+{
+	padding-left: 0;
+}
+.alert.panic-green
+{
+	background-color: #DDF4E1;
+	border-color: #DDF4E1;
+	color: #356F1D;
+
+	& i.fa
+	{
+		color: #356F1D;
+	}
+}
