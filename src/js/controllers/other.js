@@ -13,7 +13,18 @@ app.controller('OtherController', [
 
 			phonegap.stats.event('Potential Danger', 'Swiped', 'User Swiped ' + direction);
 
-			$state.go('app.home');
+			if(direction == 'left')
+			{
+				$('.danger-zone').addClass('animated fadeOutLeft');
+			}
+			else
+			{
+				$('.danger-zone').addClass('animated fadeOutRight');
+			}
+
+			$timeout(function(){
+				$state.go('app.home');
+			}, 500);
 		};
 	}
 ]);

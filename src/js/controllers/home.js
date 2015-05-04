@@ -22,7 +22,23 @@ app.controller('HomeController', [
 
 			phonegap.stats.event('Immediate Danger', 'Swiped', 'User Swiped ' + direction);
 
-			$state.go('app.other');
+			if(direction == 'left')
+			{
+				$('.danger-zone').addClass('animated fadeOutLeft');
+			}
+			else
+			{
+				$('.danger-zone').addClass('animated fadeOutRight');
+			}
+
+			$timeout(function(){
+				$state.go('app.other');
+			}, 500);
 		};
+
+		if( !angular.isDefined($localStorage.approvedGPS))
+		{
+			$scope.approveGPS();
+		}
 	}
 ]);

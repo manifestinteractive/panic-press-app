@@ -27,21 +27,30 @@
                 <h1 class="headline super hairline">My Emergency Contacts</h1>
             </header>
             <div class="m-b-xl">
+
+                <div class="alert bg-panic-info-light text-panic-info" role="alert" ng-if="contacts.length > 0 && appMode == 'setup'">
+                    <i class="fa fa-exclamation-triangle text-panic-info m-r-xs"></i> Waiting for your first Emergency Contact to Accept your request before we can send notifications.
+                </div>
+
+                <div class="alert bg-panic-info-light text-panic-info text-center" role="alert" ng-if="contacts.length == 0">
+                    <i class="fa fa-exclamation-triangle text-panic-info m-r-xs"></i> No Emergency Contacts
+                </div>
+
                 <ul class="list-fancy-icons color-inverse">
 
-                    <li ng-repeat="contact in contacts" ng-model="showMe" ng-class="{ 'no-pad': !showMe }">
+                    <li class="border-top" ng-repeat="contact in contacts" ng-model="showMe" ng-class="{ 'no-pad': !showMe }">
                         <div class="hex vcenter" ng-click="removeContact(contact.id)" ng-class="{ hide: !showMe }">
                             <i class="fa fa-fw fa-times remove-contact"></i>
                         </div>
                         <p class="contact-info" ng-swipe-right="showMe = true" ng-swipe-left="showMe = false">
-                            <i class="fa fa-fw fa-user text-light m-r-xs"></i>
-                            <strong>{{ contact.full_name }}</strong>
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': ( !contact.verified_email && !contact.verified_phone ), 'fa-user text-dark': ( contact.verified_email || contact.verified_phone ) }"></i>
+                            <strong ng-class="{ 'text-light': ( !contact.verified_email && !contact.verified_phone ) }">{{ contact.full_name }}</strong>
                             <br />
-                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i>
-                            {{ contact.email_address }}
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': !contact.verified_email, 'fa-envelope text-dark': contact.verified_email }"></i>
+                            <span ng-class="{ 'text-light': !contact.verified_email }">{{ contact.email_address }}</span>
                             <br />
-                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i>
-                            {{ contact.phone_number }}
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': !contact.verified_phone, 'fa-phone text-dark': contact.verified_phone }"></i>
+                            <span ng-class="{ 'text-light': !contact.verified_phone }">{{ contact.phone_number | phoneNumber }}</span>
                         </p>
                     </li>
                 </ul>
@@ -144,7 +153,7 @@
                     <span>{{detailsAlert}}</span>
                 </div>
 
-                <form class="contact-form" id="contactForm" novalidate="">
+                <form class="contact-form" id="contactForm" novalidate="" ng-submit="addManualContact();">
                     <div class="form-group form-icon-group">
                         <input class="form-control" person-name ng-model="manual.full_name" id="name" placeholder="Full Name *" type="text" required>
                         <i class="fa fa-user"></i>

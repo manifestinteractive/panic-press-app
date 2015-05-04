@@ -1,12 +1,6 @@
 app.controller('ContactsController', [
-	'$scope', '$localStorage', '$state', '$timeout', function($scope, $localStorage, $state, $timeout)
+	'$scope', '$localStorage', '$state', '$timeout', '$window', '$http', function($scope, $localStorage, $state, $timeout, $window, $http)
 	{
-		/**
-		 * @todo: Notify Emergency Contacts when they are added
-		 * @todo: Update SQLite to store verification of Acceptance of Emergency Contact
-		 * @todo: Update UI to show pending verifications
-		 */
-
 		phonegap.stats.event('App', 'Page', 'Contacts');
 
 		if( !angular.isDefined($localStorage.user))
@@ -17,38 +11,164 @@ app.controller('ContactsController', [
 			return false;
 		}
 
-		$scope.selectedContact = null;
-		$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
+		var transmit_json = {
+			verify: {
+				type: null,
+				info: null,
+				name: null
+			},
+			sender: {
+				name: $localStorage.user.full_name,
+				email: $localStorage.user.email_address,
+				phone: $localStorage.user.phone_number
+			}
+		};
+
+		var notifyContact = function(contact_type, contact_info, full_name)
+		{
+			transmit_json.verify.type = contact_type;
+			transmit_json.verify.info = contact_info;
+			transmit_json.verify.name = full_name;
+
+			var name_parts = full_name.split(' ');
+			var first_name = name_parts[0];
+			var last_name = name_parts[name_parts.length];
+
+			var url_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(transmit_json));
+			var api = $localStorage.settings.app.production.api.url + '?api=' + $localStorage.settings.app.production.api.key;
+
+			$http.jsonp(api + '&callback=JSON_CALLBACK&url=https://i.panic.press/help/verify/?hash='+url_hash).success(function(api_response){
+
+				console.log(contact_type, contact_info, api_response);
+
+				var message_subject = "[ Panic Press ] Emergency Contact Request";
+				var message_text = "Greetings " + first_name + ",\n\n" + transmit_json.sender.name + " has listed you as an Emergency Contact. In an emergency, you may receive notifications. \n\nTo accept: " + api_response.short + "\n\n- Panic Press";
+				var message_html = "Greetings " + first_name + ",<br/><br/>" + transmit_json.sender.name + " has listed you as an Emergency Contact. In an emergency, you may receive notifications. <br/><br/>To accept:  " + api_response.short + "<br/><br/>- Panic Press";
+
+				if(contact_type == 'email')
+				{
+					// Send contact an email
+					if(typeof sendgrid !== 'undefined')
+					{
+						var email = {
+							to: contact_info,
+							toname: full_name,
+							from: "noreply@panic.press",
+							replyto: "noreply@panic.press",
+							fromname: 'Panic Press',
+							subject: message_subject,
+							html: message_html,
+							text: message_text
+						};
+
+						phonegap.stats.event('Contact', 'Verification Email', 'Sending Verification Email');
+
+						sendgrid.send(email, function(sendgrid){
+
+							var status = (sendgrid.message == 'success') ? 'sent' : 'failed';
+
+							sqlite.query(
+								'INSERT OR REPLACE INTO panic_press_notifications (short_url, type, danger, status, message_sent, transmit_json, sent_to, confirmed_sent_date) VALUES (?, ?, ?, ?, ?, ?, ?, DateTime("now"))',
+								[
+									api_response.short,
+									'verification',
+									'none',
+									status,
+									message_text,
+									JSON.stringify(transmit_json),
+									contact_info
+								],
+								function()
+								{
+									$scope.checkNotifications(1000);
+								}
+							);
+
+							if(status == 'failed')
+							{
+								phonegap.notification.alert(
+									'We were not able to send a verification email to ' + contact_info + '. We will not be able send notifications to this Email Address.',
+									function(){},
+									'Unable to Send Email',
+									'OK'
+								);
+
+								phonegap.stats.event('Contact', 'Verification Email Failed', 'Failed to send Verification Email: ' + JSON.stringify(sendgrid) );
+							}
+							else
+							{
+								phonegap.stats.event('Contact', 'Verification Email Success', 'Successfully sent Verification Email');
+							}
+
+						}, function(error){
+
+							phonegap.stats.event('Contact', 'Verification Email Failed', 'Failed to send Verification Email: ' + JSON.stringify(error) );
+
+							phonegap.notification.alert(
+								'We were not able to send a verification email to ' + contact_info + '. We will not be able send notifications to this Email Address.',
+								function(){},
+								'Unable to Send Email',
+								'OK'
+							);
+
+						});
+					}
+				}
+				else if(contact_type == 'phone')
+				{
+					var twilio_json = {
+						message: transmit_json.sender.name + ' has listed you as an Emergency Contact. In an emergency, you may receive notifications. To accept: ' + api_response.short,
+						number: contact_info.replace(/\D/g, '')
+					};
+
+					var twilio_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(twilio_json));
+
+					phonegap.stats.event('Contact', 'Verification Phone', 'Sending Verification Text Message');
+
+					$http.jsonp('https://i.panic.press/twilio/?callback=JSON_CALLBACK&hash=' + twilio_hash).success(function(twilio){
+
+						var status = (twilio.success) ? 'sent' : 'failed';
+
+						sqlite.query(
+							'INSERT OR REPLACE INTO panic_press_notifications (short_url, type, danger, status, message_sent, transmit_json, sent_to, confirmed_sent_date) VALUES (?, ?, ?, ?, ?, ?, ?, DateTime("now"))',
+							[
+								api_response.short,
+								'verification',
+								'none',
+								status,
+								twilio_json.message,
+								JSON.stringify(transmit_json),
+								twilio_json.number
+							],
+							function()
+							{
+								$scope.checkNotifications(1000);
+							}
+						);
+
+						if(status == 'failed')
+						{
+							phonegap.notification.alert(
+								contact_info + ' is not a number that can receive text messages. We will not be able send notifications to this number.',
+								function(){},
+								'Invalid Number',
+								'OK'
+							);
+
+							phonegap.stats.event('Contact', 'Verification Phone Failed', 'Failed to send Verification Text Message: ' + JSON.stringify(twilio) );
+						}
+						else
+						{
+							phonegap.stats.event('Contact', 'Verification Phone Success', 'Successfully sent Verification Text Message');
+						}
+					});
+				}
+			});
+		};
+
 		$scope.modal = {
 			email: null,
 			phone: null
-		};
-
-		$scope.updateContacts = function()
-		{
-			phonegap.stats.event('Contact', 'Update Contacts', 'About to Update Contacts');
-
-			sqlite.query('SELECT * FROM panic_emergency_contacts', [], function(contacts){
-
-				// make contacts an array if its not already
-				if(typeof contacts.id !== 'undefined')
-				{
-					contacts = [contacts];
-				}
-
-				phonegap.stats.event('Contact', 'Update Contacts Success', 'User now has '+ contacts.length +' Contacts');
-
-				$localStorage.contacts = contacts;
-
-				$scope.$apply(function(){
-					$scope.selectedContact = null;
-					$scope.contacts = contacts;
-					$scope.remainingContacts = ( $scope.maxContacts - contacts.length );
-					$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
-
-					$scope.updateMode();
-				});
-			});
 		};
 
 		$scope.pickContact = function()
@@ -84,13 +204,13 @@ app.controller('ContactsController', [
 		{
 			phonegap.stats.event('Contact', 'Add Contact', 'Adding a New Contact');
 
-			if($scope.modal.email || $scope.modal.phone)
+			if($scope.modal.email && $scope.modal.phone)
 			{
 				phonegap.stats.event('Contact', 'Add Contact Success', 'Added New Contact');
 
 				var unique_id = $scope.selectedContact.rawId || Date.now();
-				var email_address = $scope.modal.email || '';
-				var phone_number = $scope.modal.phone || '';
+				var email_address = $scope.modal.email;
+				var phone_number = $scope.modal.phone;
 				var image_data = ( $scope.selectedContact.photos ) ? $scope.selectedContact.photos[0].value : '';
 
 				sqlite.query(
@@ -108,6 +228,9 @@ app.controller('ContactsController', [
 					{
 						$('.contact-details').modal('hide');
 						$scope.updateContacts();
+
+						notifyContact('email', email_address, $scope.selectedContact.name.formatted);
+						notifyContact('phone', phone_number, $scope.selectedContact.name.formatted);
 					}
 				);
 			}
@@ -219,6 +342,9 @@ app.controller('ContactsController', [
 
 					$('.add-contact').modal('hide');
 					$scope.updateContacts();
+
+					notifyContact('email', email_address, full_name);
+					notifyContact('phone', phone_number, full_name);
 				}
 			);
 		};

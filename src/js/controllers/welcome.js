@@ -48,8 +48,8 @@ app.controller('WelcomeController', [
 
 			$('#homeLogo').removeClass().addClass('fadeOut homeLogo');
 
-			$('.start-button').addClass('animated fadeOutRightBig');
 			$('.fadeOut').addClass('animated fadeOutUp');
+			$('.start-button').addClass('animated fadeOut');
 
 			$timeout(function(){
 				$state.go('app.info', { section: 'details' });

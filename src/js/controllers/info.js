@@ -107,6 +107,12 @@ app.controller('InfoController', [
 
 		sqlite.query('SELECT * FROM panic_user_details WHERE device_id = ?', [$localStorage.device.uuid], function(user){
 
+			// check if we have no user
+			if(user.empty)
+			{
+				user = [];
+			}
+
 			$scope.$apply(function(){
 				$scope.user = {
 					email_address: user.email_address,

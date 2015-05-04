@@ -28,13 +28,18 @@ var phonegap = {
 	{
 		if(event == 'deviceready')
 		{
-			angular.bootstrap(document.body, ['app']);
+			// Initialize Database
+			if(typeof sqlite !== 'undefined')
+			{
+				sqlite.init(function(){
+					angular.bootstrap(document.body, ['app']);
+				});
+			}
 		}
 		else if(event == 'manual')
 		{
 			phonegap.events.deviceReady();
 		}
-
 	}
 };
 
@@ -52,12 +57,6 @@ phonegap.events = {
 		setTimeout(init_jquery, 100);
 
 		phonegap.stats.event('App', 'Event', 'Device Ready');
-
-		// Initialize Database
-		if(typeof sqlite !== 'undefined')
-		{
-			sqlite.init();
-		}
 
 		// Get Network Info
 		if(typeof navigator.connection !== 'undefined')

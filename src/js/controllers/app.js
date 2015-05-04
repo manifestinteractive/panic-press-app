@@ -1,5 +1,5 @@
 app.controller('AppController', [
-	'$scope', '$localStorage', '$state', '$http', '$window', function($scope, $localStorage, $state, $http, $window)
+	'$scope', '$localStorage', '$state', '$http', '$window', '$timeout', function($scope, $localStorage, $state, $http, $window, $timeout)
 	{
 		// Check if user is in danger and redirect if they are
 		if(angular.isDefined($localStorage.danger) && $scope.currentPage !== 'app.danger' && $scope.currentPage !== 'app.pin')
@@ -9,35 +9,600 @@ app.controller('AppController', [
 				danger: $localStorage.danger.danger,
 				status: 'sent'
 			});
+
+			return false;
 		}
 
+		/**
+		 * --------------------------------------------------
+		 * Scope Variables
+		 * --------------------------------------------------
+		 */
+
 		// Application Variables
-		$scope.appMode = (angular.isDefined($localStorage.appMode))
-			? $localStorage.appMode
-			: 'setup';
-
-		$scope.rateAppReminder = (angular.isDefined($localStorage.rateAppReminder))
-			? $localStorage.rateAppReminder
-			: 0;
-
-		$scope.updateAppReminder = (angular.isDefined($localStorage.updateAppReminder))
-			? $localStorage.updateAppReminder
-			: 0;
-
-		$scope.settings = (angular.isDefined($localStorage.settings))
-			? $localStorage.settings
-			: {};
+		$scope.appMode = (angular.isDefined($localStorage.appMode)) ? $localStorage.appMode : 'setup';
+		$scope.rateAppReminder = (angular.isDefined($localStorage.rateAppReminder)) ? $localStorage.rateAppReminder : 0;
+		$scope.updateAppReminder = (angular.isDefined($localStorage.updateAppReminder)) ? $localStorage.updateAppReminder : 0;
+		$scope.settings = (angular.isDefined($localStorage.settings)) ? $localStorage.settings : {};
+		$scope.notifications = (angular.isDefined($localStorage.notifications)) ? $localStorage.notifications : {};
 
 		// Contact Settings
 		$scope.maxContacts = 3;
 		$scope.remainingContacts = $scope.maxContacts;
+		$scope.selectedContact = null;
+		$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
+		$scope.checkForNotifications = true;
+		$scope.checkInterval = 5000;
+		$scope.checker = 5000;
 
 		// User Settings
 		$scope.userHasContacts = false;
 		$scope.contacts = [];
-		$scope.user = (angular.isDefined($localStorage.user))
-			? $localStorage.user
-			: {};
+		$scope.user = (angular.isDefined($localStorage.user)) ? $localStorage.user : {};
+
+		/**
+		 * --------------------------------------------------
+		 * Scope Functions
+		 * --------------------------------------------------
+		 */
+
+		/**
+		 * Initialize Application
+		 */
+		$scope.init = function()
+		{
+			// Check for Notification Updates
+			$scope.checkNotifications();
+
+			// Fetch User Details
+			sqlite.query('SELECT * FROM panic_user_details WHERE device_id = ?', [$localStorage.device.uuid], function(user){
+
+				// check if we have no users
+				if(user.empty)
+				{
+					return false;
+				}
+
+				$scope.$apply(function(){
+
+					$scope.user = {
+						email_address: user.email_address,
+						fake_security_pin: user.fake_security_pin,
+						full_name: user.full_name,
+						phone_number: user.phone_number,
+						profile_picture_url: user.profile_picture_url,
+						security_pin: user.security_pin
+					};
+
+					if(user.full_name)
+					{
+						$localStorage.user = $scope.user;
+					}
+				});
+			});
+
+			// Fetch User Contacts
+			sqlite.query('SELECT * FROM panic_emergency_contacts', [], function(contacts){
+
+				// check if we have no contacts
+				if(contacts.empty)
+				{
+					contacts = [];
+				}
+
+				if(contacts.length > 0)
+				{
+					$scope.$apply(function(){
+						$scope.userHasContacts = true;
+					});
+				}
+
+				// make contacts an array if its not already
+				if(typeof contacts.id !== 'undefined')
+				{
+					contacts = [contacts];
+					$localStorage.contacts = contacts;
+					$scope.contacts = contacts;
+				}
+			});
+		};
+
+		/**
+		 * Ask User to Approve GPS access
+		 */
+		$scope.approveGPS = function()
+		{
+			phonegap.stats.event('App', 'Approve GPS', 'Requesting GPS Access');
+
+			phonegap.notification.confirm(
+				"Panic Press needs permission to access your GPS location.",
+				function(selection){
+					if(selection == 2 && typeof navigator.geolocation !== 'undefined')
+					{
+						var options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
+
+						navigator.geolocation.getCurrentPosition(function(position){
+
+							phonegap.stats.event('App', 'Approve GPS Accepted', 'Approved in: ' + position.coords.latitude + ',' + position.coords.longitude);
+
+							$localStorage.approvedGPS = true;
+
+						}, function(){
+
+							phonegap.stats.event('App', 'Approve GPS Accepted', 'Unable to obtain location Information');
+
+						}, options);
+					}
+					else
+					{
+						phonegap.stats.event('App', 'Approve GPS Declined', 'User declined access to GPS' );
+
+						phonegap.notification.alert(
+							'Panic Press will not work without GPS. Please "Allow GPS" when prompted again.',
+							function(){},
+							'GPS Required',
+							'OK'
+						);
+					}
+				},
+				"Requesting GPS Access",
+				['Not Now', 'Allow GPS']
+			);
+		};
+
+		/**
+		 * Update Emergency Contacts
+		 */
+		$scope.updateContacts = function()
+		{
+			phonegap.stats.event('Contact', 'Update Contacts', 'About to Update Contacts');
+
+			sqlite.query('SELECT * FROM panic_emergency_contacts', [], function(contacts){
+
+				// check if we have no contacts
+				if(contacts.empty)
+				{
+					contacts = [];
+				}
+				// make contacts an array if its not already
+				else if(typeof contacts.id !== 'undefined')
+				{
+					contacts = [contacts];
+				}
+
+				phonegap.stats.event('Contact', 'Update Contacts Success', 'User now has '+ contacts.length +' Contacts');
+
+				$localStorage.contacts = contacts;
+
+				$scope.$apply(function(){
+					$scope.selectedContact = null;
+					$scope.contacts = contacts;
+					$scope.remainingContacts = ( $scope.maxContacts - contacts.length );
+					$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
+
+					$scope.updateMode();
+				});
+			});
+		};
+
+		/**
+		 * Prompt User to Rate Application
+		 *
+		 * @param immediately
+		 */
+		$scope.rateApp = function(immediately)
+		{
+			// Check for AppRate Plugin
+			if(typeof AppRate !== 'undefined')
+			{
+				// Configure Languate
+				var customLocale = {
+					title: "Rate Panic Press",
+					message: "If you enjoy using Panic Press, would you mind taking a moment to rate it? It won’t take more than a minute. Thanks for your support!",
+					cancelButtonLabel: "No, Thanks",
+					laterButtonLabel: "Remind Me Later",
+					rateButtonLabel: "Rate It Now"
+				};
+
+				// Setup AppRate Preferences
+				AppRate.preferences.openStoreInApp = true;
+				AppRate.preferences.storeAppURL.ios = $scope.settings.app.store.ios;
+				AppRate.preferences.storeAppURL.android = $scope.settings.app.store.android;
+				AppRate.preferences.customLocale = customLocale;
+				AppRate.preferences.displayAppName = $scope.settings.app.name;
+				AppRate.preferences.usesUntilPrompt = 5;
+				AppRate.preferences.promptAgainForEachNewVersion = false;
+				AppRate.preferences.callbacks.onButtonClicked = function(buttonIndex)
+				{
+					// No Thanks ( Never ask again )
+					if(buttonIndex == 1)
+					{
+						$scope.rateAppReminder = $localStorage.rateAppReminder = -1;
+					}
+
+					// Remind Me Later
+					if(buttonIndex == 2)
+					{
+						$scope.rateAppReminder = $localStorage.rateAppReminder = 10;
+					}
+
+					// Rate it Now ( Never ask again )
+					if(buttonIndex == 3)
+					{
+						$scope.rateAppReminder = $localStorage.rateAppReminder = -1;
+					}
+				};
+
+				if($scope.rateAppReminder == 0)
+				{
+					AppRate.promptForRating(immediately);
+				}
+				else
+				{
+					$scope.rateAppReminder -= 1;
+				}
+			}
+		};
+
+		/**
+		 * Use Cordova's InAppBrowser Plugin
+		 *
+		 * @param url Website to open
+		 * @param target Options are _self, _blank & _system
+		 * @param loadstart Callback for when browser load starts
+		 * @param loadstop Callback for when browser load stops
+		 * @param loaderror Callback for when browser has an error
+		 * @param exit
+		 */
+		$scope.openBrowser = function(url, target, loadstart, loadstop, loaderror, exit)
+		{
+			if( !target)
+			{
+				target = '_blank';
+			}
+
+			if(typeof cordova !== 'undefined' && typeof cordova.InAppBrowser !== 'undefined')
+			{
+				var new_window = cordova.InAppBrowser.open(url, target, 'location=no');
+
+				if(typeof loadstart == 'function')
+				{
+					new_window.addEventListener('loadstart', loadstart);
+				}
+
+				if(typeof loadstop == 'function')
+				{
+					new_window.addEventListener('loadstop', loadstop);
+				}
+
+				if(typeof loaderror == 'function')
+				{
+					new_window.addEventListener('loaderror', loaderror);
+				}
+
+				if(typeof exit == 'function')
+				{
+					new_window.addEventListener('exit', exit);
+				}
+			}
+			else
+			{
+				window.open(url, '_system');
+			}
+		};
+
+		/**
+		 * Get the current application mode
+		 * @param callback
+		 * @returns {*|string|string}
+		 */
+		$scope.getMode = function(callback)
+		{
+			if(typeof callback == 'function')
+			{
+				callback($scope.appMode);
+			}
+			else
+			{
+				return $scope.appMode;
+			}
+		};
+
+		/**
+		 * Change the Application Mode
+		 * @param callback
+		 */
+		$scope.updateMode = function(callback)
+		{
+			var is_ready = false;
+
+			if(angular.isDefined($localStorage.user) && angular.isDefined($localStorage.contacts))
+			{
+				if($localStorage.contacts.length > 0 && $localStorage.user.email_address && $localStorage.user.fake_security_pin && $localStorage.user.full_name && $localStorage.user.phone_number && $localStorage.user.security_pin)
+				{
+					for(var i=0; i<$localStorage.contacts.length; i++)
+					{
+						if($localStorage.contacts[i].verified_email || $localStorage.contacts[i].verified_phone)
+						{
+							is_ready = true;
+							break;
+						}
+					}
+				}
+			}
+
+			$scope.appMode = (is_ready) ? 'ready' : 'setup';
+
+			if(typeof callback == 'function')
+			{
+				callback();
+			}
+		};
+
+		/**
+		 * Check for Updates to Notifications we've sent with Exponential Backoff
+		 */
+		$scope.checkNotifications = function(checkInterval)
+		{
+			phonegap.stats.event('App', 'Notifications', 'Checking Notification Status' );
+
+			if($scope.checker)
+			{
+				$timeout.cancel($scope.checker);
+			}
+
+			if(checkInterval)
+			{
+				$scope.checkForNotifications = true;
+				$scope.checkInterval = checkInterval;
+			}
+
+			if($scope.checkForNotifications == false)
+			{
+				if($scope.checker)
+				{
+					$timeout.cancel($scope.checker);
+				}
+
+				phonegap.stats.event('App', 'Notifications', 'No Notifications to Check' );
+
+				return false;
+			}
+
+			// Check for message less than an hour old
+			sqlite.query('SELECT * FROM panic_press_notifications WHERE status = ? AND created_at > datetime("now", "-1 day")', ['sent'], function(notifications){
+
+				// check if we have no notifications
+				if(notifications.empty)
+				{
+					notifications = [];
+				}
+				// Convert to array if only one notification was found
+				else if(typeof notifications.id !== 'undefined')
+				{
+					notifications = [notifications];
+				}
+
+				// Save results to local storage
+				$localStorage.notifications = notifications;
+
+				var short = null;
+				var notification = {};
+
+				// Check if we have any results
+				if(notifications.length > 0)
+				{
+					phonegap.stats.event('App', 'Notifications', 'There are ' + notifications.length + ' that have not been received.' );
+
+					var api = $localStorage.settings.app.production.api.url + '?api=' + $localStorage.settings.app.production.api.key;
+
+					// Loop through results
+					for(var i=0; i<notifications.length; i++)
+					{
+						// Just get the short code from URL
+						notification = notifications[i];
+						short = notification.short_url.replace('https://i.panic.press/', '');
+
+						phonegap.stats.event('App', 'Notifications', 'Checking status of ' + short );
+
+						// Check Status of Short Code for Clicks
+						$http.jsonp(api + '&callback=JSON_CALLBACK&short=' + short).success(function(update){
+
+							// User Visited Short Code
+							if(update.click > 0)
+							{
+								phonegap.stats.event('App', 'Notification Received', 'Notification ' + short + ' was received.' );
+
+								// Update Notification Statis
+								sqlite.query(
+									'UPDATE `panic_press_notifications` SET `status` = ?, `confirmed_received_date` = DateTime("now") WHERE `short_url` = ?',
+									[
+										'received',
+										notification.short_url
+									],
+									function()
+									{
+										// No more need to check notifications
+										if(notifications.length <= 1)
+										{
+											phonegap.stats.event('App', 'Notification Check Complete', 'All Notifications are cleared.' );
+
+											$scope.checkForNotifications = false;
+										}
+										// Some notifications were not cleared, let's recheck
+										else
+										{
+											phonegap.stats.event('App', 'Notification Recheck Required', 'There were some notifications that were not cleared.' );
+
+											$scope.checkForNotifications = true;
+											$scope.checker = $timeout(function(){
+												$scope.checkNotifications();
+											}, $scope.checkInterval);
+										}
+									}
+								);
+
+								// Check if this was to verify an emergency contact
+								if(notification.type == 'verification')
+								{
+									// Update and Email Addresses found
+									sqlite.query(
+										'UPDATE `panic_emergency_contacts` SET `verified_email` = DateTime("now"), `last_modified` = DateTime("now") WHERE `email_address` = ?',
+										[
+											notification.sent_to
+										],
+										function(results)
+										{
+											// Check if we found an update
+											if(results.rows_affected > 0)
+											{
+												phonegap.stats.event('App', 'Notification Verified Email Address', 'Verified Emergency Contacts Email Address.');
+												$scope.updateContacts();
+
+												phonegap.notification.alert(
+													notification.sent_to + ' has verified this Email Address for use as an Emergency Contact.',
+													function(){},
+													'Email Address Verified',
+													'OK'
+												);
+											}
+										}
+									);
+
+									// Update any Phone Numbers found
+									sqlite.query(
+										'UPDATE `panic_emergency_contacts` SET `verified_phone` = DateTime("now"), `last_modified` = DateTime("now") WHERE `phone_number` = ?',
+										[
+											notification.sent_to
+										],
+										function(results)
+										{
+											// Check if we found an update
+											if(results.rows_affected > 0)
+											{
+												phonegap.stats.event('App', 'Notification Verified Email Address', 'Verified Emergency Contacts Email Address.');
+												$scope.updateContacts();
+
+												phonegap.notification.alert(
+													phonenNumber(notification.sent_to) + ' has verified this Phone Number for use as an Emergency Contact.',
+													function(){},
+													'Phone Number Verified',
+													'OK'
+												);
+											}
+										}
+									);
+								}
+							}
+							else
+							{
+								phonegap.stats.event('App', 'Notification Not Received', 'Notification ' + short + ' was not received.' );
+								phonegap.stats.event('App', 'Notification Recheck Required', 'There were some notifications that were not cleared.' );
+
+								$scope.checkForNotifications = true;
+								$scope.checker = $timeout(function(){
+									$scope.checkNotifications();
+								}, $scope.checkInterval);
+							}
+						});
+					}
+				}
+				else
+				{
+					phonegap.stats.event('App', 'Notifications', 'No Notifications Found needing Checked' );
+				}
+			});
+
+			$scope.checkInterval = ($scope.checkInterval * 2);
+		};
+
+		/**
+		 * --------------------------------------------------
+		 * Watch for Scope Changes
+		 * --------------------------------------------------
+		 */
+
+		// Watch for changes to Contacts
+		$scope.$watch('contacts', function(contacts, old_value){
+
+			if(contacts.length > 0)
+			{
+				$localStorage.contacts = contacts;
+				$scope.userHasContacts = (contacts.length > 0);
+			}
+
+			$scope.$broadcast('contactsChanged', contacts);
+
+			phonegap.stats.event('App', 'Scope Change', 'User Updated their Emergency Contacts' );
+
+			$scope.updateMode();
+		});
+
+		// Watch for changes to User
+		$scope.$watch('user', function(user, old_value){
+
+			if(user.full_name)
+			{
+				$localStorage.user = user;
+			}
+
+			$scope.$broadcast('userChanged', user);
+
+			phonegap.stats.event('App', 'Scope Change', 'User Updated their Account Details' );
+
+			$scope.updateMode();
+		});
+
+		// Watch for changes to App Mode
+		$scope.$watch('appMode', function(mode, old_value){
+			$localStorage.appMode = mode;
+			$scope.$broadcast('appModeChanged', mode)
+
+			phonegap.stats.event('App', 'Scope Change', 'App Mode Changed to ' + mode );
+		});
+
+		// Watch for changes to App Reminder
+		$scope.$watch('updateAppReminder', function(count, old_value){
+
+			// Reset notification after 5 dismissals
+			if(count >= 5)
+			{
+				count = 0;
+			}
+
+			$localStorage.updateAppReminder = count;
+
+			$scope.$broadcast('updateAppReminderChanged', count);
+
+			phonegap.stats.event('App', 'Scope Change', 'App Rating Reminder Changed to ' + count );
+		});
+
+		// Watch for changes to whether we should recheck notifications
+		$scope.$watch('checkForNotifications', function(check, old_value){
+			$scope.$broadcast('checkForNotificationsChanged', check);
+
+			if(old_value == false && check == true)
+			{
+				$scope.checkNotifications();
+			}
+
+			var bool_text = (check) ? 'True' : 'False';
+
+			phonegap.stats.event('App', 'Scope Change', 'Check For Notifications Changed to ' + bool_text );
+		});
+
+		// Watch for changes to Notifications
+		$scope.$watch('notifications', function(notifications, old_value){
+			$scope.$broadcast('notificationsChanged', notifications);
+
+			phonegap.stats.event('App', 'Scope Change', 'Notifications Changed' );
+		});
+
+		/**
+		 * --------------------------------------------------
+		 * Fetch Remote Settings
+		 * --------------------------------------------------
+		 */
 
 		// Fetch App Settings
 		$http.get('settings.json').success(function(data){
@@ -49,7 +614,7 @@ app.controller('AppController', [
 			$localStorage.settings = data;
 		});
 
-		// Check for new version
+		// Check for New Version
 		$http.get('https://i.panic.press/mobile_app_info.json').success(function(mobile_app_info){
 
 			var include_beta = ($scope.settings.app.environment == 'development');
@@ -109,213 +674,6 @@ app.controller('AppController', [
 				}
 
 				$scope.updateAppReminder += 1;
-			}
-		});
-
-		$scope.swipe = function(direction)
-		{
-			console.log(direction);
-		};
-
-		// Common Functions
-		$scope.rateApp = function(immediatley)
-		{
-			if(typeof AppRate !== 'undefined')
-			{
-				var customLocale = {
-					title: "Rate Panic Press",
-					message: "If you enjoy using Panic Press, would you mind taking a moment to rate it? It won’t take more than a minute. Thanks for your support!",
-					cancelButtonLabel: "No, Thanks",
-					laterButtonLabel: "Remind Me Later",
-					rateButtonLabel: "Rate It Now"
-				};
-
-				AppRate.preferences.openStoreInApp = true;
-				AppRate.preferences.storeAppURL.ios = $scope.settings.app.store.ios;
-				AppRate.preferences.storeAppURL.android = $scope.settings.app.store.android;
-				AppRate.preferences.customLocale = customLocale;
-				AppRate.preferences.displayAppName = $scope.settings.app.name;
-				AppRate.preferences.usesUntilPrompt = 5;
-				AppRate.preferences.promptAgainForEachNewVersion = false;
-				AppRate.preferences.callbacks.onButtonClicked = function(buttonIndex)
-				{
-					// No Thanks ( Never ask again )
-					if(buttonIndex == 1)
-					{
-						$scope.rateAppReminder = $localStorage.rateAppReminder = -1;
-					}
-
-					// Remind Me Later
-					if(buttonIndex == 2)
-					{
-						$scope.rateAppReminder = $localStorage.rateAppReminder = 10;
-					}
-
-					// Rate it Now ( Never ask again )
-					if(buttonIndex == 3)
-					{
-						$scope.rateAppReminder = $localStorage.rateAppReminder = -1;
-					}
-				};
-
-				if($scope.rateAppReminder == 0)
-				{
-					AppRate.promptForRating(immediatley);
-				}
-				else
-				{
-					$scope.rateAppReminder -= 1;
-				}
-			}
-		};
-
-		$scope.openBrowser = function(url, target, loadstart, loadstop, loaderror, exit)
-		{
-			if( !target)
-			{
-				target = '_blank';
-			}
-
-			if(typeof cordova !== 'undefined' && typeof cordova.InAppBrowser !== 'undefined')
-			{
-				var new_window = cordova.InAppBrowser.open(url, target, 'location=no');
-
-				if(typeof loadstart == 'function')
-				{
-					new_window.addEventListener('loadstart', loadstart);
-				}
-
-				if(typeof loadstop == 'function')
-				{
-					new_window.addEventListener('loadstop', loadstop);
-				}
-
-				if(typeof loaderror == 'function')
-				{
-					new_window.addEventListener('loaderror', loaderror);
-				}
-
-				if(typeof exit == 'function')
-				{
-					new_window.addEventListener('exit', exit);
-				}
-			}
-			else
-			{
-				window.open(url, '_system');
-			}
-		};
-
-		$scope.getMode = function(callback)
-		{
-			if(typeof callback == 'function')
-			{
-				callback($scope.appMode);
-			}
-			else
-			{
-				return $scope.appMode;
-			}
-		};
-
-		// Watch for Changes
-		$scope.updateMode = function(callback)
-		{
-			if(angular.isDefined($localStorage.user) && angular.isDefined($localStorage.contacts))
-			{
-				if($localStorage.contacts.length > 0 && $localStorage.user.email_address && $localStorage.user.fake_security_pin && $localStorage.user.full_name && $localStorage.user.phone_number && $localStorage.user.security_pin)
-				{
-					$scope.appMode = 'ready';
-				}
-				else {
-					$scope.appMode = 'setup';
-				}
-			}
-			else
-			{
-				$scope.appMode = 'setup';
-			}
-
-			if(typeof callback == 'function')
-			{
-				callback();
-			}
-		};
-
-		$scope.$watch('contacts', function(contacts){
-
-			if(contacts.length > 0)
-			{
-				$localStorage.contacts = contacts;
-				$scope.userHasContacts = (contacts.length > 0);
-			}
-
-			$scope.updateMode();
-		});
-
-		$scope.$watch('user', function(user){
-
-			if(user.full_name)
-			{
-				$localStorage.user = user;
-			}
-
-			$scope.updateMode();
-		});
-
-		// Store Mode
-		$scope.$watch('appMode', function(mode){
-			$localStorage.appMode = mode;
-		});
-
-		$scope.$watch('updateAppReminder', function(count){
-
-			// Reset notification after 5 dismissals
-			if(count >= 5)
-			{
-				count = 0;
-			}
-
-			$localStorage.updateAppReminder = count;
-		});
-
-
-		// Fetch User Details
-		sqlite.query('SELECT * FROM panic_user_details WHERE device_id = ?', [$localStorage.device.uuid], function(user){
-
-			$scope.$apply(function(){
-
-				$scope.user = {
-					email_address: user.email_address,
-					fake_security_pin: user.fake_security_pin,
-					full_name: user.full_name,
-					phone_number: user.phone_number,
-					profile_picture_url: user.profile_picture_url,
-					security_pin: user.security_pin
-				};
-
-				if(user.full_name)
-				{
-					$localStorage.user = $scope.user;
-				}
-			});
-		});
-
-		// Fetch User Contacts
-		sqlite.query('SELECT * FROM panic_emergency_contacts', [], function(contacts){
-			if(contacts.length > 0)
-			{
-				$scope.$apply(function(){
-					$scope.userHasContacts = true;
-				});
-			}
-
-			// make contacts an array if its not already
-			if(typeof contacts.id !== 'undefined')
-			{
-				contacts = [contacts];
-				$localStorage.contacts = contacts;
-				$scope.contacts = contacts;
 			}
 		});
 	}
