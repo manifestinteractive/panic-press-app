@@ -22,9 +22,7 @@ app.controller('OtherController', [
 				$('.danger-zone').addClass('animated fadeOutRight');
 			}
 
-			$timeout(function(){
-				$state.go('app.home');
-			}, 500);
+			$state.go('app.home');
 		};
 	}
 ]);

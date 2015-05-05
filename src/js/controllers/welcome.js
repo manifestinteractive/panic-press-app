@@ -53,7 +53,7 @@ app.controller('WelcomeController', [
 
 			$timeout(function(){
 				$state.go('app.info', { section: 'details' });
-			}, 650);
+			}, 300);
 		};
 
 		$scope.swipeStart = function(direction)

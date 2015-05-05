@@ -31,12 +31,10 @@ app.controller('HomeController', [
 				$('.danger-zone').addClass('animated fadeOutRight');
 			}
 
-			$timeout(function(){
-				$state.go('app.other');
-			}, 500);
+			$state.go('app.other');
 		};
 
-		if( !angular.isDefined($localStorage.approvedGPS))
+		if($scope.appMode == 'ready' && !angular.isDefined($localStorage.approvedGPS))
 		{
 			$scope.approveGPS();
 		}

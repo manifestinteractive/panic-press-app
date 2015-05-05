@@ -210,8 +210,9 @@ app.controller('ContactsController', [
 
 				var unique_id = $scope.selectedContact.rawId || Date.now();
 				var email_address = $scope.modal.email;
-				var phone_number = $scope.modal.phone;
+				var phone_number = $scope.modal.phone.replace(/\D/g, '');
 				var image_data = ( $scope.selectedContact.photos ) ? $scope.selectedContact.photos[0].value : '';
+				var full_name = $scope.selectedContact.name.formatted;
 
 				sqlite.query(
 					'INSERT OR REPLACE INTO panic_emergency_contacts (unique_id, full_name, first_name, last_name, email_address, phone_number, image_data) VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -221,7 +222,7 @@ app.controller('ContactsController', [
 						$scope.selectedContact.name.givenName,
 						$scope.selectedContact.name.familyName,
 						email_address,
-						phone_number.replace(/\D/g, ''),
+						phone_number,
 						image_data
 					],
 					function()
@@ -229,8 +230,8 @@ app.controller('ContactsController', [
 						$('.contact-details').modal('hide');
 						$scope.updateContacts();
 
-						notifyContact('email', email_address, $scope.selectedContact.name.formatted);
-						notifyContact('phone', phone_number, $scope.selectedContact.name.formatted);
+						notifyContact('email', email_address, full_name);
+						notifyContact('phone', phone_number, full_name);
 					}
 				);
 			}
@@ -306,6 +307,7 @@ app.controller('ContactsController', [
 				return false;
 			}
 			if( !valid_phone.test(phone))
+			if( !valid_phone.test(phone))
 			{
 				phonegap.stats.event('Contact', 'Manual Contact Error', 'Invalid Phone Number');
 
@@ -318,7 +320,7 @@ app.controller('ContactsController', [
 			var unique_id = Date.now();
 			var full_name = $scope.manual.full_name;
 			var email_address = $scope.manual.email_address;
-			var phone_number = $scope.manual.phone_number;
+			var phone_number = $scope.manual.phone_number.replace(/\D/g, '');
 			var image_data = '';
 
 			var name_parts = full_name.split(' ');

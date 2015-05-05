@@ -8,13 +8,10 @@
         With a single tap, Panic Press automatically notifies your Emergency Contacts when you're in danger. Access your Safety Net from your favorite Apple iOS or Android Device.
     </description>
 
-    <preference name="AutoHideSplashScreen" value="false" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="AllowInlineMediaPlayback" value="true" />
     <preference name="BackgroundColor" value="0xffe74c3c" />
     <preference name="BackupWebStorage" value="cloud"/>
-    <preference name="SplashScreen" value="screen" />
-    <preference name="SplashScreenDelay" value="3000" />
     <preference name="fullscreen" value="true" />
     <preference name="orientation" value="portrait" />
     <preference name="target-device" value="handset" />
@@ -22,17 +19,16 @@
     <preference name="android-minSdkVersion" value="21" />
     <preference name="android-targetSdkVersion" value="22" />
     <preference name="android-installLocation" value="auto" />
-    <preference name="splash-screen-duration" value="3000" />
-    <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <preference name="ShowSplashScreenSpinner" value="false" />
-
     <preference name="StatusBarOverlaysWebView" value="false"/>
     <preference name="StatusBarBackgroundColor" value="#e74c3c"/>
     <preference name="StatusBarStyle" value="lightcontent" />
     <preference name="Orientation" value="portrait" />
 
-    <preference name="show-splash-screen-spinner" value="false" />
     <preference name="detect-data-types" value="false" />
+
+    <preference name="show-splash-screen-spinner" value="false" />
+    <preference name="auto-hide-splash-screen" value="false" />
 
     <gap:config-file platform="android" parent="/manifest">
         <supports-screens android:xlargeScreens="false" android:largeScreens="false" android:smallScreens="false" />

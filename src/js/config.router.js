@@ -68,7 +68,7 @@ angular.module('app').run([
 	'$stateProvider', '$urlRouterProvider',
 	function($stateProvider, $urlRouterProvider)
 	{
-		$urlRouterProvider.otherwise('/app/home');
+		$urlRouterProvider.otherwise('/app/welcome');
 		
 		$stateProvider
 		.state('app', {

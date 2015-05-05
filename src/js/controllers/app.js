@@ -25,6 +25,7 @@ app.controller('AppController', [
 		$scope.updateAppReminder = (angular.isDefined($localStorage.updateAppReminder)) ? $localStorage.updateAppReminder : 0;
 		$scope.settings = (angular.isDefined($localStorage.settings)) ? $localStorage.settings : {};
 		$scope.notifications = (angular.isDefined($localStorage.notifications)) ? $localStorage.notifications : {};
+		$scope.timeout = null;
 
 		// Contact Settings
 		$scope.maxContacts = 3;
@@ -112,6 +113,8 @@ app.controller('AppController', [
 		 */
 		$scope.approveGPS = function()
 		{
+			$localStorage.approvedGPS = true;
+
 			phonegap.stats.event('App', 'Approve GPS', 'Requesting GPS Access');
 
 			phonegap.notification.confirm(
@@ -125,8 +128,6 @@ app.controller('AppController', [
 
 							phonegap.stats.event('App', 'Approve GPS Accepted', 'Approved in: ' + position.coords.latitude + ',' + position.coords.longitude);
 
-							$localStorage.approvedGPS = true;
-
 						}, function(){
 
 							phonegap.stats.event('App', 'Approve GPS Accepted', 'Unable to obtain location Information');
@@ -137,12 +138,7 @@ app.controller('AppController', [
 					{
 						phonegap.stats.event('App', 'Approve GPS Declined', 'User declined access to GPS' );
 
-						phonegap.notification.alert(
-							'Panic Press will not work without GPS. Please "Allow GPS" when prompted again.',
-							function(){},
-							'GPS Required',
-							'OK'
-						);
+						phonegap.notification.center('Setup Incomplete', 'Panic Press needs permission to access your GPS location.');
 					}
 				},
 				"Requesting GPS Access",
@@ -180,7 +176,8 @@ app.controller('AppController', [
 					$scope.remainingContacts = ( $scope.maxContacts - contacts.length );
 					$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
 
-					$scope.updateMode();
+					$timeout.cancel($scope.timeout);
+					$scope.timeout = $timeout($scope.updateMode, 250);
 				});
 			});
 		};
@@ -446,52 +443,53 @@ app.controller('AppController', [
 								if(notification.type == 'verification')
 								{
 									// Update and Email Addresses found
-									sqlite.query(
-										'UPDATE `panic_emergency_contacts` SET `verified_email` = DateTime("now"), `last_modified` = DateTime("now") WHERE `email_address` = ?',
-										[
-											notification.sent_to
-										],
-										function(results)
-										{
-											// Check if we found an update
-											if(results.rows_affected > 0)
+									if(notification.sent_to.indexOf('@') > -1)
+									{
+										sqlite.query(
+											'UPDATE `panic_emergency_contacts` SET `verified_email` = DateTime("now"), `last_modified` = DateTime("now") WHERE `email_address` = ?',
+											[
+												notification.sent_to
+											],
+											function(results)
 											{
-												phonegap.stats.event('App', 'Notification Verified Email Address', 'Verified Emergency Contacts Email Address.');
-												$scope.updateContacts();
+												// Check if we found an update
+												if(results.rows_affected > 0)
+												{
+													phonegap.stats.event('App', 'Notification Verified Email Address', 'Verified Emergency Contacts Email Address.');
+													phonegap.notification.center('Email Address Verified', notification.sent_to + ' has verified this Email Address for use as an Emergency Contact.');
 
-												phonegap.notification.alert(
-													notification.sent_to + ' has verified this Email Address for use as an Emergency Contact.',
-													function(){},
-													'Email Address Verified',
-													'OK'
-												);
+													$timeout.cancel($scope.timeout);
+													$scope.timeout = $timeout(function(){
+														$scope.updateContacts();
+													}, 250);
+												}
 											}
-										}
-									);
-
+										);
+									}
 									// Update any Phone Numbers found
-									sqlite.query(
-										'UPDATE `panic_emergency_contacts` SET `verified_phone` = DateTime("now"), `last_modified` = DateTime("now") WHERE `phone_number` = ?',
-										[
-											notification.sent_to
-										],
-										function(results)
-										{
-											// Check if we found an update
-											if(results.rows_affected > 0)
+									else
+									{
+										sqlite.query(
+											'UPDATE `panic_emergency_contacts` SET `verified_phone` = DateTime("now"), `last_modified` = DateTime("now") WHERE `phone_number` = ?',
+											[
+												notification.sent_to.replace(/\D/g, '')
+											],
+											function(results)
 											{
-												phonegap.stats.event('App', 'Notification Verified Email Address', 'Verified Emergency Contacts Email Address.');
-												$scope.updateContacts();
+												// Check if we found an update
+												if(results.rows_affected > 0)
+												{
+													phonegap.stats.event('App', 'Notification Verified Phone Number', 'Verified Emergency Contacts Phone Number.');
+													phonegap.notification.center('Phone Number Verified', notification.sent_to + ' has verified this Phone Number for use as an Emergency Contact.');
 
-												phonegap.notification.alert(
-													phonenNumber(notification.sent_to) + ' has verified this Phone Number for use as an Emergency Contact.',
-													function(){},
-													'Phone Number Verified',
-													'OK'
-												);
+													$timeout.cancel($scope.timeout);
+													$scope.timeout = $timeout(function(){
+														$scope.updateContacts();
+													}, 250);
+												}
 											}
-										}
-									);
+										);
+									}
 								}
 							}
 							else

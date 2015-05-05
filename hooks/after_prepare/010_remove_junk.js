@@ -15,12 +15,14 @@ if (rootdir)
 		"platforms/ios/www/README.md",
 		"platforms/ios/www/LICENSE",
 		"platforms/ios/www/package.json",
+		"platforms/ios/www/settings.json.dist",
 
 		"platforms/android/assets/www/bower.json",
 		"platforms/android/assets/www/gruntfile.js",
 		"platforms/android/assets/www/README.md",
 		"platforms/android/assets/www/LICENSE",
-		"platforms/android/assets/www/package.json"
+		"platforms/android/assets/www/package.json",
+		"platforms/android/assets/www/settings.json.dist"
 	];
 
 	// Development Folders not needed in Native Mobile App
@@ -31,13 +33,15 @@ if (rootdir)
 		"platforms/ios/www/src",
 		"platforms/ios/www/build",
 		"platforms/ios/www/grunt",
+		"platforms/ios/www/hooks",
 
 		"platforms/android/assets/www/bower_components",
 		"platforms/android/assets/www/node_modules",
 		"platforms/android/assets/www/shell_scripts",
 		"platforms/android/assets/www/src",
 		"platforms/android/assets/www/build",
-		"platforms/android/assets/www/grunt"
+		"platforms/android/assets/www/grunt",
+		"platforms/android/assets/www/hooks"
 	];
 
 	// Loop through each file and remove it

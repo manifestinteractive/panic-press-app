@@ -8,7 +8,7 @@ app.controller('InfoController', [
 		$scope.securityPin = $localStorage.securityPin || null;
 		$scope.securityVerifyPin = null;
 		$scope.fakePin = $localStorage.fakePin || null;
-		$scope.fakeVerifyPin = null;
+		$scope.fakeVerifyPin = null
 
 		$scope.pin = {
 			securityPin1: null,
@@ -41,69 +41,15 @@ app.controller('InfoController', [
 			security_pin: null
 		};
 
-		$scope.$watch('pin.securityPin1', function(value){
-			if(value){ $('#securityPin2').focus(); }
-		});
-		$scope.$watch('pin.securityPin2', function(value){
-			if(value){ $('#securityPin3').focus(); }
-			else if($('#securityPin1').val() !== '') { $('#securityPin1').focus(); }
-		});
-		$scope.$watch('pin.securityPin3', function(value){
-			if(value){ $('#securityPin4').focus(); }
-			else if($('#securityPin1').val() !== '') { $('#securityPin2').focus(); }
-		});
-		$scope.$watch('pin.securityPin4', function(value){
-			if(value){ }
-			else if($('#securityPin1').val() !== '') { $('#securityPin3').focus(); }
-		});
-
-		$scope.$watch('pin.securityVerifyPin1', function(value){
-			if(value){ $('#securityVerifyPin2').focus(); }
-		});
-		$scope.$watch('pin.securityVerifyPin2', function(value){
-			if(value){ $('#securityVerifyPin3').focus(); }
-			else if($('#securityVerifyPin1').val() !== '') { $('#securityVerifyPin1').focus(); }
-		});
-		$scope.$watch('pin.securityVerifyPin3', function(value){
-			if(value){ $('#securityVerifyPin4').focus(); }
-			else if($('#securityVerifyPin2').val() !== '') { $('#securityVerifyPin2').focus(); }
-		});
-		$scope.$watch('pin.securityVerifyPin4', function(value){
-			if(value){ }
-			else if($('#securityVerifyPin3').val() !== '') { $('#securityVerifyPin3').focus(); }
-		});
-
-		$scope.$watch('pin.fakePin1', function(value){
-			if(value){ $('#fakePin2').focus(); }
-		});
-		$scope.$watch('pin.fakePin2', function(value){
-			if(value){ $('#fakePin3').focus(); }
-			else if($('#fakePin1').val() !== '') { $('#fakePin1').focus(); }
-		});
-		$scope.$watch('pin.fakePin3', function(value){
-			if(value){ $('#fakePin4').focus(); }
-			else if($('#fakePin2').val() !== '') { $('#fakePin2').focus(); }
-		});
-		$scope.$watch('pin.fakePin4', function(value){
-			if(value){ }
-			else if($('#fakePin3').val() !== '') { $('#fakePin3').focus(); }
-		});
-
-		$scope.$watch('pin.fakeVerifyPin1', function(value){
-			if(value){ $('#fakeVerifyPin2').focus(); }
-		});
-		$scope.$watch('pin.fakeVerifyPin2', function(value){
-			if(value){ $('#fakeVerifyPin3').focus(); }
-			else if($('#fakeVerifyPin1').val() !== '') { $('#fakeVerifyPin1').focus(); }
-		});
-		$scope.$watch('pin.fakeVerifyPin3', function(value){
-			if(value){ $('#fakeVerifyPin4').focus(); }
-			else if($('#fakeVerifyPin2').val() !== '') { $('#fakeVerifyPin2').focus(); }
-		});
-		$scope.$watch('pin.fakeVerifyPin4', function(value){
-			if(value){ }
-			else if($('#fakeVerifyPin3').val() !== '') { $('#fakeVerifyPin3').focus(); }
-		});
+		$scope.advance = function(name, id)
+		{
+			if($('#' + name + '' + id).val() != ''){
+				$('#' + name + '' + (id+1)).focus();
+			}
+			else if($('#' + name + '' + id).val() == '' && $('#' + name + '' + (id-1)).val() != ''){
+				$('#' + name + '' + (id-1)).focus();
+			}
+		};
 
 		sqlite.query('SELECT * FROM panic_user_details WHERE device_id = ?', [$localStorage.device.uuid], function(user){
 

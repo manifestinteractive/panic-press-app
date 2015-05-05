@@ -30,21 +30,15 @@ app.controller('PinController', [
 			securityPin4: null
 		};
 
-		$scope.$watch('pin.securityPin1', function(value){
-			if(value){ $('#securityPin2').focus(); }
-		});
-		$scope.$watch('pin.securityPin2', function(value){
-			if(value){ $('#securityPin3').focus(); }
-			else if($('#securityPin1').val() !== '') { $('#securityPin1').focus(); }
-		});
-		$scope.$watch('pin.securityPin3', function(value){
-			if(value){ $('#securityPin4').focus(); }
-			else if($('#securityPin2').val() !== '') { $('#securityPin2').focus(); }
-		});
-		$scope.$watch('pin.securityPin4', function(value){
-			if(value){ }
-			else if($('#securityPin3').val() !== '') { $('#securityPin3').focus(); }
-		});
+		$scope.advance = function(name, id)
+		{
+			if($('#' + name + '' + id).val() != ''){
+				$('#' + name + '' + (id+1)).focus();
+			}
+			else if($('#' + name + '' + id).val() == '' && $('#' + name + '' + (id-1)).val() != ''){
+				$('#' + name + '' + (id-1)).focus();
+			}
+		};
 
 		$scope.safe = function()
 		{
