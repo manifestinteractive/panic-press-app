@@ -1,5 +1,11 @@
 @charset "UTF-8";
 
+html {
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
 body
 {
 	font-family: 'Ubuntu', sans-serif;
@@ -1220,8 +1226,8 @@ Copyright (c) 2013 Daniel Eden
 
 .animated
 {
-	-webkit-animation-duration: 1s;
-	animation-duration: 1s;
+	-webkit-animation-duration: 0.33s;
+	animation-duration: 0.33s;
 	-webkit-animation-fill-mode: both;
 	animation-fill-mode: both;
 }
@@ -15028,6 +15034,17 @@ input.pin
 		border-left: 1px solid transparent;
 	}
 }
+
+.border-top
+{
+	border-top: 1px solid #eee;
+
+	&:first-child
+	{
+		border-top: none;
+	}
+}
+
 .text-red
 {
 	color: $panic-red !important;
@@ -15040,6 +15057,84 @@ input.pin
 {
 	color: #cccccc !important;
 }
+.text-dark
+{
+	color: #333333 !important;
+}
+.text-panic-light-grey
+{
+	color: $panic-light-grey !important;
+}
+.text-panic-green
+{
+	color: $panic-green !important;
+}
+.text-panic-light-green
+{
+	color: $panic-light-green !important;
+}
+.text-panic-success
+{
+	color: $panic-success !important;
+}
+.text-panic-info
+{
+	color: $panic-info !important;
+}
+.text-panic-warning
+{
+	color: $panic-warning !important;
+}
+.text-panic-danger
+{
+	color: $panic-danger !important;
+}
+
+.bg-panic-light-grey
+{
+	background-color: $panic-light-grey !important;
+}
+.bg-panic-green
+{
+	background-color: $panic-green !important;
+}
+.bg-panic-light-green
+{
+	background-color: $panic-light-green !important;
+}
+.bg-panic-success
+{
+	background-color: $panic-success !important;
+}
+.bg-panic-success-light
+{
+	background-color: $panic-success-light !important;
+}
+.bg-panic-info
+{
+	background-color: $panic-info !important;
+}
+.bg-panic-info-light
+{
+	background-color: $panic-info-light !important;
+}
+.bg-panic-warning
+{
+	background-color: $panic-warning !important;
+}
+.bg-panic-warning-light
+{
+	background-color: $panic-warning-light !important;
+}
+.bg-panic-danger
+{
+	background-color: $panic-danger !important;
+}
+.bg-panic-danger-light
+{
+	background-color: $panic-danger-light !important;
+}
+
 .hex.vcenter
 {
 	margin-top: 25px;
@@ -15082,4 +15177,25 @@ input.pin
 	height: 100%;
 	background-color: $panic-red;
 	display: none;
+}
+.contact-info
+{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+li.no-pad
+{
+	padding-left: 0;
+}
+.alert.panic-green
+{
+	background-color: $panic-light-green;
+	border-color: $panic-light-green;
+	color: $panic-green;
+
+	& i.fa
+	{
+		color: $panic-green;
+	}
 }

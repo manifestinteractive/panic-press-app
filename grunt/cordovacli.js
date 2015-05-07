@@ -18,6 +18,13 @@ module.exports = {
 			platforms: ['ios']
 		}
 	},
+	build_android_release: {
+		options: {
+			command: 'build',
+			platforms: ['android'],
+			args: ['--release']
+		}
+	},
 	build_android: {
 		options: {
 			command: 'build',
@@ -94,7 +101,7 @@ module.exports = {
 			args: ['--target', 'Resizable-iPad']
 		}
 	},
-	emulate_android: {
+	emulate_android_nexus_5: {
 		options: {
 			command: 'emulate',
 			platforms: ['android'],

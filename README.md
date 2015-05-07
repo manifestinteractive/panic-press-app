@@ -21,7 +21,7 @@ You can install the Panic Press App via the command line with either `curl` or `
 ### via `curl`:
 
 ```bash
-cd /your/development/folder
+cd /path/to/panic-press-app
 curl -o install.sh https://raw.githubusercontent.com/manifestinteractive/panic-press-app/stable/build/scripts/install.sh
 chmod 755 install.sh && ./install.sh
 ```
@@ -29,7 +29,7 @@ chmod 755 install.sh && ./install.sh
 ### via `wget`:
 
 ```bash
-cd /your/development/folder
+cd /path/to/panic-press-app
 wget -O install.sh https://raw.githubusercontent.com/manifestinteractive/panic-press-app/stable/build/scripts/install.sh
 chmod 755 install.sh && ./install.sh
 ```
@@ -52,14 +52,14 @@ Open Panic Press in Browser:
 To work on `panic-press-app` locally for development:
 
 ```bash
-cd /path/to/panic-press-app
+cd /path/to/panic-press-app/www
 npm install
 ```
 
 To view `panic-press-app` in the browser:
 
 ```bash
-cd /path/to/panic-press-app
+cd /path/to/panic-press-app/www
 npm start
 ```
 
@@ -113,7 +113,7 @@ __Third Party Content__ _( !.gitignored )_:
 Grunt Terminal Commands:
 ---
 
-You can use the following build commands via terminal:
+You can use the following build commands via terminal ( make sure you are in `/path/to/panic-press-app/www` ):
 
 #### Build for Distribution:
 
@@ -240,4 +240,33 @@ The following will:
 
 ```bash
 grunt prerelease
+```
+
+Building for iOS ( Possible Issues )
+---
+
+There are currently no known issues for iOS.
+
+Building for Android ( Possible Issues )
+---
+
+If you are using Cordova 5.0 you may get an error when building for Android that looks like this:
+
+```bash
+LocalNotification.java:561: error: cannot find symbol webView.post(new Runnable(){
+```
+
+If this happens to you, see [this posted solution](https://github.com/katzer/cordova-plugin-local-notifications/issues/535). 
+
+if you get the error `Duplicate files copied in APK META-INF/LICENSE.txt` add the following to `./platforms/android/build.gradle` directly after the root `android {`
+
+```
+packagingOptions {
+    pickFirst 'META-INF/DEPENDENCIES'
+    pickFirst 'META-INF/DEPENDENCIES.txt'
+    pickFirst 'META-INF/LICENSE'
+    pickFirst 'META-INF/LICENSE.txt'
+    pickFirst 'META-INF/NOTICE'
+    pickFirst 'META-INF/NOTICE.txt'
+}
 ```

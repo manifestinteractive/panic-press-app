@@ -11,7 +11,7 @@
 // visibility   Determines whether or not a transformed element is visible when it is not facing the screen.
 
 $countDefault: 1s !default;
-$durationDefault: 1s !default;
+$durationDefault: .5s !default;
 $delayDefault: 0s !default;
 $functionDefault: ease !default;
 $fillDefault: both;
@@ -25,7 +25,7 @@ $visibilityDefault: hidden !default;
           animation-iteration-count: $count;
 }
 
-@mixin duration($duration: 1s) {
+@mixin duration($duration: .5s) {
   -webkit-animation-duration: $duration;
      -moz-animation-duration: $duration;
       -ms-animation-duration: $duration;

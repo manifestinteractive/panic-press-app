@@ -15,7 +15,7 @@
                     <strong><i class="fa fa-fw fa-exclamation-triangle text-red"></i></strong>&nbsp;
                     <span>{{detailsAlert}}</span>
                 </div>
-                <form class="contact-form m-t-xl" id="contactForm" novalidate="">
+                <form class="contact-form m-t-xl" id="contactForm" novalidate="" ng-submit="addUser();">
                     <div class="form-group form-icon-group">
                         <input class="form-control" person-name ng-model="user.full_name" id="name" placeholder="Full Name *" type="text" required>
                         <i class="fa fa-user"></i>
@@ -25,7 +25,7 @@
                         <i class="fa fa-envelope"></i>
                     </div>
                     <div class="form-group form-icon-group">
-                        <input class="form-control" phone-number ng-model="user.phone_number" id="phone" placeholder="Phone Number *" type="tel" pattern="[0-9]+" required>
+                        <input class="form-control" maxlength="10" phone-number ng-model="user.phone_number" id="phone" placeholder="Phone Number *" type="tel" pattern="[0-9]+" required>
                         <i class="fa fa-phone"></i>
                     </div>
                     <div class="form-group text-center m-t-xl">
@@ -36,17 +36,17 @@
                             </span>
                         </a>
                         &nbsp;
-                        <a ng-click="addUser();" class="btn btn-primary btn-icon btn-icon-right next">
+                        <button type="submit" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
                             </span>
-                        </a>
+                        </button>
                     </div>
                 </form>
                 <p class="text-center">
                     Step 1 of 3<br />
-                    <span class="small text-muted">Next Up:&nbsp; Take Picture</span>
+                    <span class="small text-muted">Next Up:&nbsp; Create Security PIN</span>
                 </p>
             </div>
         </div>
@@ -60,7 +60,7 @@
                 <p>
                     During emergencies, these details will be provided to your Emergency Contacts.
                 </p>
-                <form class="contact-form m-t-xl" novalidate="">
+                <form class="contact-form m-t-xl" novalidate="" ng-submit="addPicture();">
                     <div class="form-group text-center m-t-xl">
                         <a ng-click="takePicture();" class="btn btn-primary btn-icon btn-icon-right btn-lg">
                             Take Picture
@@ -77,12 +77,12 @@
                             </span>
                         </a>
                         &nbsp;
-                        <a ng-click="addPicture();" class="btn btn-primary btn-icon btn-icon-right next">
+                        <button type="submit" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
                             </span>
-                        </a>
+                        </button>
                     </div>
                 </form>
                 <p>
@@ -101,27 +101,27 @@
                 <p>
                     This PIN signifies that you have your device &amp; not an attacker.&nbsp; Use this to send an "I'm OK" notice to your Emergency Contacts.
                 </p>
-                <form class="contact-form m-t-xl">
+                <form class="contact-form m-t-xl" ng-submit="addPin();">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin1" ng-model="pin.securityPin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin2" ng-model="pin.securityPin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin3" ng-model="pin.securityPin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin4" ng-model="pin.securityPin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityPin', 1)" maxlength="1" class="pin good" id="securityPin1" ng-model="pin.securityPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityPin', 2)" maxlength="1" class="pin good" id="securityPin2" ng-model="pin.securityPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityPin', 3)" maxlength="1" class="pin good" id="securityPin3" ng-model="pin.securityPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityPin', 4)" maxlength="1" class="pin good" id="securityPin4" ng-model="pin.securityPin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
-                        <a ui-sref="app.info({ section: 'picture' })" class="btn btn-default btn-icon btn-icon-left previous">
+                        <a ui-sref="app.info({ section: 'details' })" class="btn btn-default btn-icon btn-icon-left previous">
                             Back
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-left"></i>
                             </span>
                         </a>
                         &nbsp;
-                        <a ng-click="addPin();" class="btn btn-primary btn-icon btn-icon-right next">
+                        <button type="submit" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
                             </span>
-                        </a>
+                        </button>
                     </div>
                 </form>
                 <p>
@@ -140,12 +140,12 @@
                 <p>
                     This PIN signifies that you have your device &amp; not an attacker.&nbsp; Use this to send an "I'm OK" notice to your Emergency Contacts.
                 </p>
-                <form class="contact-form m-t-xl">
+                <form class="contact-form m-t-xl" ng-submit="verifyPin();">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityVerifyPin1" ng-model="pin.securityVerifyPin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityVerifyPin2" ng-model="pin.securityVerifyPin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityVerifyPin3" ng-model="pin.securityVerifyPin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityVerifyPin4" ng-model="pin.securityVerifyPin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityVerifyPin', 1)" maxlength="1" class="pin good" id="securityVerifyPin1" ng-model="pin.securityVerifyPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityVerifyPin', 2)" maxlength="1" class="pin good" id="securityVerifyPin2" ng-model="pin.securityVerifyPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityVerifyPin', 3)" maxlength="1" class="pin good" id="securityVerifyPin3" ng-model="pin.securityVerifyPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityVerifyPin', 4)" maxlength="1" class="pin good" id="securityVerifyPin4" ng-model="pin.securityVerifyPin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
                         <a ui-sref="app.info({ section: 'enter-pin' })" class="btn btn-default btn-icon btn-icon-left previous">
@@ -155,12 +155,12 @@
                             </span>
                         </a>
                         &nbsp;
-                        <a ng-click="verifyPin();" class="btn btn-primary btn-icon btn-icon-right next">
+                        <button type="submit" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
                             </span>
-                        </a>
+                        </button>
                     </div>
                 </form>
                 <p>
@@ -175,16 +175,21 @@
             <header class="section-header text-center underline m-t-xl">
                 <h1 class="headline super hairline">Fake Security PIN</h1>
             </header>
+            <div class="alert alert-danger details-alert" ng-if="pinAlert">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                <strong><i class="fa fa-fw fa-exclamation-triangle text-red"></i></strong>&nbsp;
+                <span>{{pinAlert}}</span>
+            </div>
             <div class="text-center m-b-xl">
                 <p>
                     Use this if you are being forced to provide your PIN.&nbsp; We will notify your Emergency Contacts without your attacker knowing.
                 </p>
-                <form class="contact-form m-t-xl" novalidate="">
+                <form class="contact-form m-t-xl" novalidate="" ng-submit="addFakePin();">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakePin1" ng-model="pin.fakePin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakePin2" ng-model="pin.fakePin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakePin3" ng-model="pin.fakePin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakePin4" ng-model="pin.fakePin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('fakePin', 1)" maxlength="1" class="pin bad" id="fakePin1" ng-model="pin.fakePin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('fakePin', 2)" maxlength="1" class="pin bad" id="fakePin2" ng-model="pin.fakePin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('fakePin', 3)" maxlength="1" class="pin bad" id="fakePin3" ng-model="pin.fakePin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('fakePin', 4)" maxlength="1" class="pin bad" id="fakePin4" ng-model="pin.fakePin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
                         <a ui-sref="app.info({ section: 'verify-pin' })" class="btn btn-default btn-icon btn-icon-left previous">
@@ -194,12 +199,12 @@
                             </span>
                         </a>
                         &nbsp;
-                        <a ng-click="addFakePin();" class="btn btn-primary btn-icon btn-icon-right next">
+                        <button type="submit" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
                             </span>
-                        </a>
+                        </button>
                     </div>
                 </form>
                 <p>
@@ -218,12 +223,12 @@
                 <p>
                     Use this if you are being forced to provide your PIN.&nbsp; We will notify your Emergency Contacts without your attacker knowing.
                 </p>
-                <form class="contact-form m-t-xl" novalidate="">
+                <form class="contact-form m-t-xl" novalidate="" ng-submit="verifyFakePin();">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakeVerifyPin1" ng-model="pin.fakeVerifyPin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakeVerifyPin2" ng-model="pin.fakeVerifyPin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakeVerifyPin3" ng-model="pin.fakeVerifyPin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin bad" id="fakeVerifyPin4" ng-model="pin.fakeVerifyPin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('fakeVerifyPin', 1)" maxlength="1" class="pin bad" id="fakeVerifyPin1" ng-model="pin.fakeVerifyPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('fakeVerifyPin', 2)" maxlength="1" class="pin bad" id="fakeVerifyPin2" ng-model="pin.fakeVerifyPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('fakeVerifyPin', 3)" maxlength="1" class="pin bad" id="fakeVerifyPin3" ng-model="pin.fakeVerifyPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('fakeVerifyPin', 4)" maxlength="1" class="pin bad" id="fakeVerifyPin4" ng-model="pin.fakeVerifyPin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
                         <a ui-sref="app.info({ section: 'enter-fake-pin' })" class="btn btn-default btn-icon btn-icon-left previous">
@@ -233,12 +238,12 @@
                             </span>
                         </a>
                         &nbsp;
-                        <a ng-click="verifyFakePin();" class="btn btn-primary btn-icon btn-icon-right next">
+                        <button type="submit" class="btn btn-primary btn-icon btn-icon-right next">
                             Next
                             <span class="hex-alt">
                                 <i class="fa fa-arrow-right"></i>
                             </span>
-                        </a>
+                        </button>
                     </div>
                 </form>
                 <p>

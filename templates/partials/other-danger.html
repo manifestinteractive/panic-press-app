@@ -1,6 +1,6 @@
-<section>
+<section ng-swipe-left="swipeToImmediateDanger('left');" ng-swipe-right="swipeToImmediateDanger('right');">
 
-    <section class="section swatch-red-white has-top">
+    <section class="section swatch-red-white has-top danger-zone animated fadeIn">
         <header class="section-header text-center underline">
             <h1 class="headline super hairline">Potential Danger</h1>
             <p>Notify Emergency Contacts of:</p>
@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="row text-center">
-            <a ui-sref="app.home" class="btn btn-white btn-icon-left m-t-xs os-animation" data-os-animation="fadeInRight" data-os-animation-delay=".5s">
+            <a ui-sref="app.home" class="btn btn-white btn-icon-left m-t-xs os-animation" data-os-animation="fadeIn" data-os-animation-delay=".5s">
                 <span class="text-red">Immediate Danger</span>
 				<span class="hex-alt hex-alt">
 					<i class="fa fa-arrow-left"></i>

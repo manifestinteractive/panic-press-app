@@ -28,13 +28,18 @@ var phonegap = {
 	{
 		if(event == 'deviceready')
 		{
-			angular.bootstrap(document.body, ['app']);
+			// Initialize Database
+			if(typeof sqlite !== 'undefined')
+			{
+				sqlite.init(function(){
+					angular.bootstrap(document.body, ['app']);
+				});
+			}
 		}
 		else if(event == 'manual')
 		{
 			phonegap.events.deviceReady();
 		}
-
 	}
 };
 
@@ -52,12 +57,6 @@ phonegap.events = {
 		setTimeout(init_jquery, 100);
 
 		phonegap.stats.event('App', 'Event', 'Device Ready');
-
-		// Initialize Database
-		if(typeof sqlite !== 'undefined')
-		{
-			sqlite.init();
-		}
 
 		// Get Network Info
 		if(typeof navigator.connection !== 'undefined')
@@ -82,21 +81,17 @@ phonegap.events = {
 			window.open = cordova.InAppBrowser.open;
 		}
 
-		setTimeout(function(){
+		if(typeof navigator.splashscreen !== 'undefined')
+		{
+			navigator.splashscreen.hide();
+		}
 
-			if(typeof navigator.splashscreen !== 'undefined')
-			{
-				navigator.splashscreen.hide();
-			}
+		if(phonegap.initialized === true)
+		{
+			return false;
+		}
 
-			if(phonegap.initialized === true)
-			{
-				return false;
-			}
-
-			phonegap.initialized = true;
-
-		}, 1000);
+		phonegap.initialized = true;
 	},
 	batteryStatus: function(info)
 	{
@@ -167,6 +162,7 @@ phonegap.stats = {
 
 phonegap.notification = {
 
+	counter: 0,
 	alert: function(message, callback, title, button_label)
 	{
 		phonegap.stats.event('Notification', 'Alert', message);
@@ -237,6 +233,43 @@ phonegap.notification = {
 		if(navigator && typeof navigator.notification !== 'undefined')
 		{
 			return navigator.notification.beep(times);
+		}
+	},
+	center: function(title, text, data, callback, error)
+	{
+		if(typeof cordova.plugins !== 'undefined' && typeof cordova.plugins.notification !== 'undefined')
+		{
+			phonegap.notification.counter++;
+			var sound = ( device.platform == 'Android' )
+				? 'file://assets/sound/beep.caf'
+				: 'file://assets/sound/beep.mp3';
+
+			cordova.plugins.notification.local.schedule({
+				id: phonegap.notification.counter,
+				title: title,
+				text: text,
+				icon: 'https://i.panic.press/appicon.png',
+				sound: sound,
+				data: data
+			});
+		}
+
+		if(typeof window.plugins !== 'undefined' && typeof window.plugins.toast !== 'undefined')
+		{
+			window.plugins.toast.show( text, 'long', 'center',
+				function(response){
+					if(typeof callback == 'function')
+					{
+						callback(response);
+					}
+				},
+				function(response){
+					if(typeof error == 'function')
+					{
+						error(response);
+					}
+				}
+			)
 		}
 	}
 };

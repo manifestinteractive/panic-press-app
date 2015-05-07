@@ -5,13 +5,14 @@
         <title>Panic</title>
         <meta name="description" content="With a single tap, Panic Press automatically notifies your Emergency Contacts when you're in danger. Access your Safety Net from your favorite Apple iOS or Android Device.">
         <meta name="keywords" content="mobile, app, ios, android, panic press, safety, security, notification, tracking, emergency, location, alert, contacts">
+        <meta http-equiv="Content-Security-Policy" content="default-src *; style-src *; script-src *">
 
         <!-- Mobile Specific Meta Tags -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="format-detection" content="telephone=no">
-        
+
         <!-- Icons -->
         <link href="assets/img/favicon.ico" rel="shortcut icon">
 
@@ -36,7 +37,7 @@
 
     </head>
     <body ng-controller="AppCtrl" class="{{bodyClass}}">
-    
+
         <div id="app" ui-view></div>
 
         <script src="cordova.js"></script>

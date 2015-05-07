@@ -1,6 +1,24 @@
 app.controller('DangerController', [
-	'$scope', '$localStorage', '$state', '$stateParams', '$timeout', '$http', function($scope, $localStorage, $state, $stateParams, $timeout, $http)
+	'$scope', '$localStorage', '$state', '$stateParams', '$timeout', '$http', '$window', function($scope, $localStorage, $state, $stateParams, $timeout, $http, $window)
 	{
+		/**
+		 * @todo: Make sure once the messages are all sent to redirect to sent ( not send ) to prevent app resending alerts
+		 * @todo: If status is sent, need to check whether each was received
+		 * @todo: Make sure the SQLite is recording the correct sent / received updates
+		 * @todo: Update UI to do realtime checks for contacts receiving notifications
+		 * @todo: Add check for unsent messages ( when network online )
+		 */
+
+		phonegap.stats.event('App', 'Page', 'Danger');
+
+		$scope.updateMode(function(){
+			if($scope.appMode != 'ready')
+			{
+				$state.go('app.welcome');
+				return false;
+			}
+		});
+
 		var date_time = moment();
 		var date = new Date();
 
@@ -24,52 +42,19 @@ app.controller('DangerController', [
 				gps: {
 					latitude: null,
 					longitude: null,
-					elevation: null,
-					accuracy: null
+					altitude: null,
+					accuracy: null,
+					heading: null,
+					speed: null
 				}
 			},
 			device: {
+				model: $window.device.model,
+				platform: $window.device.platform,
+				version: $window.device.version,
 				battery: phonegap.battery.level,
-				network: phonegap.connectionType
+				network: phonegap.connection
 			}
-		};
-
-		var dangers_text = {
-			'physical-attack': 'Physical Attack',
-			'verbal-attack': 'Verbal Attack',
-			'car-accident': 'Car Accident',
-			'fire-danger': 'Fire Danger',
-			'being-followed': 'I\'m Being Followed',
-			'high-risk-activity': 'High-Risk Activity',
-			'feeling-unsafe': 'Feeling Unsafe',
-			'completely-lost': 'Completely Lost'
-		};
-
-		var dangers_prefix = {
-			'physical-attack': 'a ',
-			'verbal-attack': 'a ',
-			'car-accident': 'a ',
-			'fire-danger': 'a ',
-			'being-followed': '',
-			'high-risk-activity': 'a ',
-			'feeling-unsafe': '',
-			'completely-lost': 'being '
-		};
-
-		var dangers_html = {
-			'physical-attack': 'Physical<br/>Attack',
-			'verbal-attack': 'Verbal<br/>Attack',
-			'car-accident': 'Car<br/>Accident',
-			'fire-danger': 'Fire<br/>Danger',
-			'being-followed': 'I\'m Being<br/>Followed',
-			'high-risk-activity': 'High-Risk<br/>Activity',
-			'feeling-unsafe': 'Feeling<br/>Unsafe',
-			'completely-lost': 'Completely<br/>Lost'
-		};
-
-		var types = {
-			'immediate': 'Immediate Danger',
-			'potential': 'Potential Danger'
 		};
 
 		$scope.type = $stateParams.type;
@@ -92,20 +77,22 @@ app.controller('DangerController', [
 					longitude: position.coords.longitude,
 					altitude: position.coords.altitude,
 					accuracy: position.coords.accuracy,
-					altitudeAccuracy: position.coords.altitudeAccuracy,
 					heading: position.coords.heading,
-					speed: position.coords.speed,
-					timestamp: position.timestamp
+					speed: position.coords.speed
 				};
+
+				phonegap.stats.event('Danger', $scope.type_text, $scope.danger_text + ' at ' + position.coords.latitude + ',' + position.coords.longitude);
 
 				notifiyContacts();
 
 			}, function(){
 
+				phonegap.stats.event('Danger', 'Error', 'Unable to detect location.');
+
 				phonegap.notification.alert(
-					'We were not able to detect your location.',
+					'We cannot notify your emergency contacts since we cannot detect your current location.',
 					function(){
-						getToken();
+						$state.go('app.home');
 					},
 					'Unknown Location',
 					'OK'
@@ -117,6 +104,12 @@ app.controller('DangerController', [
 		var notifiyContacts = function()
 		{
 			sqlite.query('SELECT * FROM panic_emergency_contacts', [], function(contacts){
+
+				// check if we have no contacts
+				if(contacts.empty)
+				{
+					contacts = [];
+				}
 
 				// make contacts an array if its not already
 				if(typeof contacts.id !== 'undefined')
@@ -131,6 +124,8 @@ app.controller('DangerController', [
 
 				for(var i=0; i<contacts.length; i++)
 				{
+					phonegap.stats.event('Danger', 'Notifying Emergency Contact', 'Notifying Contact of ' +  types[$stateParams.type] + ' from ' + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger]);
+
 					transmit_json.recipient = {
 						name: contacts[i].full_name,
 						email: contacts[i].email_address,
@@ -144,10 +139,15 @@ app.controller('DangerController', [
 
 		var getToken = function(user)
 		{
+			phonegap.stats.event('Danger', 'Fetching Short URL', 'Attempting to Create Short URL for Notifications');
+
 			var url_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(transmit_json));
-			var api = $localStorage.settings.app.prod.api.url + '?api=' + $localStorage.settings.app.prod.api.key;
+			var api = $localStorage.settings.app.production.api.url + '?api=' + $localStorage.settings.app.production.api.key;
 
 			$http.jsonp(api + '&callback=JSON_CALLBACK&url=https://i.panic.press/help?hash='+url_hash).success(function(response){
+
+				phonegap.stats.event('Danger', 'Fetching Short URL Success', response.short );
+
 				handleToken(user, response);
 			});
 		};
@@ -156,8 +156,23 @@ app.controller('DangerController', [
 		{
 			var status = (response.error == 0) ? 'sending' : 'error';
 
+			// If we got at least one sending status, save the danger status
+			if(status == 'sending')
+			{
+				$localStorage.danger = {
+					type: $stateParams.type,
+					danger: $stateParams.danger
+				};
+
+				phonegap.stats.event('Danger', 'Preparing Notification', 'Sending notice to ' + response.short);
+			}
+			else
+			{
+				phonegap.stats.event('Danger', 'Preparing Notifications Error', 'Failed to create Short URL: ' + JSON.stringify(response));
+			}
+
 			sqlite.query(
-				'INSERT OR REPLACE INTO panic_history (short_url, status) VALUES (?, ?)',
+				'INSERT OR REPLACE INTO panic_history (short_url, status, unique_id) VALUES (?, ?, DateTime("now"))',
 				[
 					response.short,
 					status
@@ -165,26 +180,123 @@ app.controller('DangerController', [
 				function()
 				{
 					var message_subject = "[ Panic Press ] " + transmit_json.sender.name + " Needs Help";
-					var message_text = user.first_name + ",\n\n" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". Please, Immediately Visit: " + response.short + "\n\n- Panic Press";
-					var message_html = user.first_name + ",<br/><br/>" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". Please, Immediately Visit: " + response.short + "<br/><br/>- Panic Press";
+					var message_text = user.first_name + ",\n\n" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ".\n\n" + response.short + "\n\n- Panic Press";
+					var message_html = user.first_name + ",<br/><br/>" + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ".<br/><br/>" + response.short + "<br/><br/>- Panic Press";
 
 					// Send contact an email
 					if(user.email_address && typeof sendgrid !== 'undefined')
 					{
+						phonegap.stats.event('Danger', 'Preparing Email Notification', 'Sending notice of ' + types[$stateParams.type] + ' from ' + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger]);
+
 						var email = {
 							to: user.email_address,
+							toname: user.full_name,
 							from: "noreply@panic.press",
+							replyto: "noreply@panic.press",
+							fromname: 'Panic Press',
 							subject: message_subject,
 							html: message_html,
 							text: message_text
 						};
 
-						sendgrid.send(email, function(result){
+						sendgrid.send(email, function(sendgrid){
 
-							console.log('sendgrid', result);
-
-							if(result.message == 'success')
+							if(sendgrid.message == 'success')
 							{
+								sqlite.query(
+									'UPDATE panic_history SET status = ? WHERE short_url = ?',
+									[
+										'sent',
+										response.short
+									],
+									function()
+									{
+										phonegap.stats.event('Danger', 'Sendgrid Success', 'Successfully Sent Email');
+
+										$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+										$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+									}
+								);
+
+								sqlite.query(
+									'INSERT OR REPLACE INTO panic_press_notifications (short_url, type, danger, status, message_sent, transmit_json, sent_to, confirmed_sent_date) VALUES (?, ?, ?, ?, ?, ?, ?, DateTime("now"))',
+									[
+										response.short,
+										$stateParams.type,
+										$stateParams.danger,
+										'sent',
+										message_text,
+										null,
+										user.email_address
+									],
+									function()
+									{
+										$scope.checkNotifications(1000);
+									}
+								);
+							}
+							else
+							{
+								sqlite.query(
+									'UPDATE panic_history SET status = ? WHERE short_url = ?',
+									[
+										'error',
+										response.short
+									],
+									function()
+									{
+										phonegap.stats.event('Danger', 'Sendgrid Error', 'Failed to Send Email: ' + JSON.stringify(sendgrid) );
+
+										$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+										$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+									}
+								);
+							}
+
+						}, function(error){
+
+							phonegap.stats.event('Danger', 'Sendgrid Error', 'Failed to Send Email: ' + JSON.stringify(error) );
+
+							$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-times text-red');
+							$('.contact-'+ user.id +' span').text('error').removeClass('label-warning').addClass('label-danger');
+
+							sqlite.query(
+								'UPDATE panic_history SET status = ? WHERE short_url = ?',
+								[
+									'error',
+									response.short
+								],
+								function()
+								{
+									$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+									$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+								}
+							);
+
+						});
+					}
+
+					// Send contact a text message
+					if(user.phone_number)
+					{
+						phonegap.stats.event('Danger', 'Preparing Text Message Notification', 'Sending notice of ' + types[$stateParams.type] + ' from ' + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger]);
+
+						var twilio_json = {
+							message: " [ Panic Press ] " + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". " + response.short,
+							number: user.phone_number.replace(/\D/g, '')
+						};
+
+						var twilio_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(twilio_json));
+
+						$http.jsonp('https://i.panic.press/twilio/?callback=JSON_CALLBACK&hash=' + twilio_hash).success(function(twilio){
+
+							if(twilio.success)
+							{
+								phonegap.stats.event('Danger', 'Twilio Success', 'Successfully Sent Text Message');
+
+								$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+								$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+
 								sqlite.query(
 									'UPDATE panic_history SET status = ? WHERE short_url = ?',
 									[
@@ -197,43 +309,43 @@ app.controller('DangerController', [
 										$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
 									}
 								);
+
+								sqlite.query(
+									'INSERT OR REPLACE INTO panic_press_notifications (short_url, type, danger, status, message_sent, transmit_json, sent_to, confirmed_sent_date) VALUES (?, ?, ?, ?, ?, ?, ?, DateTime("now"))',
+									[
+										response.short,
+										$stateParams.type,
+										$stateParams.danger,
+										'sent',
+										message_text,
+										null,
+										user.phone_number
+									],
+									function()
+									{
+										$scope.checkNotifications(1000);
+									}
+								);
 							}
-
-						}, function(error){
-
-							console.log('sendgrid', error);
-
-							$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-times text-red');
-							$('.contact-'+ user.id +' span').text('error').removeClass('label-warning').addClass('label-danger');
-
-						});
-					}
-
-					// Send contact a text message
-					if(user.phone_number)
-					{
-						var twilio_json = {
-							message: user.first_name + ", " + transmit_json.sender.name + " has indicated they are in " + types[$stateParams.type] + " from " + dangers_prefix[$stateParams.danger] + dangers_text[$stateParams.danger] + ". Please, Immediately Visit: " + response.short,
-							number: user.phone_number
-						};
-
-						var twilio_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(twilio_json));
-
-						$http.jsonp('https://i.panic.press/twilio/?callback=JSON_CALLBACK&hash=' + twilio_hash).success(function(response){
-
-							if(response.success)
+							else
 							{
-								console.log('SMS', 'Message Sent');
-
-								$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
-								$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
-
-							}
-							else {
-								console.log(response.message);
+								phonegap.stats.event('Danger', 'Twilio Error', 'Failed to Send Text Message: ' + JSON.stringify(twilio) );
 
 								$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-times text-red');
 								$('.contact-'+ user.id +' span').text('error').removeClass('label-warning').addClass('label-danger');
+
+								sqlite.query(
+									'UPDATE panic_history SET status = ? WHERE short_url = ?',
+									[
+										'error',
+										response.short
+									],
+									function()
+									{
+										$('.contact-'+ user.id +' i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
+										$('.contact-'+ user.id +' span').text('sent').removeClass('label-warning').addClass('label-info');
+									}
+								);
 							}
 						});
 					}
@@ -241,7 +353,14 @@ app.controller('DangerController', [
 			);
 		};
 
-		getLocation();
+		if ($scope.status == 'send')
+		{
+			getLocation();
+		}
+		else if ($scope.status == 'sent')
+		{
+
+		}
 
 		/*
 		if ($scope.status == 'send')

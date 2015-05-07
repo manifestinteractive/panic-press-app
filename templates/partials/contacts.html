@@ -27,18 +27,30 @@
                 <h1 class="headline super hairline">My Emergency Contacts</h1>
             </header>
             <div class="m-b-xl">
+
+                <div class="alert bg-panic-info-light text-panic-info" role="alert" ng-if="contacts.length > 0 && appMode == 'setup'">
+                    <i class="fa fa-exclamation-triangle text-panic-info m-r-xs"></i> Waiting for your first Emergency Contact to Accept your request before we can send notifications.
+                </div>
+
+                <div class="alert bg-panic-info-light text-panic-info text-center" role="alert" ng-if="contacts.length == 0">
+                    <i class="fa fa-exclamation-triangle text-panic-info m-r-xs"></i> No Emergency Contacts
+                </div>
+
                 <ul class="list-fancy-icons color-inverse">
 
-                    <li ng-repeat="contact in contacts">
-                        <div class="hex vcenter" ng-click="removeContact(contact.id)">
+                    <li class="border-top" ng-repeat="contact in contacts" ng-model="showMe" ng-class="{ 'no-pad': !showMe }">
+                        <div class="hex vcenter" ng-click="removeContact(contact.id)" ng-class="{ hide: !showMe }">
                             <i class="fa fa-fw fa-times remove-contact"></i>
                         </div>
-                        <p>
-                            <i class="fa fa-fw fa-user text-light m-r-xs"></i> <strong>{{ contact.full_name }}</strong>
+                        <p class="contact-info" ng-swipe-right="showMe = true" ng-swipe-left="showMe = false">
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': ( !contact.verified_email && !contact.verified_phone ), 'fa-user text-dark': ( contact.verified_email || contact.verified_phone ) }"></i>
+                            <strong ng-class="{ 'text-light': ( !contact.verified_email && !contact.verified_phone ) }">{{ contact.full_name }}</strong>
                             <br />
-                            <i class="fa fa-fw fa-envelope text-light m-r-xs"></i> {{ contact.email_address }}
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': !contact.verified_email, 'fa-envelope text-dark': contact.verified_email }"></i>
+                            <span ng-class="{ 'text-light': !contact.verified_email }">{{ contact.email_address }}</span>
                             <br />
-                            <i class="fa fa-fw fa-phone text-light m-r-xs"></i> {{ contact.phone_number }}
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': !contact.verified_phone, 'fa-phone text-dark': contact.verified_phone }"></i>
+                            <span ng-class="{ 'text-light': !contact.verified_phone }">{{ contact.phone_number | phoneNumber }}</span>
                         </p>
                     </li>
                 </ul>
@@ -88,7 +100,7 @@
                 <h4 class="modal-title" id="myModalLabel">Add Contact: <span>{{ selectedContact.name.formatted }}</span></h4>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body" ng-if="selectedContact.emails.length > 0 && selectedContact.phoneNumbers.length > 0">
 
                 <div class="alert alert-danger details-alert" ng-if="contactAlert">
                     <button class="close" data-dismiss="alert" type="button">×</button>
@@ -116,15 +128,31 @@
 
             </div>
 
-            <div class="modal-footer">
+            <div class="modal-body" ng-if=" !selectedContact.emails || !selectedContact.phoneNumbers">
+
+                <div class="alert bg-panic-danger-light text-panic-danger text-missing" role="alert" ng-if=" !selectedContact.emails">
+                    <i class="fa fa-exclamation-triangle text-panic-danger m-r-xs"></i> No Email Addresses Found
+                </div>
+
+                <div class="alert bg-panic-danger-light text-panic-danger text-missin" role="alert" ng-if=" !selectedContact.phoneNumbers">
+                    <i class="fa fa-exclamation-triangle text-panic-danger m-r-xs"></i> No Phone Numbers Found
+                </div>
+
+            </div>
+
+            <div class="modal-footer" ng-if="selectedContact.emails.length > 0 && selectedContact.phoneNumbers.length > 0">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" ng-click="addContact();">Add Contact</button>
+            </div>
+
+            <div class="modal-footer" ng-if=" !selectedContact.emails || !selectedContact.phoneNumbers">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Contact Details Modal -->
+<!-- Manually add Contact Details Modal -->
 <div class="modal fade add-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -141,7 +169,7 @@
                     <span>{{detailsAlert}}</span>
                 </div>
 
-                <form class="contact-form" id="contactForm" novalidate="">
+                <form class="contact-form" id="contactForm" novalidate="" ng-submit="addManualContact();">
                     <div class="form-group form-icon-group">
                         <input class="form-control" person-name ng-model="manual.full_name" id="name" placeholder="Full Name *" type="text" required>
                         <i class="fa fa-user"></i>

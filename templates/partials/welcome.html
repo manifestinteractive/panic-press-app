@@ -1,7 +1,7 @@
-<section class="full-screen">
+<section class="full-screen" ng-swipe-left="swipeStart('left');" ng-swipe-right="swipeStart('right');" ng-if="appMode == 'setup'">
     <section class="section swatch-red-white">
         <div class="container m-b-xl text-center">
-            <img src="assets/img/svg/icon.svg" class="fadeOut homeLogo">
+            <img id="homeLogo" src="assets/img/svg/icon.svg" class="fadeOut homeLogo" ng-click="animate()">
             <header class="section-header underline m-t fadeOut">
                 <h1 class="headline hyper hairline">Panic Press</h1>
                 <p class="big">Access your Safety Net</p>
@@ -11,7 +11,7 @@
     <section class="section swatch-red-white">
         <div class="container">
             <div class="row text-center m-b-lg">
-                <a class="btn btn-white btn-lg btn-icon-right start-button" target="_self" ng-click="animate()">
+                <a class="btn btn-white btn-lg btn-icon-right start-button" target="_self" ng-click="begin()">
                     <span style="color: #e74c3c">Let's Begin</span>
                     <span class="hex-alt">
                         <i class="fa fa-arrow-right" data-animation="shake"></i>

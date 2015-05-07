@@ -27,16 +27,28 @@
 
         <!-- Create Security PIN -->
         <div class="container min-height m-b-xl">
-            <header class="section-header text-center underline m-t-xl">
-                <h1 class="headline super hairline">Security PIN</h1>
+            <header class="section-header text-center underline m-t-xl" ng-if=" !allClear">
+                <h1 class="headline super hairline">Enter Your Security PIN</h1>
             </header>
-            <div class="text-center m-b-xl">
+            <header class="section-header text-center underline m-t-xl" ng-if="allClear">
+                <h1 class="headline super hairline">Danger Cleared</h1>
+            </header>
+            <div class="text-center alert alert-danger details-alert" ng-if="pinInvalid">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                <strong><i class="fa fa-fw fa-exclamation-triangle text-red"></i></strong>&nbsp;
+                <span>{{pinInvalid}}</span>
+            </div>
+            <div class="text-center alert alert-success panic-green details-alert" ng-if="allClear">
+                <strong><i class="fa fa-fw fa-check-square"></i></strong>&nbsp;
+                <span>{{allClear}}</span>
+            </div>
+            <div class="text-center m-b-xl" ng-if=" !allClear">
                 <form class="contact-form m-t-xl">
                     <div class="form-group form-icon-group">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin1" ng-model="pin.securityPin1" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin2" ng-model="pin.securityPin2" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin3" ng-model="pin.securityPin3" required="required" numbers-only="numbers-only">
-                        <input type="tel" pattern="[0-9]" maxlength="1" class="pin good" id="securityPin4" ng-model="pin.securityPin4" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityPin', 1)" maxlength="1" class="pin good" id="securityPin1" ng-model="pin.securityPin1" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityPin', 2)" maxlength="1" class="pin good" id="securityPin2" ng-model="pin.securityPin2" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityPin', 3)" maxlength="1" class="pin good" id="securityPin3" ng-model="pin.securityPin3" required="required" numbers-only="numbers-only">
+                        <input type="tel" pattern="[0-9]" ng-keyup="advance('securityPin', 4)" maxlength="1" class="pin good" id="securityPin4" ng-model="pin.securityPin4" required="required" numbers-only="numbers-only">
                     </div>
                     <div class="form-group text-center m-t-xl">
                         <a ui-sref="app.danger({ type: type, danger: danger, status: 'sent' })" class="btn btn-default btn-icon btn-icon-left previous">
@@ -46,7 +58,7 @@
                             </span>
                         </a>
                         &nbsp;
-                        <a ui-sref="app.home" class="btn btn-success btn-icon btn-icon-right next">
+                        <a ng-click="safe()" class="btn btn-success btn-icon btn-icon-right next">
                             I'm Safe
                             <span class="hex-alt">
                                 <i class="fa fa-check"></i>
@@ -57,6 +69,12 @@
                 <p>
                     Let's Verify it's You<br />
                     <span class="small text-muted">and not someone who took your device</span>
+                </p>
+            </div>
+            <div class="text-center m-b-xl" ng-if="allClear">
+                <p>
+                    We have Notified Your Contacts<br />
+                    <span class="small text-muted">Returning to Home Page ...</span>
                 </p>
             </div>
         </div>

@@ -1,9 +1,10 @@
 var sqlite = {
 	db: null,
 	db_name: 'panic_press_db',
-	db_description: 'SprintSee Application Database',
+	db_description: 'Panic Press Application Database',
 	db_size: (2 * 1024 * 1024),
-	init: function()
+	initialized: false,
+	init: function(callback)
 	{
 		phonegap.stats.event('DB', 'Init', 'Initialize DB');
 
@@ -32,15 +33,21 @@ var sqlite = {
 				tx.executeSql("DROP TABLE IF EXISTS `panic_app_settings`", [], sqlite.callback.success, sqlite.callback.error);
 				tx.executeSql("DROP TABLE IF EXISTS `panic_emergency_contacts`", [], sqlite.callback.success, sqlite.callback.error);
 				tx.executeSql("DROP TABLE IF EXISTS `panic_history`", [], sqlite.callback.success, sqlite.callback.error);
+				tx.executeSql("DROP TABLE IF EXISTS `panic_press_notifications`", [], sqlite.callback.success, sqlite.callback.error);
 				tx.executeSql("DROP TABLE IF EXISTS `panic_purchases`", [], sqlite.callback.success, sqlite.callback.error);
 				tx.executeSql("DROP TABLE IF EXISTS `panic_user_details`", [], sqlite.callback.success, sqlite.callback.error);
 
 				// Create Tables
 				tx.executeSql("CREATE TABLE `panic_app_settings` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `device_id` text(100,0) NOT NULL ON CONFLICT REPLACE, `app_environment` text(25,0) NOT NULL DEFAULT 'production', `app_version` text(10,0) NOT NULL DEFAULT '0.5.0', `app_mode` text(10,0) NOT NULL DEFAULT 'training', `api_url_development` text(100,0) NOT NULL DEFAULT 'http://localhost/panic_press/', `api_url_staging` text(100,0) NOT NULL DEFAULT 'http://staging.panic.press', `api_url_production` text(100,0) NOT NULL DEFAULT 'https://i.panic.press', `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_modified` text, CONSTRAINT `device_id` UNIQUE (device_id) ON CONFLICT REPLACE )");
-				tx.executeSql("CREATE TABLE `panic_emergency_contacts` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `unique_id` text(100,0) NOT NULL, `full_name` text(100,0) NOT NULL, `first_name` text(50,0) NOT NULL, `last_name` text NOT NULL, `email_address` text(100,0) NOT NULL, `phone_number` text(25,0) NOT NULL, `image_data` blob, `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_modified` text )");
-				tx.executeSql("CREATE TABLE `panic_history` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `short_url` text(50,0), `status` text(25,0) NOT NULL DEFAULT 'sending', `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP )");
+				tx.executeSql("CREATE TABLE `panic_emergency_contacts` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `unique_id` text(100,0) NOT NULL, `full_name` text(100,0) NOT NULL, `first_name` text(50,0) NOT NULL, `last_name` text NOT NULL, `email_address` text(100,0) NOT NULL, `phone_number` text(25,0) NOT NULL, `image_data` blob, `verified_email` TEXT(25,0), `verified_phone` TEXT(25,0), `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_modified` text )");
+				tx.executeSql("CREATE TABLE `panic_history` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `unique_id` text(32,0) NOT NULL ON CONFLICT IGNORE, `short_url` text(50,0), `status` text(25,0) NOT NULL DEFAULT 'active', `type` text(50,0), `danger` text(50,0), `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `ended_at` text, CONSTRAINT `unique_id` UNIQUE (unique_id) ON CONFLICT IGNORE )");
+				tx.executeSql("CREATE TABLE `panic_press_notifications` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `short_url` text(100,0) NOT NULL, `type` text(50,0) NOT NULL, `danger` text(50,0) NOT NULL, `status` text(25,0) NOT NULL DEFAULT 'sending', `message_sent` blob, `transmit_json` blob, `sent_to` text(100,0) NOT NULL, `confirmed_sent_date` text(50,0), `confirmed_received_date` text(50,0), `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT `short_url` UNIQUE (`short_url` ASC) ON CONFLICT IGNORE )");
 				tx.executeSql("CREATE TABLE `panic_purchases` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `device_id` text(100,0) NOT NULL ON CONFLICT REPLACE, `upgrade_to_5_contacts` integer(1,0) NOT NULL DEFAULT 0, `upgrade_to_10_contacts` integer(1,0) NOT NULL DEFAULT 0, `upgrade_to_15_contacts` integer(1,0) NOT NULL DEFAULT 0, `upgrade_to_20_contacts` integer(1,0) NOT NULL DEFAULT 0, `upgrade_to_add_photos` integer(1,0) NOT NULL DEFAULT 0, `upgrade_to_add_audio` integer(1,0) NOT NULL DEFAULT 0, `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_modified` text, UNIQUE (device_id) ON CONFLICT REPLACE )");
-				tx.executeSql("CREATE TABLE `panic_user_details` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `device_id` text(100,0) NOT NULL ON CONFLICT REPLACE, `full_name` text(100,0), `email_address` text(100,0), `phone_number` text(25,0), `profile_picture_url` text(100,0), `security_pin` text(4,0), `fake_security_pin` text(4,0), `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_modified` text, UNIQUE (`device_id`) ON CONFLICT REPLACE )");
+				tx.executeSql("CREATE TABLE `panic_user_details` ( `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `device_id` text(100,0) NOT NULL ON CONFLICT REPLACE, `full_name` text(100,0) NOT NULL, `email_address` text(100,0) NOT NULL, `phone_number` text(25,0) NOT NULL, `profile_picture_url` text(100,0), `security_pin` text(4,0), `fake_security_pin` text(4,0), `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_modified` text, UNIQUE (`device_id`) ON CONFLICT REPLACE )");
+
+				// Create Indexes
+				tx.executeSql("CREATE UNIQUE INDEX `unique_id` ON panic_history (`unique_id` ASC)");
+				tx.executeSql("CREATE UNIQUE INDEX `short_url` ON panic_press_notifications (`short_url` ASC)");
 			});
 
 			/**
@@ -56,10 +63,27 @@ var sqlite = {
 
 			M.whenDone(function(){
 				sqlite.db.transaction(function(tx){
-					// Create Default Data
-					tx.executeSql("INSERT INTO panic_app_settings(app_environment) VALUES (?)", ['development'], sqlite.callback.success, sqlite.callback.error);
+
+					if(typeof window.device !== 'undefined' && typeof window.settings !== 'undefined')
+					{
+						// Create Default Data
+						tx.executeSql("INSERT INTO panic_app_settings(app_environment, device_id, app_version) VALUES (?, ?, ?)",
+							[
+								window.settings.app.environment,
+								window.device.uuid,
+								window.settings.app.version
+							],
+							sqlite.callback.success,
+							sqlite.callback.error
+						);
+					}
 				});
 			});
+
+			if(typeof callback == 'function')
+			{
+				callback();
+			}
 		}
 	},
 	callback: {
@@ -86,12 +110,24 @@ var sqlite = {
 			}
 			else if(results)
 			{
+				data = {
+					empty: true
+				};
+
 				try {
-					data = { insert_id: results.insertId };
+					data.insert_id = results.insertId;
 				}
 				catch(exc)
 				{
-					data = [];
+					data.insert_id = null;
+				}
+
+				try {
+					data.rows_affected = results.rowsAffected;
+				}
+				catch(exc)
+				{
+					data.rows_affected = null;
 				}
 			}
 
@@ -102,6 +138,22 @@ var sqlite = {
 		},
 		error: function(err, callback)
 		{
+			if( !sqlite.initialized)
+			{
+				return false;
+			}
+
+			if(typeof err.message !== 'undefined')
+			{
+				phonegap.stats.event('App', 'DB Error', err.message);
+				console.error(err.message);
+
+				if(typeof Bugsnag !== 'undefined')
+				{
+					Bugsnag.notifyException(err, "FetchTeam");
+				}
+			}
+
 			if(typeof callback == 'function')
 			{
 				callback({ error: err.message });
@@ -115,6 +167,7 @@ var sqlite = {
 			phonegap.util.debug('error', 'Missing Query Param');
 			return false;
 		}
+
 		if( !args)
 		{
 			args = [];
@@ -236,6 +289,7 @@ function Migrator(db){
 			whenDone[f]();
 		}
 		debug(Migrator.DEBUG_LOW, "Callbacks complete.");
+		sqlite.initialized = true;
 	};
 
 	// Debugging stuff.

@@ -71,6 +71,9 @@ cordova plugin add https://github.com/cordova-sms/cordova-sms-plugin.git
 cordova plugin add https://github.com/danwilson/google-analytics-plugin.git
 cordova plugin add https://github.com/phonegap-build/StatusBarPlugin.git
 cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
+cordova plugin add https://github.com/katzer/cordova-plugin-local-notifications.git
+cordova plugin add https://github.com/leecrossley/cordova-plugin-apple-watch.git
+cordova plugin add https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git
 
 echo " "
 read -s -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY

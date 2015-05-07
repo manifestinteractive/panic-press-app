@@ -1,10 +1,15 @@
 var user_dismissed_bugs = false;
-var app_version = app.version || '0.0.0';
 
-Bugsnag.releaseStage = "development";
-Bugsnag.appVersion = app_version;
+Bugsnag.releaseStage = (typeof settings !== 'undefined') ? settings.app.environment : 'development';
+Bugsnag.appVersion = (typeof settings !== 'undefined') ? settings.app.version : '0.0.0';
 Bugsnag.beforeNotify = function(payload)
 {
+	// Do not use bugsnag during developement
+	if(Bugsnag.releaseStage == 'development')
+	{
+		return false;
+	}
+
 	var ignored_errors = [
 		'cordova',
 		'StatusBar',

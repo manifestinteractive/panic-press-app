@@ -10,7 +10,8 @@ module.exports = function(grunt)
 	
 	gtx.alias('build:dist', ['clean:dist', 'sass:dist', 'copy:dist', 'concat:dist']);
 	gtx.alias('build:app_ios', ['build:dist', 'cordovacli:build_ios']);
-	gtx.alias('build:app_android', ['build:dist', 'cordovacli:build_ios']);
+	gtx.alias('build:app_android', ['build:dist', 'cordovacli:build_android']);
+	gtx.alias('build:app_android_release', ['build:dist', 'cordovacli:build_android_release']);
 	
 	gtx.alias('emulate:iphone_4s', ['build:dist', 'cordovacli:emulate_4s', 'shell:webinspector']);
 	gtx.alias('emulate:iphone_5', ['build:dist', 'cordovacli:emulate_iphone_5', 'shell:webinspector']);
@@ -22,6 +23,8 @@ module.exports = function(grunt)
 	gtx.alias('emulate:ipad_retina', ['build:dist', 'cordovacli:emulate_ipad_retina', 'shell:webinspector']);
 	gtx.alias('emulate:ipad_air', ['build:dist', 'cordovacli:emulate_ipad_air', 'shell:webinspector']);
 	gtx.alias('emulate:ipad_resizable', ['build:dist', 'cordovacli:emulate_ipad_resizable', 'shell:webinspector']);
+
+	gtx.alias('emulate:android_nexus5', ['build:dist', 'cordovacli:emulate_android_nexus_5']);
 
 	gtx.alias('prerelease', ['bump-only:prerelease', 'release']);
 	
