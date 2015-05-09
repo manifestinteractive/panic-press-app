@@ -32,7 +32,7 @@ app.controller('ContactsController', [
 
 			var name_parts = full_name.split(' ');
 			var first_name = name_parts[0];
-			var last_name = name_parts[name_parts.length];
+			var last_name = name_parts[name_parts.length-1];
 
 			var url_hash = encrypt($localStorage.settings.security.encryption_key, JSON.stringify(transmit_json));
 			var api = $localStorage.settings.app.production.api.url + '?api=' + $localStorage.settings.app.production.api.key;
@@ -68,7 +68,7 @@ app.controller('ContactsController', [
 							var status = (sendgrid.message == 'success') ? 'sent' : 'failed';
 
 							sqlite.query(
-								'INSERT OR REPLACE INTO panic_press_notifications (short_url, type, danger, status, message_sent, transmit_json, sent_to, confirmed_sent_date) VALUES (?, ?, ?, ?, ?, ?, ?, DateTime("now"))',
+								'INSERT OR REPLACE INTO panic_press_notifications (short_url, type, danger, status, message_sent, transmit_json, sent_to, confirmed_sent_date, confirmed_sent_date) VALUES (?, ?, ?, ?, ?, ?, ?, DateTime("now"), NULL)',
 								[
 									api_response.short,
 									'verification',
@@ -175,6 +175,8 @@ app.controller('ContactsController', [
 		{
 			phonegap.stats.event('Contact', 'Pick Contact', 'Picking Contact from Contact List');
 
+			$scope.contactAlert = null;
+
 			if(typeof navigator.contacts !== 'undefined')
 			{
 				navigator.contacts.pickContact(function(contact){
@@ -203,6 +205,8 @@ app.controller('ContactsController', [
 		$scope.addContact = function()
 		{
 			phonegap.stats.event('Contact', 'Add Contact', 'Adding a New Contact');
+
+			$scope.contactAlert = null;
 
 			if($scope.modal.email && $scope.modal.phone)
 			{
@@ -238,6 +242,9 @@ app.controller('ContactsController', [
 			else
 			{
 				phonegap.stats.event('Contact', 'Add Contact Error', 'Failed to Add New Contact');
+
+				$scope.contactAlert = 'Both Email & Phone Required';
+				return false;
 			}
 		};
 
@@ -325,7 +332,7 @@ app.controller('ContactsController', [
 
 			var name_parts = full_name.split(' ');
 			var first_name = name_parts[0];
-			var last_name = name_parts[name_parts.length];
+			var last_name = name_parts[name_parts.length-1];
 
 			sqlite.query(
 				'INSERT OR REPLACE INTO panic_emergency_contacts (unique_id, full_name, first_name, last_name, email_address, phone_number, image_data) VALUES (?, ?, ?, ?, ?, ?, ?)',

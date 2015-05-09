@@ -3,6 +3,11 @@
     "encryption_key": ""
   },
   "app": {
+    "environment": "production",
+    "store": {
+      "ios": "992036229",
+      "android": "com.manifestinteractive.panicpress"
+    },
     "support": {
       "website": "https://panicpress.zendesk.com",
       "email": "support@panicpress.zendesk.com",
@@ -10,10 +15,10 @@
       "terms_of_use": "http://panicpress.press/terms-of-use",
       "privacy_policy": "http://panicpress.press/privacy-policy"
     },
-    "dev": {
+    "development": {
       "api": {
         "key": "",
-        "url": ""
+        "url": "https://i.panic.press/api"
       },
       "sendgrid": {
         "api_user": "",
@@ -27,10 +32,10 @@
         "bucket": ""
       }
     },
-    "prod": {
+    "production": {
       "api": {
         "key": "",
-        "url": ""
+        "url": "https://i.panic.press/api"
       },
       "sendgrid": {
         "api_user": "",
@@ -46,6 +51,6 @@
     }
   },
   "google": {
-    "analytics": "UA-XXXXXXXX-X"
+    "analytics": ""
   }
 }

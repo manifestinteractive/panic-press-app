@@ -1,7 +1,7 @@
 var user_dismissed_bugs = false;
 
-Bugsnag.releaseStage = (typeof settings !== 'undefined') ? settings.app.environment : 'development';
-Bugsnag.appVersion = (typeof settings !== 'undefined') ? settings.app.version : '0.0.0';
+Bugsnag.releaseStage = (typeof settings !== 'undefined') ? settings.app.environment : 'production';
+Bugsnag.appVersion = (typeof package !== 'undefined') ? package.version : '0.0.0';
 Bugsnag.beforeNotify = function(payload)
 {
 	// Do not use bugsnag during developement

@@ -120,7 +120,7 @@ app.controller('InfoController', [
 
 			var valid_full_name = /^[a-zA-Z-'. ]+ [a-zA-Z-'. ]+$/;
 			var valid_email = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-			var valid_phone = /^\d{10}$/g;
+			var valid_phone = /^\d{10,}$/g;
 
 			if(name.length == 0)
 			{

@@ -36,7 +36,7 @@ app.controller('HomeController', [
 
 		if($scope.appMode == 'ready' && !angular.isDefined($localStorage.approvedGPS))
 		{
-			$scope.approveGPS();
+			$timeout($scope.approveGPS, 1000);
 		}
 	}
 ]);

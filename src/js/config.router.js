@@ -2,7 +2,7 @@ angular.module('app').run([
 	'$rootScope', '$state', '$stateParams', '$anchorScroll', '$localStorage', '$location', '$window', '$timeout',
 	function($rootScope, $state, $stateParams, $anchorScroll, $localStorage, $location, $window, $timeout)
 	{
-		var hide_footer_pages = ['app.welcome'];
+		var hide_footer_pages = ['app.welcome', 'app.home', 'app.other'];
 		var hide_nav_pages = ['app.welcome', 'app.danger'];
 		var disable_menu_pages = ['app.pin'];
 		var hide_decor_pages = ['app.home', 'app.other'];
