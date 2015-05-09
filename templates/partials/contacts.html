@@ -24,12 +24,12 @@
         </div>
         <div class="container m-b-xl">
             <header class="section-header text-center underline m-t-lg">
-                <h1 class="headline super hairline">My Emergency Contacts</h1>
+                <h1 class="headline super hairline">Emergency Contacts</h1>
             </header>
             <div class="m-b-xl">
 
-                <div class="alert bg-panic-info-light text-panic-info" role="alert" ng-if="contacts.length > 0 && appMode == 'setup'">
-                    <i class="fa fa-exclamation-triangle text-panic-info m-r-xs"></i> Waiting for your first Emergency Contact to Accept your request before we can send notifications.
+                <div class="alert bg-panic-info-light text-panic-info text-center" role="alert" ng-if="contacts.length > 0 && appMode == 'setup'">
+                    <i class="fa fa-spinner fa-spin text-panic-info m-r-xs"></i> Waiting for First Contact's Approval
                 </div>
 
                 <div class="alert bg-panic-info-light text-panic-info text-center" role="alert" ng-if="contacts.length == 0">
@@ -43,13 +43,13 @@
                             <i class="fa fa-fw fa-times remove-contact"></i>
                         </div>
                         <p class="contact-info" ng-swipe-right="showMe = true" ng-swipe-left="showMe = false">
-                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': ( !contact.verified_email && !contact.verified_phone ), 'fa-user text-dark': ( contact.verified_email || contact.verified_phone ) }"></i>
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-spinner fa-spin text-light': ( !contact.verified_email && !contact.verified_phone ), 'fa-user text-dark': ( contact.verified_email || contact.verified_phone ) }"></i>
                             <strong ng-class="{ 'text-light': ( !contact.verified_email && !contact.verified_phone ) }">{{ contact.full_name }}</strong>
                             <br />
-                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': !contact.verified_email, 'fa-envelope text-dark': contact.verified_email }"></i>
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-spinner fa-spin text-light': !contact.verified_email, 'fa-envelope text-dark': contact.verified_email }"></i>
                             <span ng-class="{ 'text-light': !contact.verified_email }">{{ contact.email_address }}</span>
                             <br />
-                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-exclamation-triangle text-light': !contact.verified_phone, 'fa-phone text-dark': contact.verified_phone }"></i>
+                            <i class="fa fa-fw m-r-xs" ng-class="{ 'fa-spinner fa-spin text-light': !contact.verified_phone, 'fa-phone text-dark': contact.verified_phone }"></i>
                             <span ng-class="{ 'text-light': !contact.verified_phone }">{{ contact.phone_number | phoneNumber }}</span>
                         </p>
                     </li>
@@ -97,7 +97,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Add Contact: <span>{{ selectedContact.name.formatted }}</span></h4>
+                <h4 class="modal-title" id="myModalLabel">Emergency Contact:&nbsp; <span>{{ selectedContact.name.formatted }}</span></h4>
             </div>
 
             <div class="modal-body" ng-if="selectedContact.emails.length > 0 && selectedContact.phoneNumbers.length > 0">
@@ -108,7 +108,7 @@
                     <span>{{contactAlert}}</span>
                 </div>
 
-                <h4>Send Email to:</h4>
+                <h4>Send Email's to:</h4>
 
                 <div class="radio radio-danger" ng-repeat="(key, email) in selectedContact.emails">
                     <input type="radio" ng-model="modal.email" name="email" id="email_{{key}}" value="{{ email.value }}">
@@ -117,7 +117,7 @@
                     </label>
                 </div>
 
-                <h4 class="m-t-md">Send Text Message to:</h4>
+                <h4 class="m-t-md">Send Text Message's to:</h4>
 
                 <div class="radio radio-danger" ng-repeat="(key, phone) in selectedContact.phoneNumbers">
                     <input type="radio" ng-model="modal.phone" name="phone" id="phone_{{key}}" value="{{ phone.value }}">

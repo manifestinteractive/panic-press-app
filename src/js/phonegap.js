@@ -237,7 +237,7 @@ phonegap.notification = {
 	},
 	center: function(title, text, data, callback, error)
 	{
-		if(typeof cordova.plugins !== 'undefined' && typeof cordova.plugins.notification !== 'undefined')
+		if(typeof cordova !== 'undefined' && typeof cordova.plugins !== 'undefined' && typeof cordova.plugins.notification !== 'undefined')
 		{
 			phonegap.notification.counter++;
 			var sound = ( device.platform == 'Android' )

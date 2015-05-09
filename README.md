@@ -134,7 +134,7 @@ grunt build:app_ios
 ```
 
 ```bash
-grunt build:app_androind
+grunt build:app_android
 ```
 
 #### Running iOS Simulator:
@@ -269,4 +269,13 @@ packagingOptions {
     pickFirst 'META-INF/NOTICE'
     pickFirst 'META-INF/NOTICE.txt'
 }
+```
+
+If you are unable to automatically sign the Android version, you may need to do it manually.
+
+```bash
+cd /path/to/panic-press-app
+grunt build:app_android
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /path/to/panicpress.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk PanicPress
+/path/to/android/sdk/build-tools/22.0.1/zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk platforms/android/build/outputs/apk/panic-press-v0.5.0.apk
 ```

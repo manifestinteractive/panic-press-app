@@ -9,6 +9,26 @@ app.controller('DangerController', [
 		 * @todo: Add check for unsent messages ( when network online )
 		 */
 
+		// Check if user is in danger and redirect if they are
+		if(angular.isDefined($localStorage.danger) && $stateParams.status !== 'sent')
+		{
+			$state.go('app.danger', {
+				type: $localStorage.danger.type,
+				danger: $localStorage.danger.danger,
+				status: 'sent'
+			});
+
+			return false;
+		}
+
+		// Check if we are not in danger anymore
+		if( !angular.isDefined($stateParams.type) || !angular.isDefined($stateParams.danger) || !angular.isDefined($stateParams.status))
+		{
+			delete $localStorage.danger;
+			$state.go('app.home');
+			return false;
+		}
+
 		phonegap.stats.event('App', 'Page', 'Danger');
 
 		$scope.updateMode(function(){

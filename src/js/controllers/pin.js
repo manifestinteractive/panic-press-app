@@ -7,7 +7,7 @@ app.controller('PinController', [
 		 * @todo: Update SQLite to record when Danger cleared & how ( real / fake )
 		 */
 
-		if( !angular.isDefined($localStorage.user))
+		if( !angular.isDefined($localStorage.user) || !angular.isDefined($localStorage.danger))
 		{
 			$state.go('app.welcome');
 			return false;

@@ -287,7 +287,7 @@ function clean_string(str)
 	return str.replace(/[|&;$%@"<>()+,]/g, "").trim();
 }
 
-function phonenNumber(tel)
+function phone_number(tel)
 {
 	if (!tel) { return ''; }
 

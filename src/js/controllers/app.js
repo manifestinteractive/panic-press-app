@@ -159,16 +159,16 @@ app.controller('AppController', [
 				if(contacts.empty)
 				{
 					contacts = [];
+					delete $localStorage.contacts;
 				}
 				// make contacts an array if its not already
 				else if(typeof contacts.id !== 'undefined')
 				{
 					contacts = [contacts];
+					$localStorage.contacts = contacts;
 				}
 
 				phonegap.stats.event('Contact', 'Update Contacts Success', 'User now has '+ contacts.length +' Contacts');
-
-				$localStorage.contacts = contacts;
 
 				$scope.$apply(function(){
 					$scope.selectedContact = null;
@@ -367,7 +367,7 @@ app.controller('AppController', [
 			}
 
 			// Check for message less than an hour old
-			sqlite.query('SELECT * FROM panic_press_notifications WHERE status = ? AND created_at > datetime("now", "-1 day")', ['sent'], function(notifications){
+			sqlite.query('SELECT * FROM panic_press_notifications WHERE status = ? AND created_at > datetime("now", "-1 day") AND type != ?', ['sent', 'cleared'], function(notifications){
 
 				// check if we have no notifications
 				if(notifications.empty)
@@ -410,7 +410,7 @@ app.controller('AppController', [
 							{
 								phonegap.stats.event('App', 'Notification Received', 'Notification ' + short + ' was received.' );
 
-								// Update Notification Statis
+								// Update Notification Status
 								sqlite.query(
 									'UPDATE `panic_press_notifications` SET `status` = ?, `confirmed_received_date` = DateTime("now") WHERE `short_url` = ?',
 									[
@@ -446,7 +446,7 @@ app.controller('AppController', [
 									if(notification.sent_to.indexOf('@') > -1)
 									{
 										sqlite.query(
-											'UPDATE `panic_emergency_contacts` SET `verified_email` = DateTime("now"), `last_modified` = DateTime("now") WHERE `email_address` = ?',
+											'UPDATE `panic_emergency_contacts` SET `verified_email` = DateTime("now"), `last_modified` = DateTime("now") WHERE `email_address` = ? AND `verified_email` IS NULL',
 											[
 												notification.sent_to
 											],
@@ -470,7 +470,7 @@ app.controller('AppController', [
 									else
 									{
 										sqlite.query(
-											'UPDATE `panic_emergency_contacts` SET `verified_phone` = DateTime("now"), `last_modified` = DateTime("now") WHERE `phone_number` = ?',
+											'UPDATE `panic_emergency_contacts` SET `verified_phone` = DateTime("now"), `last_modified` = DateTime("now") WHERE `phone_number` = ? AND `verified_phone` IS NULL',
 											[
 												notification.sent_to.replace(/\D/g, '')
 											],
@@ -480,7 +480,7 @@ app.controller('AppController', [
 												if(results.rows_affected > 0)
 												{
 													phonegap.stats.event('App', 'Notification Verified Phone Number', 'Verified Emergency Contacts Phone Number.');
-													phonegap.notification.center('Phone Number Verified', notification.sent_to + ' has verified this Phone Number for use as an Emergency Contact.');
+													phonegap.notification.center('Phone Number Verified', phone_number(notification.sent_to) + ' has verified this Phone Number for use as an Emergency Contact.');
 
 													$timeout.cancel($scope.timeout);
 													$scope.timeout = $timeout(function(){
@@ -511,7 +511,7 @@ app.controller('AppController', [
 				}
 			});
 
-			$scope.checkInterval = ($scope.checkInterval * 2);
+			$scope.checkInterval = ($scope.checkInterval * 1.1);
 		};
 
 		/**

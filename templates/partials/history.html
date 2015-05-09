@@ -29,25 +29,25 @@
             </header>
             <div class="text-center m-b-xl">
 
-                <ul class="text-left list-fancy-icons color-inverse" ng-show="history.length > 0">
+                <ul class="text-left list-fancy-icons color-inverse" ng-if="history.length > 0">
                     <li ng-repeat="event in history" class="event-{{event.id}}">
                         <a class="hex" ng-click="openBrowser(event.short_url);">
                             <i class="fa fa-link"></i>
                         </a>
                         <h3>
-                            {{ event.last_modified | formatDateShort }} {{ event.last_modified | formatTime }}
+                            {{ event.created_at | formatDateShort }} {{ event.created_at | formatTime }}
                         </h3>
                         <p>
                             Activated
                             <span class="live-time" data-timestamp="{{ event.last_modified }}">
-                                {{ event.last_modified | fromNow }}
+                                {{ event.created_at | fromNow }}
                             </span>
                         </p>
                     </li>
                 </ul>
 
-                <div ng-hide="history.length > 0" class="label label-success">
-                    No Panic Press History
+                <div class="alert bg-panic-info-light text-panic-info text-center" role="alert" ng-hide="history.length > 0">
+                    <i class="fa fa-exclamation-triangle text-panic-info m-r-xs"></i> No Panic Press History
                 </div>
             </div>
         </div>
