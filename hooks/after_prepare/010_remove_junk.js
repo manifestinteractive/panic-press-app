@@ -14,14 +14,12 @@ if (rootdir)
 		"platforms/ios/www/gruntfile.js",
 		"platforms/ios/www/README.md",
 		"platforms/ios/www/LICENSE",
-		"platforms/ios/www/package.json",
 		"platforms/ios/www/settings.json.dist",
 
 		"platforms/android/assets/www/bower.json",
 		"platforms/android/assets/www/gruntfile.js",
 		"platforms/android/assets/www/README.md",
 		"platforms/android/assets/www/LICENSE",
-		"platforms/android/assets/www/package.json",
 		"platforms/android/assets/www/settings.json.dist"
 	];
 

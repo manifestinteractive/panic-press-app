@@ -12,7 +12,6 @@ angular.module('app').controller('AppCtrl', [
 		// config
 		$scope.app = {
 			name: 'Panic Press',
-			version: '0.5.0',
 			date: {
 				today: date.toISOString(),
 				time: date.getTime(),

@@ -275,7 +275,8 @@ If you are unable to automatically sign the Android version, you may need to do 
 
 ```bash
 cd /path/to/panic-press-app
-grunt build:app_android
+grunt build:dist
+cordova build android --release
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /path/to/panicpress.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk PanicPress
 /path/to/android/sdk/build-tools/22.0.1/zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk platforms/android/build/outputs/apk/panic-press-v0.5.0.apk
 ```

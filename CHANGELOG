@@ -1,0 +1,17 @@
+v0.5.1
+----------
+1. Fixed footer rendering issue on Danger selection pages.
+
+2. Fixed template bug on My History.
+
+3. Fixed bug that allowed danger notifications to be resent when navigating.
+
+4. Added logic to check the state of the app on launch to prevent users getting falsely stuck in danger mode.
+
+5. Added validation on Emergency Contact page when adding a contact without selecting both an Email Address and Phone Number.
+
+
+v0.5.0
+----------
+
+Initial Launch

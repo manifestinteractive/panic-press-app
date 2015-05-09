@@ -604,19 +604,22 @@ app.controller('AppController', [
 
 		// Fetch App Settings
 		$http.get('settings.json').success(function(data){
-
-			data.app.version = $scope.app.version;
-
 			$window.settings = data;
 			$scope.settings = data;
 			$localStorage.settings = data;
+		});
+
+		$http.get('package.json').success(function(data){
+			$window.package = data;
+			$scope.package = data;
+			$localStorage.package = data;
 		});
 
 		// Check for New Version
 		$http.get('https://i.panic.press/mobile_app_info.json').success(function(mobile_app_info){
 
 			var include_beta = ($scope.settings.app.environment == 'development');
-			var app_difference = compare_app_versions($scope.app.version, mobile_app_info, include_beta);
+			var app_difference = compare_app_versions($scope.package.version, mobile_app_info, include_beta);
 
 			// New Version Available
 			if(app_difference > 0 )
@@ -624,7 +627,7 @@ app.controller('AppController', [
 				// User not notified of new version
 				if($scope.updateAppReminder == 0)
 				{
-					phonegap.stats.event('App', 'Update Available', 'User on v' + $scope.app.version + '. Latest is v' + mobile_app_info.current_version );
+					phonegap.stats.event('App', 'Update Available', 'User on v' + $scope.package.version + '. Latest is v' + mobile_app_info.current_version );
 
 					phonegap.notification.confirm(
 						"You are currently using an outdated version of Panic Press. The current version is " + mobile_app_info.current_version + ". Would you like to Update Panic Press?",
