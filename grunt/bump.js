@@ -3,7 +3,8 @@ module.exports = {
 		files: [
 			"package.json",
 			"bower.json",
-			"config.xml"
+			"config.xml",
+			"../config.xml"
 		],
 		updateConfigs: [
 			"package"
