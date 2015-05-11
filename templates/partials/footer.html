@@ -1,9 +1,20 @@
-<section class="section swatch-red-white has-top" ng-class="{ hide: hideFooter == true }">
+<section class="section swatch-red-white has-top" ng-hide="hideFooter">
     <div class="decor-top" ng-hide="hideDecor">
         <svg class="decor" height="100%" preserveAspectRatio="none" version="1.1" viewBox="0 0 100 100" width="100%" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
         </svg>
     </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div id="text-4" class="sidebar-widget widget_text m-b-xs">
+                    <div class="textwidget m-t-xl">&copy; Panic Press {{ app.date.year }} &nbsp;-&nbsp; v{{ package.version }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section swatch-red-white" ng-show="hideFooter && currentPage != 'app.welcome'">
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">

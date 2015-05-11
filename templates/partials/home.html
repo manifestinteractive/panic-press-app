@@ -1,73 +1,79 @@
 <section ng-init="initHome();" ng-swipe-left="swipeToPotentialDanger('left');" ng-swipe-right="swipeToPotentialDanger('right');">
 
     <section class="section swatch-red-white has-top danger-zone">
-        <header class="section-header text-center underline animated fadeIn">
-            <h1 class="headline super hairline">Immediate Danger</h1>
-            <p>Notify Emergency Contacts of:</p>
-        </header>
-        <div class="row m-t">
-            <div class="col-xs-6 no-overflow">
-                <a ui-sref="app.danger({ type: 'immediate', danger: 'physical-attack', status: 'send' })" class="box-hex flat-shadow flat-hex left-10 os-animation" data-os-animation="fadeInLeft" data-os-animation-delay=".0s" ng-class="{ 'box-big': !isMobile }">
-                    <div class="box-dummy"></div>
+
+        <div class="container contain-600">
+
+            <header class="section-header text-center underline animated fadeIn">
+                <h1 class="headline super hairline">Immediate Danger</h1>
+                <p>Notify Emergency Contacts of:</p>
+            </header>
+            <div class="row m-t">
+                <div class="col-xs-6 no-overflow">
+                    <a ui-sref="app.danger({ type: 'immediate', danger: 'physical-attack', status: 'send' })" class="box-hex flat-shadow flat-hex left-10 os-animation" data-os-animation="fadeInLeft" data-os-animation-delay=".0s" ng-class="{ 'box-big': !isMobile }">
+                        <div class="box-dummy"></div>
                     <span class="box-inner">
                         <span class="hex-label">Physical<br/>Attack</span>
 					    <img alt="" src="assets/img/danger/physical-attack.svg" class="">
 				    </span>
-                    <div class="hex-right"></div>
-                    <div class="hex-left"></div>
-                    <div class="hex-right"></div>
-                    <div class="hex-left"></div>
-                </a>
-            </div>
-            <div class="col-xs-6 no-overflow">
-                <a ui-sref="app.danger({ type: 'immediate', danger: 'verbal-attack', status: 'send' })" class="box-hex flat-shadow flat-hex right-10 os-animation" data-os-animation="fadeInRight" data-os-animation-delay=".05s" ng-class="{ 'box-big': !isMobile }">
-                    <div class="box-dummy"></div>
+                        <div class="hex-right"></div>
+                        <div class="hex-left"></div>
+                        <div class="hex-right"></div>
+                        <div class="hex-left"></div>
+                    </a>
+                </div>
+                <div class="col-xs-6 no-overflow">
+                    <a ui-sref="app.danger({ type: 'immediate', danger: 'verbal-attack', status: 'send' })" class="box-hex flat-shadow flat-hex right-10 os-animation" data-os-animation="fadeInRight" data-os-animation-delay=".05s" ng-class="{ 'box-big': !isMobile }">
+                        <div class="box-dummy"></div>
                     <span class="box-inner">
                         <span class="hex-label">Verbal<br/>Attack</span>
 					    <img alt="" src="assets/img/danger/verbal-attack.svg" class="">
 				    </span>
-                    <div class="hex-right"></div>
-                    <div class="hex-left"></div>
-                    <div class="hex-right"></div>
-                    <div class="hex-left"></div>
-                </a>
+                        <div class="hex-right"></div>
+                        <div class="hex-left"></div>
+                        <div class="hex-right"></div>
+                        <div class="hex-left"></div>
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-6 no-overflow">
-                <a ui-sref="app.danger({ type: 'immediate', danger: 'car-accident', status: 'send' })" class="box-hex flat-shadow flat-hex left-10 os-animation" data-os-animation="fadeInLeft" data-os-animation-delay=".1s" ng-class="{ 'box-big': !isMobile }">
-                    <div class="box-dummy"></div>
+            <div class="row">
+                <div class="col-xs-6 no-overflow">
+                    <a ui-sref="app.danger({ type: 'immediate', danger: 'car-accident', status: 'send' })" class="box-hex flat-shadow flat-hex left-10 os-animation" data-os-animation="fadeInLeft" data-os-animation-delay=".1s" ng-class="{ 'box-big': !isMobile }">
+                        <div class="box-dummy"></div>
                     <span class="box-inner">
                         <span class="hex-label">Car<br/>Accident</span>
 					    <img alt="" src="assets/img/danger/car-accident.svg" class="">
 				    </span>
-                    <div class="hex-right"></div>
-                    <div class="hex-left"></div>
-                    <div class="hex-right"></div>
-                    <div class="hex-left"></div>
-                </a>
-            </div>
-            <div class="col-xs-6 no-overflow">
-                <a ui-sref="app.danger({ type: 'immediate', danger: 'fire-danger', status: 'send' })" class="box-hex flat-shadow flat-hex right-10 os-animation" data-os-animation="fadeInRight" data-os-animation-delay=".15s" ng-class="{ 'box-big': !isMobile }">
-                    <div class="box-dummy"></div>
+                        <div class="hex-right"></div>
+                        <div class="hex-left"></div>
+                        <div class="hex-right"></div>
+                        <div class="hex-left"></div>
+                    </a>
+                </div>
+                <div class="col-xs-6 no-overflow">
+                    <a ui-sref="app.danger({ type: 'immediate', danger: 'fire-danger', status: 'send' })" class="box-hex flat-shadow flat-hex right-10 os-animation" data-os-animation="fadeInRight" data-os-animation-delay=".15s" ng-class="{ 'box-big': !isMobile }">
+                        <div class="box-dummy"></div>
                     <span class="box-inner">
                         <span class="hex-label">Fire<br/>Danger</span>
 					    <img alt="" src="assets/img/danger/fire-danger.svg" class="">
 				    </span>
-                    <div class="hex-right"></div>
-                    <div class="hex-left"></div>
-                    <div class="hex-right"></div>
-                    <div class="hex-left"></div>
-                </a>
+                        <div class="hex-right"></div>
+                        <div class="hex-left"></div>
+                        <div class="hex-right"></div>
+                        <div class="hex-left"></div>
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="row text-center">
-            <a ui-sref="app.other" class="btn btn-white btn-icon-right m-t-xs os-animation" data-os-animation="fadeIn" data-os-animation-delay=".5s">
-                <span class="text-red">Potential Danger</span>
+            <div class="row text-center">
+                <a ui-sref="app.other" class="btn btn-white btn-icon-right m-t-xs os-animation" data-os-animation="fadeIn" data-os-animation-delay=".5s">
+                    <span class="text-red">Potential Danger</span>
 				<span class="hex-alt hex-alt">
 					<i class="fa fa-arrow-right"></i>
 				</span>
-            </a>
+                </a>
+            </div>
+
         </div>
+
     </section>
 </section>

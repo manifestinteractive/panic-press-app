@@ -11,7 +11,7 @@ app.controller('HistoryController', [
 			? $localStorage.history
 			: {};
 
-		sqlite.query("SELECT id, short_url, status, datetime(created_at, 'localtime') AS created_at, datetime((strftime('%s', created_at) / 60) * 60, 'unixepoch') interval FROM panic_history GROUP BY interval ORDER BY interval", [], function(history){
+		sqlite.query("SELECT id, short_url, status, type, danger, datetime(created_at, 'localtime') AS created_at, datetime((strftime('%s', created_at) / 60) * 60, 'unixepoch') interval FROM panic_history GROUP BY interval ORDER BY interval", [], function(history){
 
 			// check if we have no history
 			if(history.empty)
@@ -24,6 +24,8 @@ app.controller('HistoryController', [
 			{
 				history = [history];
 			}
+
+			history.reverse();
 
 			$localStorage.history = history;
 

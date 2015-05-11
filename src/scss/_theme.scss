@@ -26,6 +26,11 @@ blockquote p, .section-header p
 .panel-heading.purchase
 {
 	background-color: $panic-red-inverted !important;
+
+	&.purchased
+	{
+		background-color: $panic-success !important;
+	}
 }
 
 h4.purchase
@@ -5956,6 +5961,7 @@ pre
 	-o-transition: all 0.2s;
 	-webkit-transition: all 0.2s;
 	transition: all 0.2s;
+	line-height: 30px;
 }
 
 #masthead .nav > li > a:before
@@ -7936,6 +7942,11 @@ ul.inline li
 .tab-pills .tab-content
 {
 	border-top: none;
+}
+
+.modal
+{
+	margin: 0 auto;
 }
 
 /* - Carousel - */
@@ -15217,4 +15228,8 @@ li.no-pad
 	{
 		color: $panic-green;
 	}
+}
+.contain-600
+{
+	max-width: 600px;
 }

@@ -9,26 +9,6 @@ app.controller('DangerController', [
 		 * @todo: Add check for unsent messages ( when network online )
 		 */
 
-		// Check if user is in danger and redirect if they are
-		if(angular.isDefined($localStorage.danger) && $stateParams.status !== 'sent')
-		{
-			$state.go('app.danger', {
-				type: $localStorage.danger.type,
-				danger: $localStorage.danger.danger,
-				status: 'sent'
-			});
-
-			return false;
-		}
-
-		// Check if we are not in danger anymore
-		if( !angular.isDefined($stateParams.type) || !angular.isDefined($stateParams.danger) || !angular.isDefined($stateParams.status))
-		{
-			delete $localStorage.danger;
-			$state.go('app.home');
-			return false;
-		}
-
 		phonegap.stats.event('App', 'Page', 'Danger');
 
 		var date_time = moment();
@@ -77,6 +57,37 @@ app.controller('DangerController', [
 		$scope.type_text = types[$stateParams.type];
 		$scope.danger_text = dangers_text[$stateParams.danger];
 		$scope.danger_html = dangers_html[$stateParams.danger];
+
+		$scope.initDanger = function(){
+			// Check if user is in danger and redirect if they are
+			if(angular.isDefined($localStorage.danger) && $stateParams.status !== 'sent')
+			{
+				$state.go('app.danger', {
+					type: $localStorage.danger.type,
+					danger: $localStorage.danger.danger,
+					status: 'sent'
+				});
+
+				return false;
+			}
+
+			// Check if we are not in danger anymore
+			if( !angular.isDefined($stateParams.type) || !angular.isDefined($stateParams.danger) || !angular.isDefined($stateParams.status))
+			{
+				delete $localStorage.danger;
+				$state.go('app.home');
+				return false;
+			}
+
+			if ($scope.status == 'send')
+			{
+				getLocation();
+				$localStorage.danger = {
+					type: $stateParams.type,
+					danger: $stateParams.danger
+				};
+			}
+		};
 
 		var getLocation = function(){
 
@@ -171,11 +182,6 @@ app.controller('DangerController', [
 			// If we got at least one sending status, save the danger status
 			if(status == 'sending')
 			{
-				$localStorage.danger = {
-					type: $stateParams.type,
-					danger: $stateParams.danger
-				};
-
 				phonegap.stats.event('Danger', 'Preparing Notification', 'Sending notice to ' + response.short);
 			}
 			else
@@ -184,10 +190,12 @@ app.controller('DangerController', [
 			}
 
 			sqlite.query(
-				'INSERT OR REPLACE INTO panic_history (short_url, status, unique_id) VALUES (?, ?, DateTime("now"))',
+				'INSERT OR REPLACE INTO panic_history (short_url, status, type, danger, unique_id) VALUES (?, ?, ?, ?, DateTime("now"))',
 				[
 					response.short,
-					status
+					status,
+					$scope.type_text,
+					$scope.danger_text
 				],
 				function()
 				{
@@ -364,15 +372,6 @@ app.controller('DangerController', [
 				}
 			);
 		};
-
-		if ($scope.status == 'send')
-		{
-			getLocation();
-		}
-		else if ($scope.status == 'sent')
-		{
-
-		}
 
 		/*
 		if ($scope.status == 'send')

@@ -352,7 +352,7 @@ function compare_app_versions(installed_version, latest_app_info, include_beta)
 				{
 					start = i;
 				}
-				if(start !== null && installed_version !== latest_app_info.release[i].version)
+				if(start !== null && installed_version < latest_app_info.release[i].version)
 				{
 					behind++;
 				}
@@ -367,7 +367,7 @@ function compare_app_versions(installed_version, latest_app_info, include_beta)
 				{
 					start = i;
 				}
-				if(start !== null && latest_app_info.release[i].production_release === true  && latest_app_info.release[i].production_ios_release_date !== null && latest_app_info.release[i].production_android_release_date !== null && installed_version !== latest_app_info.release[i].version)
+				if(start !== null && latest_app_info.release[i].production_release === true  && latest_app_info.release[i].production_ios_release_date !== null && latest_app_info.release[i].production_android_release_date !== null && installed_version < latest_app_info.release[i].version)
 				{
 					behind++;
 				}

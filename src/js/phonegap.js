@@ -87,6 +87,14 @@ phonegap.events = {
 			navigator.splashscreen.hide();
 		}
 
+		if(typeof StatusBar !== 'undefined')
+		{
+			if (cordova.platformId == 'android')
+			{
+				StatusBar.backgroundColorByHexString("#E74C3C");
+			}
+		}
+
 		if(phonegap.initialized === true)
 		{
 			return false;
@@ -381,15 +389,13 @@ phonegap.store = {
 			type:  store.NON_CONSUMABLE
 		});
 
-		// Listen for Changes
-		//store.when('upgrade_to_5_contacts').updated(function(product){ phonegap.store.addProduct(product); });
-		//store.when('upgrade_to_10_contacts').updated(function(product){ phonegap.store.addProduct(product); });
-
 		// Listen for Purchase
 		store.when('upgrade_to_5_contacts').approved(function (order) {
+			phonegap.notification.center('Purchase Complete', 'Panic Press Upgraded to Five Emergency Contacts.');
 			order.finish();
 		});
 		store.when('upgrade_to_10_contacts').approved(function (order) {
+			phonegap.notification.center('Purchase Complete', 'Panic Press Upgraded to Ten Emergency Contacts.');
 			order.finish();
 		});
 
