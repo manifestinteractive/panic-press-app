@@ -131,5 +131,10 @@ angular.module('app').run([
 			templateUrl: 'templates/partials/share.html',
 			controller: 'ShareController'
 		})
+		.state('app.purchase', {
+			url: '/purchase',
+			templateUrl: 'templates/partials/purchase.html',
+			controller: 'PurchaseController'
+		})
 	}
 ]);

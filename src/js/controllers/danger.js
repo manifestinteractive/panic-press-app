@@ -31,14 +31,6 @@ app.controller('DangerController', [
 
 		phonegap.stats.event('App', 'Page', 'Danger');
 
-		$scope.updateMode(function(){
-			if($scope.appMode != 'ready')
-			{
-				$state.go('app.welcome');
-				return false;
-			}
-		});
-
 		var date_time = moment();
 		var date = new Date();
 

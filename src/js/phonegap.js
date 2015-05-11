@@ -33,6 +33,7 @@ var phonegap = {
 			{
 				sqlite.init(function(){
 					angular.bootstrap(document.body, ['app']);
+					phonegap.store.init();
 				});
 			}
 		}
@@ -59,7 +60,7 @@ phonegap.events = {
 		phonegap.stats.event('App', 'Event', 'Device Ready');
 
 		// Get Network Info
-		if(typeof navigator.connection !== 'undefined')
+		if(typeof navigator.connection !== 'undefined' && typeof Connection !== 'undefined')
 		{
 			var networkState = navigator.connection.type;
 
@@ -346,6 +347,56 @@ phonegap.util = {
 	}
 };
 
+phonegap.store = {
+	initialized: false,
+	products: [],
+	init: function(){
+
+		if(phonegap.store.initialized)
+		{
+			phonegap.util.debug('warn', 'App Store already Initialized');
+			return;
+		}
+
+		if (!window.store)
+		{
+			phonegap.util.debug('error', 'App Store Not Supported');
+			return;
+		}
+
+		phonegap.store.initialized = true;
+
+		// Enable maximum logging level
+		store.verbosity = store.QUIET;
+
+		// Setup Product we sell
+		store.register({
+			id: 'upgrade_to_5_contacts',
+			alias: 'Upgrade to 5 Emergency Contacts',
+			type: store.NON_CONSUMABLE
+		});
+		store.register({
+			id: 'upgrade_to_10_contacts',
+			alias: 'Upgrade to 10 Emergency Contacts',
+			type:  store.NON_CONSUMABLE
+		});
+
+		// Listen for Changes
+		//store.when('upgrade_to_5_contacts').updated(function(product){ phonegap.store.addProduct(product); });
+		//store.when('upgrade_to_10_contacts').updated(function(product){ phonegap.store.addProduct(product); });
+
+		// Listen for Purchase
+		store.when('upgrade_to_5_contacts').approved(function (order) {
+			order.finish();
+		});
+		store.when('upgrade_to_10_contacts').approved(function (order) {
+			order.finish();
+		});
+
+		store.refresh();
+	}
+};
+
 'use strict';
 
 var CordovaInit = function() {
@@ -357,7 +408,7 @@ var CordovaInit = function() {
 	}
 	else
 	{
-		phonegap.receivedEvent('manual')
+		phonegap.receivedEvent('manual');
 	}
 };
 

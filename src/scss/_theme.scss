@@ -23,6 +23,25 @@ blockquote p, .section-header p
 	font-weight: 300;
 }
 
+.panel-heading.purchase
+{
+	background-color: $panic-red-inverted !important;
+}
+
+h4.purchase
+{
+	text-transform: none;
+	text-align: left;
+	font-weight: 300;
+	font-size: 14px;
+	padding: 0;
+	margin: 0;
+
+	i.fa {
+		color: #FFF;
+	}
+}
+
 .full-screen
 {
 	position: fixed;

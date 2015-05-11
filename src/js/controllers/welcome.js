@@ -3,24 +3,20 @@ app.controller('WelcomeController', [
 	{
 		phonegap.stats.event('App', 'Page', 'Welcome');
 
-		// Call Mode to
-		$scope.getMode(function(mode){
+		if($scope.appMode == 'ready')
+		{
+			phonegap.stats.event('Welcome', 'Update Mode', 'User already setup, go to home page.');
 
-			if(mode == 'ready')
-			{
-				phonegap.stats.event('Welcome', 'Update Mode', 'User already setup, go to home page.');
+			$state.go('app.home');
+			return false;
+		}
+		else if($scope.appMode == 'setup' && angular.isDefined($localStorage.user) && !angular.isDefined($localStorage.contacts))
+		{
+			phonegap.stats.event('Welcome', 'Update Mode', 'User added their account, but has no contacts.');
 
-				$state.go('app.home');
-				return false;
-			}
-			else if(mode == 'setup' && angular.isDefined($localStorage.user) && !angular.isDefined($localStorage.contacts))
-			{
-				phonegap.stats.event('Welcome', 'Update Mode', 'User added their account, but has no contacts.');
-
-				$state.go('app.contacts');
-				return false;
-			}
-		});
+			$state.go('app.contacts');
+			return false;
+		}
 
 		/**
 		 * Just for fun if the user clicks our logo

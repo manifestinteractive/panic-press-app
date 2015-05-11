@@ -1,5 +1,10 @@
 var user_dismissed_bugs = false;
 
+if(typeof StatusBar == 'undefined')
+{
+	var StatusBar = {};
+}
+
 Bugsnag.releaseStage = (typeof settings !== 'undefined') ? settings.app.environment : 'production';
 Bugsnag.appVersion = (typeof package !== 'undefined') ? package.version : '0.0.0';
 Bugsnag.beforeNotify = function(payload)
