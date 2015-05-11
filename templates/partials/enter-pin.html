@@ -1,4 +1,4 @@
-<section>
+<section ng-init="initSafe()">
     <section class="section swatch-red-white section-short m-t-xl">
         <div class="container">
             <div class="row text-center m-b-sm">
@@ -26,7 +26,7 @@
         </div>
 
         <!-- Create Security PIN -->
-        <div class="container min-height m-b-xl">
+        <div class="container contain-600 min-height m-b-xl">
             <header class="section-header text-center underline m-t-xl" ng-if=" !allClear">
                 <h1 class="headline super hairline">Enter Your Security PIN</h1>
             </header>

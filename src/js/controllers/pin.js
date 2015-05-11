@@ -7,12 +7,6 @@ app.controller('PinController', [
 		 * @todo: Update SQLite to record when Danger cleared & how ( real / fake )
 		 */
 
-		if( !angular.isDefined($localStorage.user) || !angular.isDefined($localStorage.danger))
-		{
-			$state.go('app.welcome');
-			return false;
-		}
-
 		$scope.type = $stateParams.type;
 		$scope.danger = $stateParams.danger;
 		$scope.status = $stateParams.status;
@@ -28,6 +22,14 @@ app.controller('PinController', [
 			securityPin2: null,
 			securityPin3: null,
 			securityPin4: null
+		};
+
+		$scope.initSafe = function(){
+			if( !angular.isDefined($localStorage.user) || !angular.isDefined($localStorage.danger))
+			{
+				$state.go('app.welcome');
+				return false;
+			}
 		};
 
 		$scope.advance = function(name, id)

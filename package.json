@@ -1,6 +1,6 @@
 {
   "name": "PanicPress",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Access your Safety Net from your favorite Apple iOS or Android Device.",
   "scripts": {
     "test": "./node_modules/karma/bin/karma start",

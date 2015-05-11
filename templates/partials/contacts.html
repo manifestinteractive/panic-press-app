@@ -22,7 +22,7 @@
                 <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
             </svg>
         </div>
-        <div class="container m-b-xl">
+        <div class="container contain-600 m-b-xl">
             <header class="section-header text-center underline m-t-lg">
                 <h1 class="headline super hairline">Emergency Contacts</h1>
             </header>
@@ -103,7 +103,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Emergency Contact:&nbsp; <span>{{ selectedContact.name.formatted }}</span></h4>
+                <h4 class="modal-title" id="myModalLabel">Add Contact:&nbsp; <span>{{ selectedContact.name.formatted }}</span></h4>
             </div>
 
             <div class="modal-body" ng-if="selectedContact.emails.length > 0 && selectedContact.phoneNumbers.length > 0">

@@ -7944,6 +7944,11 @@ ul.inline li
 	border-top: none;
 }
 
+.modal
+{
+	margin: 0 auto;
+}
+
 /* - Carousel - */
 .carousel .post
 {
@@ -15223,4 +15228,8 @@ li.no-pad
 	{
 		color: $panic-green;
 	}
+}
+.contain-600
+{
+	max-width: 600px;
 }
