@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.manifestinteractive.panicpress" version="0.5.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.manifestinteractive.panicpress" version="0.6.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Panic</name>
   <description>
-        With a single tap, Panic Press automatically notifies your Emergency Contacts when you're in danger. Access your Safety Net from your favorite Apple iOS or Android Device.
-    </description>
+    With a single tap, Panic Press automatically notifies your Emergency Contacts when you're in danger. Access your
+    Safety Net from your favorite Apple iOS or Android Device.
+  </description>
   <author email="hello@manifestinteractive.com" href="http://manifestinteractive.com">
-        Manifest Interactive
-    </author>
+    Manifest Interactive
+  </author>
   <preference name="AutoHideSplashScreen" value="false"/>
   <preference name="BackgroundColor" value="0xffe74c3c"/>
   <preference name="detect-data-types" value="false"/>
@@ -34,9 +35,6 @@
     <preference name="SplashScreenDelay" value="5000"/>
     <preference name="webviewbounce" value="false"/>
   </platform>
-  <gap:config-file platform="android" parent="/manifest">
-    <supports-screens android:xlargeScreens="false" android:largeScreens="false" android:smallScreens="false"/>
-  </gap:config-file>
   <allow-navigation href="*"/>
   <allow-intent href="*"/>
   <access origin="*"/>

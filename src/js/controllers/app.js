@@ -1,5 +1,5 @@
 app.controller('AppController', [
-	'$scope', '$localStorage', '$state', '$http', '$window', '$timeout', function($scope, $localStorage, $state, $http, $window, $timeout)
+	'$scope', '$localStorage', '$state', '$stateParams', '$http', '$window', '$timeout', function($scope, $localStorage, $state, $stateParams, $http, $window, $timeout)
 	{
 		// Check if user is in danger and redirect if they are
 		if(angular.isDefined($localStorage.danger) && $scope.currentPage !== 'app.danger' && $scope.currentPage !== 'app.pin')
@@ -28,7 +28,7 @@ app.controller('AppController', [
 		$scope.timeout = null;
 
 		// Contact Settings
-		$scope.maxContacts = 3;
+		$scope.maxContacts = 1;
 		$scope.remainingContacts = $scope.maxContacts;
 		$scope.selectedContact = null;
 		$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
@@ -52,6 +52,90 @@ app.controller('AppController', [
 		 */
 		$scope.init = function()
 		{
+			/**
+			 * --------------------------------------------------
+			 * Fetch Remote Settings
+			 * --------------------------------------------------
+			 */
+			// Fetch App Settings
+			$http.get('settings.json').success(function(data){
+				$window.settings = data;
+				$scope.settings = data;
+				$localStorage.settings = data;
+			});
+
+			$http.get('package.json').success(function(data){
+				$window.package = data;
+				$scope.package = data;
+				$localStorage.package = data;
+			});
+
+			// Check for New Version
+			$http.get('https://i.panic.press/mobile_app_info.json').success(function(mobile_app_info){
+
+				var include_beta = ($scope.settings.app.environment == 'development');
+				var app_difference = compare_app_versions($window.package.version, mobile_app_info, include_beta);
+
+				// New Version Available
+				if(app_difference > 0 )
+				{
+					// User not notified of new version
+					if($scope.updateAppReminder == 0)
+					{
+						phonegap.stats.event('App', 'Update Available', 'User on v' + $scope.package.version + '. Latest is v' + mobile_app_info.current_version );
+
+						phonegap.notification.confirm(
+							"You are currently using an outdated version of Panic Press. The current version is " + mobile_app_info.current_version + ". Would you like to Update Panic Press?",
+							function(selection){
+								if(selection == 2)
+								{
+									if(device.platform.toLowerCase() == 'ios' && include_beta)
+									{
+										phonegap.stats.event('App', 'Update Available Accepted', 'Updating to iOS Beta Version ' + mobile_app_info.current_version );
+
+										$scope.openBrowser(mobile_app_info.link.beta.ios);
+									}
+									else if(device.platform.toLowerCase() == 'ios' && !include_beta)
+									{
+										phonegap.stats.event('App', 'Update Available Accepted', 'Updating to iOS Version ' + mobile_app_info.current_version );
+
+										$scope.openBrowser(mobile_app_info.link.production.ios);
+									}
+									else if (device.platform.toLowerCase() == 'android' && include_beta)
+									{
+										phonegap.stats.event('App', 'Update Available Accepted', 'Updating to Android Beta Version ' + mobile_app_info.current_version );
+
+										$scope.openBrowser(mobile_app_info.link.beta.android);
+									}
+									else if (device.platform.toLowerCase() == 'android' && !include_beta)
+									{
+										phonegap.stats.event('App', 'Update Available Accepted', 'Updating to Android Version ' + mobile_app_info.current_version );
+
+										$scope.openBrowser(mobile_app_info.link.production.android);
+									}
+								}
+								else
+								{
+									phonegap.stats.event('App', 'Update Available Declined', 'User declined Update to Version ' + mobile_app_info.current_version );
+								}
+							},
+							"Update Panic Press ?",
+							['Not Now', 'Get Update']
+						);
+					}
+					// User opted not to update
+					else
+					{
+						phonegap.stats.event('App', 'Update Available Skipped', 'Will ask user again after ' + ( 5 - $scope.updateAppReminder ) + ' notice(s).' );
+					}
+
+					$scope.updateAppReminder += 1;
+				}
+			});
+
+			// Check for Purchases
+			$scope.checkPurchases();
+
 			// Check for Notification Updates
 			$scope.checkNotifications();
 
@@ -106,6 +190,7 @@ app.controller('AppController', [
 					$scope.contacts = contacts;
 				}
 			});
+
 		};
 
 		/**
@@ -174,12 +259,29 @@ app.controller('AppController', [
 					$scope.selectedContact = null;
 					$scope.contacts = contacts;
 					$scope.remainingContacts = ( $scope.maxContacts - contacts.length );
-					$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Contact Remaining' : 'Contacts Remaining';
+					$scope.remainingMessage = ($scope.remainingContacts == 1) ? 'Emergency Contact Remaining' : 'Emergency Contacts Remaining';
 
 					$timeout.cancel($scope.timeout);
 					$scope.timeout = $timeout($scope.updateMode, 250);
 				});
 			});
+		};
+
+		$scope.checkPurchases = function(){
+			// Check for Store Purchases
+			if(typeof $window.store !== 'undefined')
+			{
+				if($window.store.get('upgrade_to_5_contacts').owned)
+				{
+					$scope.maxContacts = 5;
+					$scope.remainingContacts = $scope.maxContacts;
+				}
+				if($window.store.get('upgrade_to_10_contacts').owned)
+				{
+					$scope.maxContacts = 10;
+					$scope.remainingContacts = $scope.maxContacts;
+				}
+			}
 		};
 
 		/**
@@ -328,11 +430,16 @@ app.controller('AppController', [
 				}
 			}
 
-			$scope.appMode = (is_ready) ? 'ready' : 'setup';
+			var mode = (is_ready) ? 'ready' : 'setup';
+			$scope.appMode = mode;
 
 			if(typeof callback == 'function')
 			{
-				callback();
+				callback(mode);
+			}
+			else
+			{
+				return mode;
 			}
 		};
 
@@ -594,88 +701,6 @@ app.controller('AppController', [
 			$scope.$broadcast('notificationsChanged', notifications);
 
 			phonegap.stats.event('App', 'Scope Change', 'Notifications Changed' );
-		});
-
-		/**
-		 * --------------------------------------------------
-		 * Fetch Remote Settings
-		 * --------------------------------------------------
-		 */
-
-		// Fetch App Settings
-		$http.get('settings.json').success(function(data){
-			$window.settings = data;
-			$scope.settings = data;
-			$localStorage.settings = data;
-		});
-
-		$http.get('package.json').success(function(data){
-			$window.package = data;
-			$scope.package = data;
-			$localStorage.package = data;
-		});
-
-		// Check for New Version
-		$http.get('https://i.panic.press/mobile_app_info.json').success(function(mobile_app_info){
-
-			var include_beta = ($scope.settings.app.environment == 'development');
-			var app_difference = compare_app_versions($scope.package.version, mobile_app_info, include_beta);
-
-			// New Version Available
-			if(app_difference > 0 )
-			{
-				// User not notified of new version
-				if($scope.updateAppReminder == 0)
-				{
-					phonegap.stats.event('App', 'Update Available', 'User on v' + $scope.package.version + '. Latest is v' + mobile_app_info.current_version );
-
-					phonegap.notification.confirm(
-						"You are currently using an outdated version of Panic Press. The current version is " + mobile_app_info.current_version + ". Would you like to Update Panic Press?",
-						function(selection){
-							if(selection == 2)
-							{
-								if(device.platform.toLowerCase() == 'ios' && include_beta)
-								{
-									phonegap.stats.event('App', 'Update Available Accepted', 'Updating to iOS Beta Version ' + mobile_app_info.current_version );
-
-									$scope.openBrowser(mobile_app_info.link.beta.ios);
-								}
-								else if(device.platform.toLowerCase() == 'ios' && !include_beta)
-								{
-									phonegap.stats.event('App', 'Update Available Accepted', 'Updating to iOS Version ' + mobile_app_info.current_version );
-
-									$scope.openBrowser(mobile_app_info.link.production.ios);
-								}
-								else if (device.platform.toLowerCase() == 'android' && include_beta)
-								{
-									phonegap.stats.event('App', 'Update Available Accepted', 'Updating to Android Beta Version ' + mobile_app_info.current_version );
-
-									$scope.openBrowser(mobile_app_info.link.beta.android);
-								}
-								else if (device.platform.toLowerCase() == 'android' && !include_beta)
-								{
-									phonegap.stats.event('App', 'Update Available Accepted', 'Updating to Android Version ' + mobile_app_info.current_version );
-
-									$scope.openBrowser(mobile_app_info.link.production.android);
-								}
-							}
-							else
-							{
-								phonegap.stats.event('App', 'Update Available Declined', 'User declined Update to Version ' + mobile_app_info.current_version );
-							}
-						},
-						"Update Panic Press ?",
-						['Not Now', 'Get Update']
-					);
-				}
-				// User opted not to update
-				else
-				{
-					phonegap.stats.event('App', 'Update Available Skipped', 'Will ask user again after ' + ( 5 - $scope.updateAppReminder ) + ' notice(s).' );
-				}
-
-				$scope.updateAppReminder += 1;
-			}
 		});
 	}
 ]);

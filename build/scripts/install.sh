@@ -55,9 +55,6 @@ cordova plugin add org.apache.cordova.contacts
 cordova plugin add org.apache.cordova.device
 cordova plugin add org.apache.cordova.device-motion
 cordova plugin add org.apache.cordova.dialogs
-cordova plugin add org.apache.cordova.file
-cordova plugin add org.apache.cordova.file-transfer
-cordova plugin add org.apache.cordova.media-capture
 cordova plugin add org.apache.cordova.network-information
 cordova plugin add org.apache.cordova.splashscreen
 cordova plugin add cordova-plugin-inappbrowser
@@ -66,8 +63,8 @@ echo " "
 echo "Installing Required Third-Party Plugins:"
 echo " "
 
+cordova plugin add https://github.com/apache/cordova-plugin-whitelist.git
 cordova plugin add https://github.com/christocracy/cordova-plugin-background-geolocation.git
-cordova plugin add https://github.com/cordova-sms/cordova-sms-plugin.git
 cordova plugin add https://github.com/danwilson/google-analytics-plugin.git
 cordova plugin add https://github.com/phonegap-build/StatusBarPlugin.git
 cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git

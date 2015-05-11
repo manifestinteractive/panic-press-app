@@ -6,10 +6,10 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" ng-if="disableMenu || appMode == 'setup'">
-            <img src="assets/img/logo.png" alt="PanicPress">
+            <img src="assets/img/logo.svg" alt="PanicPress">
         </a>
         <a ui-sref="app.home" class="navbar-brand" ng-if="!disableMenu && appMode !== 'setup'">
-            <img src="assets/img/logo.png" alt="PanicPress">
+            <img src="assets/img/logo.svg" alt="PanicPress">
         </a>
     </div>
     <nav class="collapse navbar-collapse main-navbar" role="navigation" ng-if="!hideNav && !disableMenu && appMode !== 'setup'">
@@ -25,6 +25,9 @@
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="app.history">My History</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.purchase">In-App Purchases</a>
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="app.support">App Support</a>

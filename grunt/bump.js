@@ -2,7 +2,6 @@ module.exports = {
 	options: {
 		files: [
 			"package.json",
-			"settings.json",
 			"bower.json",
 			"config.xml"
 		],
