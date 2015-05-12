@@ -1,5 +1,40 @@
+v0.6.2
+----------
+
+1.  Fixed issue where if you clicked I'm Safe to quickly ( before sending was complete ) it failed to register you were in danger if you left the page.
+
+
+v0.6.1
+----------
+
+1.  Added support for Tablets.
+
+2.  Fixed Keyboard Input issue on Android.
+
+3.  Fixed bug where you could not leave Danger Mode if you terminated the application without clearing.
+
+4.  Updated In-App Purchase Lists to show Purchased Items.
+
+5.  Update In-App Purchases to restore purchases on app launch.
+
+6.  Fixed bug on My History that had incorrect date calculations.
+
+7.  Made Main Menu items a little taller to avoid clicking the wrong thing.
+
+8.  Fixed bug with version check for those testing beta releases."
+
+
+v0.6.0
+----------
+
+1.  Added In-App Purchases for Upgrades to 5 & 10 Emergency Contacts.
+
+2.  Updated logo to be SVG for Sharper appearance."
+
+
 v0.5.1
 ----------
+
 1. Fixed footer rendering issue on Danger selection pages.
 
 2. Fixed template bug on My History.
