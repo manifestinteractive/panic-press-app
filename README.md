@@ -1,4 +1,4 @@
-![Panic Press Logo](http://panic.press/logo.png "Panic Press Logo")
+![Panic Press Logo](http://panic.press/img/logo-color.png "Panic Press Logo")
 
 Requirements:
 ---
@@ -256,7 +256,7 @@ If you are using Cordova 5.0 you may get an error when building for Android that
 LocalNotification.java:561: error: cannot find symbol webView.post(new Runnable(){
 ```
 
-If this happens to you, see [this posted solution](https://github.com/katzer/cordova-plugin-local-notifications/issues/535). 
+If this happens to you, see [this posted solution](https://github.com/katzer/cordova-plugin-local-notifications/issues/535).
 
 if you get the error `Duplicate files copied in APK META-INF/LICENSE.txt` add the following to `./platforms/android/build.gradle` directly after the root `android {`
 

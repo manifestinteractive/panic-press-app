@@ -1,0 +1,77 @@
+<section>
+    <section class="section swatch-red-white section-short">
+        <div class="container">
+            <div class="row text-center m-b-sm">
+                <div class="box-hex flat-shadow flat-hex animated flipInX">
+                    <div class="box-dummy"></div>
+                    <span class="box-inner">
+					    <img src="assets/img/purchase.jpg">
+				    </span>
+                    <div class="hex-right"></div>
+                    <div class="hex-left"></div>
+                    <div class="hex-right"></div>
+                    <div class="hex-left"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section swatch-white-red has-top">
+        <div class="decor-top">
+            <svg class="decor" height="100%" preserveAspectRatio="none" version="1.1" viewBox="0 0 100 100" width="100%" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0 L50 100 L100 0 L100 100 L0 100" stroke-width="0"></path>
+            </svg>
+        </div>
+        <div class="container contain-600 m-b-xl">
+            <header class="section-header text-center underline m-t-lg">
+                <h1 class="headline super hairline">In-App Purchases</h1>
+            </header>
+            <div class="text-center m-b-xl">
+                <p>
+                    Need more from Panic Press?
+                </p>
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" ng-show="products.length > 0">
+                    <div class="panel panel-default" ng-repeat="(key,product) in products" ng-hide="product.id == 'upgrade_to_10_contacts' && !upgradedTo5">
+                        <div ng-model="opened" ng-init="opened = false" ng-click="toggle('#collapse{{key}}'); opened = (!opened)" class="panel-heading purchase" role="tab" id="heading{{key}}">
+                            <h4 class="panel-title purchase" ng-class="{ purchased: product.owned }">
+                                <a href="javascript:void(0)" data-toggle="collapse" data-parent="#accordion" href="#collapse{{key}}" aria-expanded="true" aria-controls="collapse{{key}}">
+                                    {{product.title | stripPanicPress }}
+                                    <span class="pull-right" ng-hide="opened"><i class="fa fa-angle-down"></i></span>
+                                    <span class="pull-right" ng-show="opened"><i class="fa fa-angle-up"></i></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse{{key}}" class="panel-collapse collapse text-left" role="tabpanel" aria-labelledby="heading{{key}}">
+                            <div class="panel-body">
+
+                                <p>{{product.description}}</p>
+
+                                <p ng-show="product.owned">
+                                    <a href="javascript:void(0);" class="btn btn-success btn-icon btn-icon-right pull-right">
+                                        Purchased
+                                        <span class="hex-alt">
+                                            <i class="fa fa-check"></i>
+                                        </span>
+                                    </a>
+                                </p>
+
+                                <p ng-hide="product.owned">
+                                    <a ng-click="purchase(product)" class="btn btn-success btn-icon btn-icon-right pull-right">
+                                        {{product.price}}
+                                        <span class="hex-alt">
+                                            <i class="fa fa-unlock-alt"></i>
+                                        </span>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert bg-panic-info-light text-panic-info text-center" role="alert" ng-hide="products.length > 0">
+                    <i class="fa fa-exclamation-triangle text-panic-info m-r-xs"></i> No In-App Purchases Available
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
