@@ -1,5 +1,6 @@
 var phonegap = {
 	initialized: false,
+	apple_watch: null,
 	connection: 'Unknown Connection',
 	battery: {
 		level: null,
@@ -7,21 +8,13 @@ var phonegap = {
 	},
 	online: true,
 	reload: false,
+	status: 'loading',
 	bindEvents: function()
 	{
-		// Initial event fired when device is ready and app is launched
 		document.addEventListener('deviceready', phonegap.events.deviceReady, false);
-
-		// The event fires when an application is put into the background.
 		document.addEventListener('pause', phonegap.events.pause, false);
-
-		// The event fires when an application is retrieved from the background.
 		document.addEventListener('resume', phonegap.events.resume, false);
-
-		// The event fires when the device goes offline
 		document.addEventListener('online', phonegap.events.networkOnline, false);
-
-		// The event fires when the device comes back online
 		document.addEventListener('offline', phonegap.events.networkOffline, false);
 	},
 	receivedEvent: function(event)
@@ -85,6 +78,21 @@ phonegap.events = {
 		if(typeof navigator.splashscreen !== 'undefined')
 		{
 			navigator.splashscreen.hide();
+		}
+
+		if(typeof cordova.plugins.backgroundMode !== 'undefined')
+		{
+			cordova.plugins.backgroundMode.setDefaults({ text: 'Allowing Communication with Apple Watch'});
+			cordova.plugins.backgroundMode.enable();
+
+			cordova.plugins.backgroundMode.onactivate = function () {
+
+				setTimeout(function () {
+					cordova.plugins.backgroundMode.configure({
+						text: 'Allowing Communication with Apple Watch'
+					});
+				}, 5000);
+			}
 		}
 
 		if(typeof StatusBar !== 'undefined')
@@ -403,11 +411,8 @@ phonegap.store = {
 	}
 };
 
-'use strict';
-
 var CordovaInit = function() {
 
-	//If cordova is present, wait for it to initialize, otherwise just try to bootstrap the application.
 	if (window.cordova !== undefined)
 	{
 		phonegap.bindEvents();

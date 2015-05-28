@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.manifestinteractive.panicpress" version="0.6.2" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.manifestinteractive.panicpress" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Panic</name>
   <description>
     With a single tap, Panic Press automatically notifies your Emergency Contacts when you're in danger. Access your
@@ -16,9 +16,10 @@
   <preference name="StatusBarBackgroundColor" value="#e74c3c"/>
   <preference name="StatusBarOverlaysWebView" value="false"/>
   <preference name="StatusBarStyle" value="lightcontent"/>
+  <preference name="KeyboardDisplayRequiresUserAction" value="false"/>
   <platform name="ios">
     <preference name="BackupWebStorage" value="cloud"/>
-    <preference name="deployment-target" value="7.0"/>
+    <preference name="deployment-target" value="8.2"/>
     <preference name="DisallowOverscroll" value="true"/>
     <preference name="prerendered-icon" value="true"/>
     <preference name="ShowSplashScreenSpinner" value="false"/>

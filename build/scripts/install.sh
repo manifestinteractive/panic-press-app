@@ -67,10 +67,9 @@ cordova plugin add https://github.com/apache/cordova-plugin-whitelist.git
 cordova plugin add https://github.com/christocracy/cordova-plugin-background-geolocation.git
 cordova plugin add https://github.com/danwilson/google-analytics-plugin.git
 cordova plugin add https://github.com/apache/cordova-plugin-statusbar.git
-cordova plugin add https://github.com/pushandplay/cordova-plugin-apprate.git
 cordova plugin add https://github.com/katzer/cordova-plugin-local-notifications.git
-cordova plugin add https://github.com/leecrossley/cordova-plugin-apple-watch.git
 cordova plugin add https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git
+cordova plugin add https://github.com/katzer/cordova-plugin-background-mode.git
 
 echo " "
 read -s -p "Android In App Billing Key [REQUIRED]: " BILLING_KEY

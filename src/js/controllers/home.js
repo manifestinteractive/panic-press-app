@@ -18,8 +18,6 @@ app.controller('HomeController', [
 				}
 			});
 
-			$scope.rateApp(false);
-
 			if($scope.appMode == 'ready' && !angular.isDefined($localStorage.approvedGPS))
 			{
 				$timeout($scope.approveGPS, 1000);

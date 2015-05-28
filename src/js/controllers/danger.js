@@ -59,6 +59,7 @@ app.controller('DangerController', [
 		$scope.danger_html = dangers_html[$stateParams.danger];
 
 		$scope.initDanger = function(){
+
 			// Check if user is in danger and redirect if they are
 			if(angular.isDefined($localStorage.danger) && $stateParams.status !== 'sent')
 			{
@@ -82,10 +83,6 @@ app.controller('DangerController', [
 			if ($scope.status == 'send')
 			{
 				getLocation();
-				$localStorage.danger = {
-					type: $stateParams.type,
-					danger: $stateParams.danger
-				};
 			}
 		};
 
@@ -106,6 +103,13 @@ app.controller('DangerController', [
 
 				phonegap.stats.event('Danger', $scope.type_text, $scope.danger_text + ' at ' + position.coords.latitude + ',' + position.coords.longitude);
 
+				$localStorage.danger = {
+					type: $stateParams.type,
+					danger: $stateParams.danger
+				};
+
+				$window.phonegap.status = 'danger';
+
 				notifiyContacts();
 
 			}, function(){
@@ -113,7 +117,7 @@ app.controller('DangerController', [
 				phonegap.stats.event('Danger', 'Error', 'Unable to detect location.');
 
 				phonegap.notification.alert(
-					'We cannot notify your emergency contacts since we cannot detect your current location.',
+					"We can't detect your location. Let's try that again.",
 					function(){
 						$state.go('app.home');
 					},
@@ -372,55 +376,5 @@ app.controller('DangerController', [
 				}
 			);
 		};
-
-		/*
-		if ($scope.status == 'send')
-		{
-			$timeout(function ()
-			{
-				$('.contact-1 i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
-				$('.contact-1 span').text('sent').removeClass('label-warning').addClass('label-info');
-			}, 3000);
-
-			$timeout(function ()
-			{
-				$('.contact-2 i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-check');
-				$('.contact-2 span').text('sent').removeClass('label-warning').addClass('label-info');
-			}, 4000);
-
-			$timeout(function ()
-			{
-				$('.contact-3 i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-times text-red');
-				$('.contact-3 span').text('error').removeClass('label-warning').addClass('label-danger');
-			}, 5000);
-
-			$timeout(function ()
-			{
-				$('.contact-1 i').removeClass('fa-spin fa-circle-o-notch fa-check text-light').addClass('fa-eye');
-				$('.contact-1 span').text('read').removeClass('label-warning label-info').addClass('label-success');
-			}, 10000);
-
-			$timeout(function ()
-			{
-				$('.contact-2 i').removeClass('fa-spin fa-circle-o-notch fa-check text-light').addClass('fa-eye');
-				$('.contact-2 span').text('read').removeClass('label-warning label-info').addClass('label-success');
-			}, 15000);
-		}
-		else if ($scope.status == 'sent')
-		{
-			$timeout(function ()
-			{
-				$('.contact-1 i').removeClass('fa-spin fa-circle-o-notch fa-check text-light').addClass('fa-eye');
-				$('.contact-1 span').text('read').removeClass('label-warning label-info').addClass('label-success');
-
-				$('.contact-2 i').removeClass('fa-spin fa-circle-o-notch fa-check text-light').addClass('fa-eye');
-				$('.contact-2 span').text('read').removeClass('label-warning label-info').addClass('label-success');
-
-				$('.contact-3 i').removeClass('fa-spin fa-circle-o-notch text-light').addClass('fa-times text-red');
-				$('.contact-3 span').text('error').removeClass('label-warning').addClass('label-danger');
-
-			}, 0);
-		}
-		*/
 	}
 ]);

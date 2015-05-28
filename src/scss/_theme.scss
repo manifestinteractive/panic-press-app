@@ -15233,3 +15233,40 @@ li.no-pad
 {
 	max-width: 600px;
 }
+
+@media (min-width: 720px) {
+	#homeLogo
+	{
+		margin-top: 22%;
+	}
+	.showOverflow
+	{
+		.section
+		{
+			padding: 50px 0;
+		}
+	}
+}
+@media (min-width: 800px) {
+	#homeLogo
+	{
+		margin-top: 8%;
+	}
+	.showOverflow
+	{
+		.section
+		{
+			padding: 20px 0;
+		}
+		.section-header
+		{
+			maring: 0 auto;
+		}
+	}
+}
+@media (min-width: 1024px) {
+	#homeLogo
+	{
+		margin-top: 8%;
+	}
+}

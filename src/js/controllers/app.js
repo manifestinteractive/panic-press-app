@@ -21,7 +21,6 @@ app.controller('AppController', [
 
 		// Application Variables
 		$scope.appMode = (angular.isDefined($localStorage.appMode)) ? $localStorage.appMode : 'setup';
-		$scope.rateAppReminder = (angular.isDefined($localStorage.rateAppReminder)) ? $localStorage.rateAppReminder : 0;
 		$scope.updateAppReminder = (angular.isDefined($localStorage.updateAppReminder)) ? $localStorage.updateAppReminder : 0;
 		$scope.settings = (angular.isDefined($localStorage.settings)) ? $localStorage.settings : {};
 		$scope.notifications = (angular.isDefined($localStorage.notifications)) ? $localStorage.notifications : {};
@@ -292,65 +291,6 @@ app.controller('AppController', [
 		};
 
 		/**
-		 * Prompt User to Rate Application
-		 *
-		 * @param immediately
-		 */
-		$scope.rateApp = function(immediately)
-		{
-			// Check for AppRate Plugin
-			if(typeof AppRate !== 'undefined')
-			{
-				// Configure Languate
-				var customLocale = {
-					title: "Rate Panic Press",
-					message: "If you enjoy using Panic Press, would you mind taking a moment to rate it? It won’t take more than a minute. Thanks for your support!",
-					cancelButtonLabel: "No",
-					laterButtonLabel: "Later",
-					rateButtonLabel: "Rate"
-				};
-
-				// Setup AppRate Preferences
-				AppRate.preferences.openStoreInApp = true;
-				AppRate.preferences.storeAppURL.ios = $scope.settings.app.store.ios;
-				AppRate.preferences.storeAppURL.android = $scope.settings.app.store.android;
-				AppRate.preferences.customLocale = customLocale;
-				AppRate.preferences.displayAppName = $scope.settings.app.name;
-				AppRate.preferences.usesUntilPrompt = 5;
-				AppRate.preferences.promptAgainForEachNewVersion = false;
-				AppRate.preferences.callbacks.onButtonClicked = function(buttonIndex)
-				{
-					// No Thanks ( Never ask again )
-					if(buttonIndex == 1)
-					{
-						$scope.rateAppReminder = $localStorage.rateAppReminder = -1;
-					}
-
-					// Remind Me Later
-					if(buttonIndex == 2)
-					{
-						$scope.rateAppReminder = $localStorage.rateAppReminder = 10;
-					}
-
-					// Rate it Now ( Never ask again )
-					if(buttonIndex == 3)
-					{
-						$scope.rateAppReminder = $localStorage.rateAppReminder = -1;
-					}
-				};
-
-				if($scope.rateAppReminder == 0)
-				{
-					AppRate.promptForRating(immediately);
-				}
-				else
-				{
-					$scope.rateAppReminder -= 1;
-				}
-			}
-		};
-
-		/**
 		 * Use Cordova's InAppBrowser Plugin
 		 *
 		 * @param url Website to open
@@ -439,6 +379,8 @@ app.controller('AppController', [
 
 			var mode = (is_ready) ? 'ready' : 'setup';
 			$scope.appMode = mode;
+
+			$window.phonegap.status = mode;
 
 			if(typeof callback == 'function')
 			{
@@ -712,5 +654,6 @@ app.controller('AppController', [
 
 			phonegap.stats.event('App', 'Scope Change', 'Notifications Changed' );
 		});
+
 	}
 ]);

@@ -171,6 +171,37 @@ app.controller('ContactsController', [
 			phone: null
 		};
 
+		$scope.preparePickContact = function(){
+
+			if( !angular.isDefined($localStorage.contactIntro))
+			{
+				phonegap.stats.event('Contact', 'Prepare Contact', 'Informing user that we will send notifications.' );
+
+				phonegap.notification.confirm(
+					"When you add an Emergency Contact, we send them an Email & Text Message asking them to accept your request. If you would like to give them a heads up before we do this, press \"Cancel\".",
+					function(selection){
+						if(selection == 2)
+						{
+							phonegap.stats.event('Contact', 'Prepare Contact Accepted', 'User accepted and will add first contact.' );
+							$localStorage.contactIntro = true;
+							$scope.pickContact();
+						}
+						else
+						{
+							phonegap.stats.event('Contact', 'Prepare Contact Declined', 'User declined amd will add first contact later.' );
+						}
+					},
+					"Emergency Contact Setup",
+					['Cancel', 'Add Contact']
+				);
+			}
+			else
+			{
+				$scope.pickContact();
+			}
+
+		};
+
 		$scope.pickContact = function()
 		{
 			phonegap.stats.event('Contact', 'Pick Contact', 'Picking Contact from Contact List');
